@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --color-chakki-bg: #FDFBF7;
+  --color-chakki-surface: #FAF4E8;
+  --color-chakki-pill: #F6EFE3;
+  --color-chakki-card: #FFFFFF;
+  --color-chakki-text: #4A2B18;
+  --color-chakki-muted: #7C5C43;
+  --color-chakki-primary: #9A6B29;
+  --color-chakki-primary-hover: #80561F;
+  --color-chakki-gold: #C59A3F;
+  --color-chakki-border: #E8DCCB;
+  --color-chakki-dark: #351D0F;
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --shadow-pill: 0 8px 30px rgba(74, 43, 24, 0.08);
+  --shadow-card: 0 4px 20px rgba(74, 43, 24, 0.05);
+  --shadow-floating: 0 12px 40px rgba(74, 43, 24, 0.12);
+}
+
+@layer base {
+  body {
+    background-color: #FDFBF7;
+    color: #4A2B18;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+/* Custom Utilities for smooth animations and aesthetic UI */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #FAF4E8;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #D4C3A3;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9A6B29;
+}
