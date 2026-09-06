@@ -58,21 +58,15 @@ export const Navbar: React.FC = () => {
         {/* Left: Brand Logo & Title */}
         <div
           onClick={() => navigateTo('home')}
-          className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group selection:bg-transparent shrink-0"
+          className="flex items-center gap-3 sm:gap-4 cursor-pointer group selection:bg-transparent shrink-0"
         >
-          {/* Circular Golden Pestle Logo Container */}
-          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#F3E8D3] border border-[#C59A3F]/30 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-300">
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="18" fill="#FAF6EE" stroke="#9A6B29" strokeWidth="1.5" />
-              {/* Wheat & Mortar Pestle Icon */}
-              <path d="M12 28C12 28 14 20 20 20C26 20 28 28 28 28H12Z" fill="#9A6B29" />
-              <rect x="18" y="10" width="4" height="12" rx="2" fill="#4A2B18" transform="rotate(-15 18 10)" />
-              <path d="M10 16C13 14 16 16 16 16" stroke="#C59A3F" strokeWidth="2" strokeLinecap="round" />
-              <path d="M24 16C27 14 30 16 30 16" stroke="#C59A3F" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </div>
-          <span className="font-serif text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-[#4A2B18] group-hover:text-[#9A6B29] transition-colors whitespace-nowrap">
-            True chakki
+          <img
+            src="/images/logo.png"
+            alt="True Chakki Logo"
+            className="h-12 sm:h-15 md:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-md"
+          />
+          <span className="font-serif text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-[#4A2B18] group-hover:text-[#9A6B29] transition-colors whitespace-nowrap translate-y-1 sm:translate-y-1.5">
+            True Chakki
           </span>
         </div>
 

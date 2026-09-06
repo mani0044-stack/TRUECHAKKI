@@ -1,6 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUIStore } from './store/useUIStore';
 import { useProductStore } from './store/useProductStore';
+
+// UI Preloader
+import { LogoPreloader } from './components/ui/LogoPreloader';
 
 // Layout Components
 import { Navbar } from './components/layout/Navbar';
@@ -28,10 +31,12 @@ import { ContactPage } from './components/info/ContactPage';
 export const App: React.FC = () => {
   const currentPage = useUIStore((state) => state.currentPage);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
+  const [preloaderDone, setPreloaderDone] = useState(false);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
 
   const renderPageContent = () => {
     switch (currentPage) {
@@ -74,6 +79,9 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FDFBF7] text-[#4A2B18] antialiased">
+      {/* Brand Logo Preloader */}
+      {!preloaderDone && <LogoPreloader onComplete={() => setPreloaderDone(true)} />}
+
       {/* Top Navbar */}
       <Navbar />
 
