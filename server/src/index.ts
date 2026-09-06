@@ -37,6 +37,11 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
   res.status(500).json({ error: 'Internal Server Error', details: err?.message || 'Unknown error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 True Chakki Backend Server running on http://localhost:${PORT}`);
-});
+export default app;
+
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 True Chakki Backend Server running on http://localhost:${PORT}`);
+  });
+}
+
