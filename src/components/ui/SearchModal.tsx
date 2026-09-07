@@ -5,11 +5,12 @@ import { useProductStore } from '../../store/useProductStore';
 
 export const SearchModal: React.FC = () => {
   const { isSearchOpen, closeSearch, navigateTo } = useUIStore();
-  const { searchQuery, setSearchQuery, getFilteredProducts, setSelectedCategory } = useProductStore();
+  const { searchQuery, setSearchQuery, getFilteredProducts, setSelectedCategory, categories } = useProductStore();
 
   if (!isSearchOpen) return null;
 
   const results = searchQuery.trim() ? getFilteredProducts() : [];
+  const popularCategories = categories.slice(0, 4);
 
   const handleProductSelect = (slug: string) => {
     closeSearch();
