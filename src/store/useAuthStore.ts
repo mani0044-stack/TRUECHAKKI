@@ -11,7 +11,8 @@ interface AuthState {
   error: string | null;
 
   // Actions
-  login: (name: string, email: string, phone?: string) => Promise<boolean>;
+  login: (name: string, email: string, password?: string, phone?: string) => Promise<boolean>;
+  register: (name: string, email: string, password?: string, phone?: string) => Promise<boolean>;
   logout: () => void;
   addAddress: (address: Omit<UserAddress, 'id'>) => Promise<void>;
   addOrder: (order: Order) => void;
@@ -27,10 +28,10 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
       error: null,
 
-      login: async (name: string, email: string, phone?: string) => {
+      login: async (name: string, email: string, password?: string, phone?: string) => {
         set({ isLoading: true, error: null });
         try {
-          const res = await api.login(name, email, phone);
+          const res = await api.login(name, email, password, phone);
           set({
             user: res.user,
             isAuthenticated: true,
@@ -41,22 +42,26 @@ export const useAuthStore = create<AuthState>()(
           return true;
         } catch (err: any) {
           console.error('Login error:', err);
-          // Fallback local login if offline
-          const fallbackUser: UserProfile = {
-            id: `usr-${Date.now()}`,
-            name,
-            email,
-            phone,
-            role: email.toLowerCase() === 'admin@truechakki.com' ? 'ADMIN' : 'CUSTOMER',
-            addresses: [],
-          };
+          set({ isLoading: false, error: err.message || 'Login failed' });
+          throw err;
+        }
+      },
+
+      register: async (name: string, email: string, password?: string, phone?: string) => {
+        set({ isLoading: true, error: null });
+        try {
+          const res = await api.register(name, email, password, phone);
           set({
-            user: fallbackUser,
+            user: res.user,
             isAuthenticated: true,
             isLoading: false,
-            error: err.message || 'Server offline, logged in locally',
           });
+          get().fetchUserOrders();
           return true;
+        } catch (err: any) {
+          console.error('Registration error:', err);
+          set({ isLoading: false, error: err.message || 'Registration failed' });
+          throw err;
         }
       },
 

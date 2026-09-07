@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, User, ShoppingBag, Menu, X, ChevronDown, Leaf, LogIn, UserPlus, ShieldCheck } from 'lucide-react';
+import { Search, User, ShoppingBag, Menu, X, ChevronDown, Leaf, LogIn, UserPlus } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
 import { useUIStore } from '../../store/useUIStore';
 import type { PageView } from '../../store/useUIStore';
@@ -147,21 +147,7 @@ export const Navbar: React.FC = () => {
             <Search className="w-5 h-5 stroke-[2.2]" />
           </button>
 
-          {/* Admin Portal Button */}
-          <button
-            onClick={() => navigateTo('admin')}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border flex items-center gap-1.5 ${
-              currentPage === 'admin'
-                ? 'bg-[#9A6B29] text-white border-[#9A6B29] shadow-sm'
-                : 'bg-[#FAF4E8] text-[#9A6B29] border-[#9A6B29]/30 hover:bg-[#9A6B29] hover:text-white'
-            }`}
-            title="Open Admin Control Panel"
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Admin</span>
-          </button>
-
-          {/* User Account */}
+          {/* User Account / Login */}
           <button
             onClick={() => navigateTo(isAuthenticated ? 'account' : 'login')}
             className={`p-2 hover:text-[#9A6B29] hover:bg-[#F3E8D3]/50 rounded-full transition-colors ${

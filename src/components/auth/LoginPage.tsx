@@ -10,8 +10,8 @@ export const LoginPage: React.FC = () => {
 
   const user = useAuthStore((state) => state.user);
 
-  const [email, setEmail] = useState('admin@truechakki.com');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,11 +27,6 @@ export const LoginPage: React.FC = () => {
     return null;
   }
 
-  const fillAdminCredentials = () => {
-    setEmail('admin@truechakki.com');
-    setPassword('admin123');
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
@@ -46,17 +41,17 @@ export const LoginPage: React.FC = () => {
       const defaultName = email.split('@')[0].replace(/[._]/g, ' ');
       const formattedName = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
       
-      await login(formattedName, email);
+      await login(formattedName, email, password);
       setIsSubmitting(false);
 
-      if (email.toLowerCase() === 'admin@truechakki.com') {
+      if (email.toLowerCase() === 'admin@truechakki.com' || user?.role === 'ADMIN') {
         navigateTo('admin');
       } else {
         navigateTo('account');
       }
-    } catch {
+    } catch (err: any) {
       setIsSubmitting(false);
-      setErrorMessage('Invalid credentials. Please try again.');
+      setErrorMessage(err.message || 'Invalid credentials. Please try again.');
     }
   };
 
@@ -95,26 +90,21 @@ export const LoginPage: React.FC = () => {
               <p className="text-xs text-[#7C5C43]">
                 Enter your registered email address and password below.
               </p>
-
-              {/* Admin Fixed Credentials Banner */}
-              <div className="mt-3 p-3.5 bg-[#FAF4E8] border border-[#9A6B29]/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
-                <div className="text-xs text-[#4A2B18]">
-                  <span className="font-bold text-[#9A6B29] block">⚡ Admin Access Demo Credentials:</span>
-                  <span className="font-mono text-[11px] text-[#7C5C43]">admin@truechakki.com / admin123</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={fillAdminCredentials}
-                  className="px-3 py-1.5 bg-[#9A6B29] hover:bg-[#80561F] text-white text-[11px] font-bold uppercase tracking-wider rounded-lg transition-colors whitespace-nowrap shadow-sm"
-                >
-                  Autofill Admin
-                </button>
-              </div>
             </div>
 
             {errorMessage && (
-              <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl font-medium">
-                {errorMessage}
+              <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-2xl font-medium space-y-2">
+                <p className="font-semibold">{errorMessage}</p>
+                {errorMessage.toLowerCase().includes('register') && (
+                  <button
+                    type="button"
+                    onClick={() => navigateTo('register')}
+                    className="mt-1 px-4 py-2 bg-[#9A6B29] hover:bg-[#80561F] text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5"
+                  >
+                    <UserCheck className="w-4 h-4" />
+                    <span>Create New Account Now</span>
+                  </button>
+                )}
               </div>
             )}
 

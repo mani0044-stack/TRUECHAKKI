@@ -134,11 +134,6 @@ export const Footer: React.FC = () => {
                   My Account & Order Tracking
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigateTo('admin')} className="hover:text-[#C59A3F] text-[#C59A3F] font-semibold transition-colors flex items-center gap-1">
-                  <span>⚡ Store Admin Control Panel</span>
-                </button>
-              </li>
             </ul>
           </div>
 

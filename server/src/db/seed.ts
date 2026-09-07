@@ -192,6 +192,15 @@ async function main() {
     console.log(`[seed] Product ready with variants: ${prod.name}`);
   }
 
+  // 4. Seed Admin User Credentials
+  await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS password VARCHAR(255)`);
+  await pool.query(
+    `INSERT INTO users (email, password, name, role)
+     VALUES ('admin@truechakki.com', 'admin123', 'True Chakki Admin', 'ADMIN')
+     ON CONFLICT (email) DO UPDATE SET password = 'admin123', role = 'ADMIN'`
+  );
+  console.log('[seed] Admin credentials seeded: admin@truechakki.com / admin123');
+
   console.log('[seed] Direct SQL Database Setup & Seed completed successfully!');
 }
 

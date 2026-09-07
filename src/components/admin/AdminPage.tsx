@@ -79,7 +79,7 @@ export const AdminPage: React.FC = () => {
       return;
     }
     loadAdminData();
-  }, [isAdmin, navigateTo]);
+  }, [isAdmin, navigateTo, activeTab]);
 
   const loadAdminData = async () => {
     setLoading(true);
@@ -169,7 +169,7 @@ export const AdminPage: React.FC = () => {
       }
 
       setIsProductModalOpen(false);
-      await fetchProducts(true);
+      await loadAdminData();
     } catch (err: any) {
       alert(`Error saving product: ${err.message}`);
     }
@@ -180,7 +180,7 @@ export const AdminPage: React.FC = () => {
     try {
       await api.deleteProduct(id);
       notifySuccess(`Deleted product "${name}"!`);
-      await fetchProducts(true);
+      await loadAdminData();
     } catch (err: any) {
       alert(`Failed to delete product: ${err.message}`);
     }
@@ -225,7 +225,7 @@ export const AdminPage: React.FC = () => {
       }
 
       setIsCategoryModalOpen(false);
-      await fetchCategories();
+      await loadAdminData();
     } catch (err: any) {
       alert(`Error saving category: ${err.message}`);
     }
@@ -236,8 +236,7 @@ export const AdminPage: React.FC = () => {
     try {
       await api.deleteCategory(id);
       notifySuccess(`Deleted category "${name}"!`);
-      await fetchCategories();
-      await fetchProducts(true);
+      await loadAdminData();
     } catch (err: any) {
       alert(`Failed to delete category: ${err.message}`);
     }

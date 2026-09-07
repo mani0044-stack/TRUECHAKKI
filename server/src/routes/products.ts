@@ -143,11 +143,15 @@ productRouter.post('/', async (req: Request, res: Response) => {
 
     const generatedSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
-    // Resolve the actual category id: prefer explicit categoryId, otherwise map from category slug/name
+    // Resolve the actual category id: prefer explicit categoryId, otherwise map from category slug/name/id
     let resolvedCategoryId = categoryId || null;
     if (!resolvedCategoryId && category) {
-      const catRes = await query(`SELECT id FROM categories WHERE slug = $1 OR LOWER(name) = LOWER($1)`, [category]);
+      const catRes = await query(`SELECT id FROM categories WHERE slug = $1 OR LOWER(name) = LOWER($1) OR id::text = $1`, [category]);
       resolvedCategoryId = catRes.rows[0]?.id || null;
+    }
+    if (!resolvedCategoryId) {
+      const firstCatRes = await query(`SELECT id FROM categories ORDER BY name ASC LIMIT 1`);
+      resolvedCategoryId = firstCatRes.rows[0]?.id || null;
     }
 
     const insertSql = `
@@ -212,8 +216,12 @@ productRouter.put('/:id', async (req: Request, res: Response) => {
 
     let resolvedCategoryId = categoryId || null;
     if (!resolvedCategoryId && category) {
-      const catRes = await query(`SELECT id FROM categories WHERE slug = $1 OR LOWER(name) = LOWER($1)`, [category]);
+      const catRes = await query(`SELECT id FROM categories WHERE slug = $1 OR LOWER(name) = LOWER($1) OR id::text = $1`, [category]);
       resolvedCategoryId = catRes.rows[0]?.id || null;
+    }
+    if (!resolvedCategoryId && category) {
+      const firstCatRes = await query(`SELECT id FROM categories ORDER BY name ASC LIMIT 1`);
+      resolvedCategoryId = firstCatRes.rows[0]?.id || null;
     }
 
     const updateSql = `

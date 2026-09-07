@@ -5,7 +5,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 
 export const RegisterPage: React.FC = () => {
   const navigateTo = useUIStore((state) => state.navigateTo);
-  const login = useAuthStore((state) => state.login);
+  const register = useAuthStore((state) => state.register);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const [name, setName] = useState('');
@@ -40,12 +40,12 @@ export const RegisterPage: React.FC = () => {
     setIsSubmitting(true);
     try {
       // Register user and initialize session in DB
-      await login(name, email, phone);
+      await register(name, email, password, phone);
       setIsSubmitting(false);
       navigateTo('account');
-    } catch {
+    } catch (err: any) {
       setIsSubmitting(false);
-      setErrorMessage('Registration failed. Please try again.');
+      setErrorMessage(err.message || 'Registration failed. Please try again.');
     }
   };
 

@@ -85,13 +85,29 @@ export const api = {
   },
 
   // Auth & Profile
-  async login(name: string, email: string, phone?: string): Promise<{ user: UserProfile; token: string }> {
+  async login(name: string, email: string, password?: string, phone?: string): Promise<{ user: UserProfile; token: string }> {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, phone }),
+      body: JSON.stringify({ name, email, password, phone }),
     });
-    if (!res.ok) throw new Error('Failed to authenticate');
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error || 'Failed to authenticate');
+    }
+    return res.json();
+  },
+
+  async register(name: string, email: string, password?: string, phone?: string): Promise<{ user: UserProfile; token: string }> {
+    const res = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password, phone }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error || 'Failed to register account');
+    }
     return res.json();
   },
 
