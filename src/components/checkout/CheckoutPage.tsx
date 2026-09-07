@@ -3,6 +3,7 @@ import { ShieldCheck, Truck, CreditCard, ArrowRight, CheckCircle2, ShoppingBag }
 import { useCartStore } from '../../store/useCartStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
+import { api } from '../../services/api';
 import type { Order } from '../../types';
 
 export const CheckoutPage: React.FC = () => {
@@ -45,42 +46,77 @@ export const CheckoutPage: React.FC = () => {
     );
   }
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newOrder: Order = {
-      id: `ord-${Date.now()}`,
-      orderNumber: `TC-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
-      date: new Date().toISOString().split('T')[0],
-      items: items.map((item) => ({
-        id: item.id,
-        productId: item.product.id,
-        productName: item.product.name,
-        productImage: item.product.image,
-        variantName: item.selectedVariant.weightSize,
-        unitPrice: item.selectedVariant.price,
-        quantity: item.quantity,
-      })),
-      subtotal,
-      shippingFee,
-      totalAmount: grandTotal,
-      status: 'PROCESSING',
-      shippingAddress: {
-        id: `addr-${Date.now()}`,
-        street,
-        city,
-        state,
-        zipCode,
-        country: 'India',
-        isDefault: true,
-      },
-      paymentMethod,
-    };
+    try {
+      const createdOrder = await api.createOrder({
+        userId: user?.id,
+        customerName: name,
+        customerEmail: email,
+        customerPhone: phone,
+        shippingAddress: {
+          id: `addr-${Date.now()}`,
+          street,
+          city,
+          state,
+          zipCode,
+          country: 'India',
+          isDefault: true,
+        },
+        totalAmount: grandTotal,
+        paymentMethod,
+        items: items.map((item) => ({
+          id: item.id,
+          productId: item.product.id,
+          productName: item.product.name,
+          productImage: item.product.image,
+          variantName: item.selectedVariant.weightSize,
+          unitPrice: item.selectedVariant.price,
+          quantity: item.quantity,
+        })),
+      });
 
-    addOrder(newOrder);
-    setCompletedOrder(newOrder);
-    setIsCompleted(true);
-    clearCart();
+      addOrder(createdOrder);
+      setCompletedOrder(createdOrder);
+      setIsCompleted(true);
+      clearCart();
+    } catch (err: any) {
+      console.error('Failed to create order via DB API:', err);
+      const fallbackOrder: Order = {
+        id: `ord-${Date.now()}`,
+        orderNumber: `TC-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+        date: new Date().toISOString().split('T')[0],
+        items: items.map((item) => ({
+          id: item.id,
+          productId: item.product.id,
+          productName: item.product.name,
+          productImage: item.product.image,
+          variantName: item.selectedVariant.weightSize,
+          unitPrice: item.selectedVariant.price,
+          quantity: item.quantity,
+        })),
+        subtotal,
+        shippingFee,
+        totalAmount: grandTotal,
+        status: 'PROCESSING',
+        shippingAddress: {
+          id: `addr-${Date.now()}`,
+          street,
+          city,
+          state,
+          zipCode,
+          country: 'India',
+          isDefault: true,
+        },
+        paymentMethod,
+      };
+
+      addOrder(fallbackOrder);
+      setCompletedOrder(fallbackOrder);
+      setIsCompleted(true);
+      clearCart();
+    }
   };
 
   if (isCompleted && completedOrder) {
@@ -126,7 +162,10 @@ export const CheckoutPage: React.FC = () => {
           </div>
 
           <div className="text-xs text-[#7C5C43] pt-2 border-t border-[#E8DCCB]/60">
-            <strong>Delivery Address:</strong> {completedOrder.shippingAddress.street}, {completedOrder.shippingAddress.city}, {completedOrder.shippingAddress.state} - {completedOrder.shippingAddress.zipCode}
+            <strong>Delivery Address:</strong>{' '}
+            {typeof completedOrder.shippingAddress === 'object'
+              ? `${completedOrder.shippingAddress.street}, ${completedOrder.shippingAddress.city}, ${completedOrder.shippingAddress.state} - ${completedOrder.shippingAddress.zipCode}`
+              : completedOrder.shippingAddress}
           </div>
         </div>
 

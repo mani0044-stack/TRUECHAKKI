@@ -88,6 +88,8 @@ CREATE TABLE IF NOT EXISTS order_items (
   order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
   product_id UUID REFERENCES products(id) ON DELETE RESTRICT,
   variant_id UUID REFERENCES product_variants(id) ON DELETE SET NULL,
+  product_name VARCHAR(255) NOT NULL,
+  product_image TEXT,
   variant_name VARCHAR(255) NOT NULL,
   unit_price NUMERIC(10, 2) NOT NULL,
   quantity INT NOT NULL

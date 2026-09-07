@@ -39,11 +39,11 @@ export const RegisterPage: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // Register user and initialize session
-      login(name, email);
+      // Register user and initialize session in DB
+      await login(name, email, phone);
       setIsSubmitting(false);
       navigateTo('account');
-    } catch (err: any) {
+    } catch {
       setIsSubmitting(false);
       setErrorMessage('Registration failed. Please try again.');
     }

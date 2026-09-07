@@ -131,13 +131,13 @@ const initialProducts = [
 ];
 
 async function main() {
-  console.log('🌱 Starting direct SQL database setup & seed...');
+  console.log('[seed] Starting direct SQL database setup & seed...');
 
   // 1. Run DDL schema
   const schemaPath = path.join(process.cwd(), 'server', 'src', 'db', 'schema.sql');
   const ddlSql = fs.readFileSync(schemaPath, 'utf-8');
   await pool.query(ddlSql);
-  console.log('✓ DDL schema initialized');
+  console.log('[seed] DDL schema initialized');
 
   // 2. Seed Categories
   const categoryMap: Record<string, string> = {};
@@ -150,7 +150,7 @@ async function main() {
       [cat.name, cat.slug, cat.description, cat.image]
     );
     categoryMap[cat.slug] = res.rows[0].id;
-    console.log(`✓ Category ready: ${cat.name}`);
+    console.log(`[seed] Category ready: ${cat.name}`);
   }
 
   // 3. Seed Products & Variants
@@ -189,15 +189,15 @@ async function main() {
         [productId, v.weightSize, v.price, v.stock, v.sku]
       );
     }
-    console.log(`✓ Product ready with variants: ${prod.name}`);
+    console.log(`[seed] Product ready with variants: ${prod.name}`);
   }
 
-  console.log('✅ Direct SQL Database Setup & Seed completed successfully!');
+  console.log('[seed] Direct SQL Database Setup & Seed completed successfully!');
 }
 
 main()
   .catch((err) => {
-    console.error('❌ SQL Database setup error:', err);
+    console.error('[seed] SQL database setup error:', err);
     process.exit(1);
   })
   .finally(async () => {

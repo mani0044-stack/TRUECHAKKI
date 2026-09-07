@@ -129,6 +129,7 @@ productRouter.post('/', async (req: Request, res: Response) => {
       name,
       slug,
       description,
+      category,
       categoryId,
       basePrice,
       rating,
@@ -142,6 +143,13 @@ productRouter.post('/', async (req: Request, res: Response) => {
 
     const generatedSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
+    // Resolve the actual category id: prefer explicit categoryId, otherwise map from category slug/name
+    let resolvedCategoryId = categoryId || null;
+    if (!resolvedCategoryId && category) {
+      const catRes = await query(`SELECT id FROM categories WHERE slug = $1 OR LOWER(name) = LOWER($1)`, [category]);
+      resolvedCategoryId = catRes.rows[0]?.id || null;
+    }
+
     const insertSql = `
       INSERT INTO products (name, slug, description, category_id, base_price, rating, is_featured, image, gallery, ingredients, nutritional_info)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
@@ -152,7 +160,7 @@ productRouter.post('/', async (req: Request, res: Response) => {
       name,
       generatedSlug,
       description,
-      categoryId,
+      resolvedCategoryId,
       basePrice,
       rating || 4.9,
       isFeatured || false,

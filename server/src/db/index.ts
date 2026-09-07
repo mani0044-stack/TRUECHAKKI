@@ -8,7 +8,7 @@ const { Pool } = pg;
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  console.warn('⚠️ WARNING: DATABASE_URL environment variable is missing!');
+  console.warn('[db] WARNING: DATABASE_URL environment variable is missing!');
 }
 
 export const pool = new Pool({
@@ -23,7 +23,7 @@ export const pool = new Pool({
 
 // Suppress unhandled idle client errors
 pool.on('error', (err) => {
-  console.error('⚠️ PostgreSQL pool idle client error (handled):', err.message);
+  console.error('[db] PostgreSQL pool idle client error (handled):', err.message);
 });
 
 export const query = async (text: string, params?: any[]) => {
@@ -42,7 +42,7 @@ export const query = async (text: string, params?: any[]) => {
       err?.message?.includes('closed') ||
       err?.message?.includes('terminated')
     ) {
-      console.warn('⚠️ PostgreSQL connection reset. Retrying query...');
+      console.warn('[db] PostgreSQL connection reset. Retrying query...');
       return await pool.query(text, params);
     }
     throw err;

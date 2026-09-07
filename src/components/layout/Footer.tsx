@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle2, Heart } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, Heart, Wheat, Droplets, Apple, Leaf } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 import { useProductStore } from '../../store/useProductStore';
 
@@ -77,7 +77,7 @@ export const Footer: React.FC = () => {
                   onClick={() => handleCategoryClick('atta')} 
                   className="hover:text-[#C59A3F] transition-colors flex items-center gap-2"
                 >
-                  <span>🌾</span> Stone Ground Atta
+                  <Wheat className="w-4 h-4 text-[#C59A3F]" /> Stone Ground Atta
                 </button>
               </li>
               <li>
@@ -85,7 +85,7 @@ export const Footer: React.FC = () => {
                   onClick={() => handleCategoryClick('oils')} 
                   className="hover:text-[#C59A3F] transition-colors flex items-center gap-2"
                 >
-                  <span>🏺</span> Wood-Pressed Kachi Ghani Oils
+                  <Droplets className="w-4 h-4 text-[#C59A3F]" /> Wood-Pressed Kachi Ghani Oils
                 </button>
               </li>
               <li>
@@ -93,7 +93,7 @@ export const Footer: React.FC = () => {
                   onClick={() => handleCategoryClick('pickles')} 
                   className="hover:text-[#C59A3F] transition-colors flex items-center gap-2"
                 >
-                  <span>🌶️</span> Traditional Handmade Pickles
+                  <Apple className="w-4 h-4 text-[#C59A3F]" /> Traditional Handmade Pickles
                 </button>
               </li>
               <li>
@@ -101,7 +101,7 @@ export const Footer: React.FC = () => {
                   onClick={() => handleCategoryClick('all')} 
                   className="hover:text-[#C59A3F] transition-colors flex items-center gap-2"
                 >
-                  <span>✨</span> All Farm Fresh Products
+                  <Leaf className="w-4 h-4 text-[#C59A3F]" /> All Farm Fresh Products
                 </button>
               </li>
             </ul>

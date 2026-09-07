@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Award, Heart, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Award, Heart, CheckCircle2, Wheat, Cog, FlaskConical, Package } from 'lucide-react';
 
 export const ProcessSection: React.FC = () => {
   const processSteps = [
@@ -7,25 +7,25 @@ export const ProcessSection: React.FC = () => {
       step: '01',
       title: 'Direct Farm Sourcing',
       description: 'We partner directly with organic certified farmers across Madhya Pradesh and Gujarat to source single-origin Sharbati wheat, mustard seeds, and Rajapuri mangoes.',
-      icon: '🌾',
+      icon: Wheat,
     },
     {
       step: '02',
       title: 'Traditional Stone Milling',
       description: 'Our natural granite stones rotate at slow RPM to prevent frictional heat build-up. This preserves delicate B-complex vitamins, dietary fiber, and wheat germ oils.',
-      icon: '⚙️',
+      icon: Cog,
     },
     {
       step: '03',
       title: 'Wood-Pressed Kolhu Extraction',
       description: 'Oil seeds are crushed gently in traditional wooden Kolhu vats without adding artificial solvents or refining chemicals. 100% pure Kachi Ghani aroma.',
-      icon: '🏺',
+      icon: FlaskConical,
     },
     {
       step: '04',
       title: 'Zero Chemical Packaging',
       description: 'Freshly milled orders are packed in eco-friendly burlap bags and dark glass bottles to ensure zero oxidation, maximum freshness, and pristine shelf life.',
-      icon: '📦',
+      icon: Package,
     },
   ];
 
@@ -48,22 +48,24 @@ export const ProcessSection: React.FC = () => {
 
         {/* 4 Process Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {processSteps.map((step) => (
+          {processSteps.map(({ step, title, description, icon: Icon }) => (
             <div
-              key={step.step}
+              key={step}
               className="bg-[#FDFBF7] p-8 rounded-3xl border border-[#E8DCCB] space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
             >
               <div className="flex items-center justify-between">
-                <span className="text-3xl">{step.icon}</span>
+                <span className="w-12 h-12 rounded-full bg-[#FAF4E8] border border-[#E8DCCB] flex items-center justify-center text-[#9A6B29]">
+                  <Icon className="w-6 h-6 stroke-[1.8]" />
+                </span>
                 <span className="font-serif text-3xl font-bold text-[#E8DCCB] group-hover:text-[#9A6B29] transition-colors">
-                  {step.step}
+                  {step}
                 </span>
               </div>
               <h3 className="font-serif text-xl font-bold text-[#4A2B18]">
-                {step.title}
+                {title}
               </h3>
               <p className="text-xs text-[#7C5C43] leading-relaxed">
-                {step.description}
+                {description}
               </p>
             </div>
           ))}

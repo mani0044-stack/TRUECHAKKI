@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"npm run dev:server\" \"vite\"",
+    "dev:vite": "vite",
     "dev:server": "tsx watch server/src/index.ts",
     "db:init": "tsx server/src/db/seed.ts",
     "db:seed": "tsx server/src/db/seed.ts",
@@ -34,6 +35,7 @@
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.0",
     "autoprefixer": "^10.5.4",
+    "concurrently": "^10.0.5",
     "oxlint": "^1.79.0",
     "postcss": "^8.5.28",
     "prisma": "^6.19.3",

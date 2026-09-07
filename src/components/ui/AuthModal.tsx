@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Lock, LogOut, Package, MapPin, CheckCircle } from 'lucide-react';
+import { X, User, Mail, Lock, LogOut, Package, MapPin, CheckCircle, ChevronRight } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 import { useAuthStore } from '../../store/useAuthStore';
 
@@ -14,10 +14,10 @@ export const AuthModal: React.FC = () => {
 
   if (!isAuthModalOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      login(name || 'Valued Customer', email);
+      await login(name || 'Valued Customer', email);
       closeAuthModal();
     }
   };
@@ -84,7 +84,7 @@ export const AuthModal: React.FC = () => {
                     <Package className="w-4 h-4 text-[#9A6B29]" />
                     <span>View Order History ({orders.length})</span>
                   </div>
-                  <span className="text-[#9A6B29]">→</span>
+                  <ChevronRight className="w-4 h-4 text-[#9A6B29]" />
                 </button>
                 <button
                   onClick={() => { closeAuthModal(); navigateTo('account'); }}
@@ -94,7 +94,7 @@ export const AuthModal: React.FC = () => {
                     <MapPin className="w-4 h-4 text-[#9A6B29]" />
                     <span>Saved Delivery Addresses</span>
                   </div>
-                  <span className="text-[#9A6B29]">→</span>
+                  <ChevronRight className="w-4 h-4 text-[#9A6B29]" />
                 </button>
               </div>
 

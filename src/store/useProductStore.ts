@@ -110,9 +110,16 @@ const FALLBACK_PRODUCTS: Product[] = [
   },
 ];
 
+const FALLBACK_CATEGORIES: Category[] = [
+  { id: 'c-atta', name: 'Stone Ground Atta', slug: 'atta', description: 'Slow-milled single-origin Sharbati wheat flour retaining natural germ & bran nutrients.', image: '/images/hero-bg.jpg', product_count: 2 },
+  { id: 'c-oils', name: 'Wood-Pressed Oils', slug: 'oils', description: 'Extracted using traditional wooden Kolhu without chemical heat processing or refining.', image: '/images/hero-bg.jpg', product_count: 1 },
+  { id: 'c-pickles', name: 'Authentic Pickles', slug: 'pickles', description: 'Handcrafted in earthen pots aged under natural sunshine with mustard oil & rock salt.', image: '/images/hero-bg.jpg', product_count: 1 },
+  { id: 'c-spices', name: 'Pure Spices', slug: 'spices', description: 'Whole & stone-ground single origin aromatic Indian spices without artificial colors.', image: '/images/hero-bg.jpg', product_count: 1 },
+];
+
 export const useProductStore = create<ProductState>((set, get) => ({
   products: FALLBACK_PRODUCTS,
-  categories: [],
+  categories: FALLBACK_CATEGORIES,
   selectedCategory: 'all',
   searchQuery: '',
   sortBy: 'featured',
@@ -124,15 +131,18 @@ export const useProductStore = create<ProductState>((set, get) => ({
       const data = await api.getCategories();
       if (data && data.length > 0) {
         set({ categories: data });
+      } else {
+        set({ categories: FALLBACK_CATEGORIES });
       }
     } catch (err: any) {
       console.error('Failed to fetch categories:', err?.message);
+      set({ categories: FALLBACK_CATEGORIES });
     }
   },
 
   fetchProducts: async () => {
     set({ isLoading: true, error: null });
-    get().fetchCategories();
+    await get().fetchCategories();
     try {
       const data = await api.getProducts();
       if (data && data.length > 0) {

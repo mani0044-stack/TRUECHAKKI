@@ -1,4 +1,4 @@
-import type { Product, Category, Order, UserProfile } from '../types';
+import type { Product, Category, Order, UserProfile, UserAddress } from '../types';
 
 const API_BASE_URL = '/api';
 
@@ -39,18 +39,37 @@ export const api = {
   },
 
   // Auth & Profile
-  async login(name: string, email: string): Promise<{ user: UserProfile; token: string }> {
+  async login(name: string, email: string, phone?: string): Promise<{ user: UserProfile; token: string }> {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email }),
+      body: JSON.stringify({ name, email, phone }),
     });
     if (!res.ok) throw new Error('Failed to authenticate');
     return res.json();
   },
 
+  async addAddress(addressData: { userId: string; street: string; city: string; state: string; zipCode: string; country?: string; isDefault?: boolean }): Promise<UserAddress> {
+    const res = await fetch(`${API_BASE_URL}/auth/address`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(addressData),
+    });
+    if (!res.ok) throw new Error('Failed to add address');
+    const data = await res.json();
+    return {
+      id: data.id,
+      street: data.street,
+      city: data.city,
+      state: data.state,
+      zipCode: data.zip_code || data.zipCode,
+      country: data.country || 'India',
+      isDefault: Boolean(data.is_default || data.isDefault),
+    };
+  },
+
   // Orders
-  async createOrder(orderData: Partial<Order>): Promise<Order> {
+  async createOrder(orderData: Partial<Order> & { userId?: string; customerName?: string; customerEmail?: string; customerPhone?: string }): Promise<Order> {
     const res = await fetch(`${API_BASE_URL}/orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,3 +93,4 @@ export const api = {
     return res.json();
   },
 };
+

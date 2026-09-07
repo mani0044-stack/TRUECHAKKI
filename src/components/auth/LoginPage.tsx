@@ -35,10 +35,10 @@ export const LoginPage: React.FC = () => {
       const defaultName = email.split('@')[0].replace(/[._]/g, ' ');
       const formattedName = defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
       
-      login(formattedName, email);
+      await login(formattedName, email);
       setIsSubmitting(false);
       navigateTo('account');
-    } catch (err: any) {
+    } catch {
       setIsSubmitting(false);
       setErrorMessage('Invalid credentials. Please try again.');
     }

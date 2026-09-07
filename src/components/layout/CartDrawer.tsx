@@ -57,7 +57,7 @@ export const CartDrawer: React.FC = () => {
               {subtotal >= freeShippingThreshold ? (
                 <div className="flex items-center gap-2 text-[#9A6B29] font-medium">
                   <Truck className="w-4 h-4 text-[#9A6B29]" />
-                  <span>🎉 Congratulations! You have unlocked <strong>FREE Shipping</strong>!</span>
+                  <span>Congratulations! You have unlocked <strong>FREE Shipping</strong>.</span>
                 </div>
               ) : (
                 <div>

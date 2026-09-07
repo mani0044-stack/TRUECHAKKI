@@ -41,7 +41,7 @@ export default app;
 
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.listen(PORT, () => {
-    console.log(`🚀 True Chakki Backend Server running on http://localhost:${PORT}`);
+    console.log(`[server] True Chakki backend running at http://localhost:${PORT}`);
   });
 }
 

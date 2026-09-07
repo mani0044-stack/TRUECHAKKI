@@ -28,7 +28,7 @@ categoryRouter.get('/', async (_req: Request, res: Response) => {
     }
     res.json(FALLBACK_CATEGORIES);
   } catch (error: any) {
-    console.error('⚠️ DB fetch error for categories, returning fallback:', error.message);
+    console.error('[categories] DB fetch error, returning fallback:', error.message);
     res.json(FALLBACK_CATEGORIES);
   }
 });

@@ -113,21 +113,21 @@ export const SearchModal: React.FC = () => {
                     className="px-4 py-2 bg-[#FAF4E8] hover:bg-[#9A6B29] hover:text-white border border-[#E8DCCB] text-[#4A2B18] rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5"
                   >
                     <Leaf className="w-3.5 h-3.5" />
-                    🌾 Stone Ground Atta
+                    Stone Ground Atta
                   </button>
                   <button
                     onClick={() => handleCategoryShortcut('oils')}
                     className="px-4 py-2 bg-[#FAF4E8] hover:bg-[#9A6B29] hover:text-white border border-[#E8DCCB] text-[#4A2B18] rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5"
                   >
                     <Leaf className="w-3.5 h-3.5" />
-                    🏺 Wood-Pressed Oils
+                    Wood-Pressed Oils
                   </button>
                   <button
                     onClick={() => handleCategoryShortcut('pickles')}
                     className="px-4 py-2 bg-[#FAF4E8] hover:bg-[#9A6B29] hover:text-white border border-[#E8DCCB] text-[#4A2B18] rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5"
                   >
                     <Leaf className="w-3.5 h-3.5" />
-                    🌶️ Heritage Pickles
+                    Heritage Pickles
                   </button>
                 </div>
               </div>

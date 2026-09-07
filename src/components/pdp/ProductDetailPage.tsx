@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, Plus, Minus, ShoppingBag, ShieldCheck, Truck, RotateCcw, ChevronRight, Check, Leaf } from 'lucide-react';
+import { Star, Plus, Minus, ShoppingBag, ShieldCheck, Truck, RotateCcw, ChevronRight, Check, Leaf, Wheat, Salad } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 import { useProductStore } from '../../store/useProductStore';
 import { useCartStore } from '../../store/useCartStore';
@@ -8,8 +8,10 @@ import type { ProductVariant } from '../../types';
 export const ProductDetailPage: React.FC = () => {
   const activeSlug = useUIStore((state) => state.activeProductSlug) || 'whole-wheat-atta';
   const navigateTo = useUIStore((state) => state.navigateTo);
-  const product = useProductStore((state) => state.getProductBySlug(activeSlug)) || useProductStore((state) => state.products[0]);
+  const allProducts = useProductStore((state) => state.products);
   const isLoading = useProductStore((state) => state.isLoading);
+
+  const product = allProducts.find((p) => p.slug === activeSlug) || allProducts[0];
   
   const addToCart = useCartStore((state) => state.addToCart);
 
@@ -223,16 +225,16 @@ export const ProductDetailPage: React.FC = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-3 text-xs uppercase tracking-wider font-bold transition-all relative ${
+                className={`pb-3 text-xs uppercase tracking-wider font-bold transition-all relative flex items-center gap-1.5 ${
                   activeTab === tab
                     ? 'text-[#9A6B29]'
                     : 'text-[#7C5C43] hover:text-[#4A2B18]'
                 }`}
               >
-                {tab === 'story' && '🌾 Farm Story & Process'}
-                {tab === 'nutrition' && '🥗 Nutritional Facts'}
-                {tab === 'ingredients' && '🍃 Ingredients'}
-                {tab === 'reviews' && `⭐ Customer Reviews (${product.reviewCount})`}
+                {tab === 'story' && (<><Wheat className="w-3.5 h-3.5" /> Farm Story & Process</>)}
+                {tab === 'nutrition' && (<><Salad className="w-3.5 h-3.5" /> Nutritional Facts</>)}
+                {tab === 'ingredients' && (<><Leaf className="w-3.5 h-3.5" /> Ingredients</>)}
+                {tab === 'reviews' && (<><Star className="w-3.5 h-3.5" /> Customer Reviews ({product.reviewCount})</>)}
                 {activeTab === tab && (
                   <span className="absolute bottom-0 left-0 w-full h-[2.5px] bg-[#9A6B29] rounded-full" />
                 )}
