@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type PageView = 'home' | 'shop' | 'pdp' | 'checkout' | 'account' | 'about' | 'contact' | 'blogs';
+export type PageView = 'home' | 'shop' | 'pdp' | 'checkout' | 'account' | 'about' | 'contact' | 'blogs' | 'login' | 'register';
 
 interface UIState {
   currentPage: PageView;

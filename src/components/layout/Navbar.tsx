@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, User, ShoppingBag, Menu, X, ChevronDown, Leaf } from 'lucide-react';
+import { Search, User, ShoppingBag, Menu, X, ChevronDown, Leaf, LogIn, UserPlus } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
 import { useUIStore } from '../../store/useUIStore';
 import type { PageView } from '../../store/useUIStore';
 import { useProductStore } from '../../store/useProductStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -26,8 +27,10 @@ export const Navbar: React.FC = () => {
   const cartCount = useCartStore((state) => state.getTotalItemsCount());
   const toggleCart = useCartStore((state) => state.toggleCart);
 
-  const { currentPage, navigateTo, openSearch, openAuthModal } = useUIStore();
+  const { currentPage, navigateTo, openSearch } = useUIStore();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const setSelectedCategory = useProductStore((state) => state.setSelectedCategory);
+  const categories = useProductStore((state) => state.categories);
 
   const handleCategorySelect = (cat: string) => {
     setSelectedCategory(cat);
@@ -102,24 +105,15 @@ export const Navbar: React.FC = () => {
                         <Leaf className="w-4 h-4 text-[#9A6B29]" />
                         All Farm Products
                       </button>
-                      <button
-                        onClick={() => handleCategorySelect('atta')}
-                        className="w-full text-left px-4 py-2.5 text-sm text-[#4A2B18] hover:bg-[#F3E8D3] hover:text-[#9A6B29] flex items-center gap-2 transition-colors"
-                      >
-                        🌾 Stone Ground Atta
-                      </button>
-                      <button
-                        onClick={() => handleCategorySelect('oils')}
-                        className="w-full text-left px-4 py-2.5 text-sm text-[#4A2B18] hover:bg-[#F3E8D3] hover:text-[#9A6B29] flex items-center gap-2 transition-colors"
-                      >
-                        🏺 Cold-Pressed Oils
-                      </button>
-                      <button
-                        onClick={() => handleCategorySelect('pickles')}
-                        className="w-full text-left px-4 py-2.5 text-sm text-[#4A2B18] hover:bg-[#F3E8D3] hover:text-[#9A6B29] flex items-center gap-2 transition-colors"
-                      >
-                        🌶️ Heritage Pickles
-                      </button>
+                      {categories.map((cat) => (
+                        <button
+                          key={cat.id}
+                          onClick={() => handleCategorySelect(cat.slug)}
+                          className="w-full text-left px-4 py-2.5 text-sm text-[#4A2B18] hover:bg-[#F3E8D3] hover:text-[#9A6B29] flex items-center gap-2 transition-colors"
+                        >
+                          <span>{cat.name}</span>
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -155,9 +149,13 @@ export const Navbar: React.FC = () => {
 
           {/* User Account */}
           <button
-            onClick={openAuthModal}
-            className="p-2 text-[#4A2B18] hover:text-[#9A6B29] hover:bg-[#F3E8D3]/50 rounded-full transition-colors"
-            title="Account"
+            onClick={() => navigateTo(isAuthenticated ? 'account' : 'login')}
+            className={`p-2 hover:text-[#9A6B29] hover:bg-[#F3E8D3]/50 rounded-full transition-colors ${
+              currentPage === 'login' || currentPage === 'register' || currentPage === 'account'
+                ? 'text-[#9A6B29] bg-[#F3E8D3]/50'
+                : 'text-[#4A2B18]'
+            }`}
+            title={isAuthenticated ? 'My Account' : 'Sign In / Register'}
           >
             <User className="w-5 h-5 stroke-[2.2]" />
           </button>
@@ -202,15 +200,11 @@ export const Navbar: React.FC = () => {
             Shop All Products
           </button>
           <div className="pl-4 border-l-2 border-[#9A6B29]/30 space-y-2 py-1">
-            <button onClick={() => handleCategorySelect('atta')} className="block text-sm text-[#4A2B18]/90 py-1">
-              🌾 Stone Ground Atta
-            </button>
-            <button onClick={() => handleCategorySelect('oils')} className="block text-sm text-[#4A2B18]/90 py-1">
-              🏺 Wood-Pressed Oils
-            </button>
-            <button onClick={() => handleCategorySelect('pickles')} className="block text-sm text-[#4A2B18]/90 py-1">
-              🌶️ Traditional Pickles
-            </button>
+            {categories.map((cat) => (
+              <button key={cat.id} onClick={() => handleCategorySelect(cat.slug)} className="block text-sm text-[#4A2B18]/90 py-1">
+                {cat.name}
+              </button>
+            ))}
           </div>
           <button
             onClick={() => { navigateTo('about'); setMobileMenuOpen(false); }}
@@ -230,6 +224,35 @@ export const Navbar: React.FC = () => {
           >
             Contact Us
           </button>
+
+          <div className="pt-2 border-t border-[#E8DCCB] flex gap-2">
+            {isAuthenticated ? (
+              <button
+                onClick={() => { navigateTo('account'); setMobileMenuOpen(false); }}
+                className="flex-1 py-2 px-3 bg-[#9A6B29] text-white text-xs font-semibold rounded-full flex items-center justify-center gap-1.5"
+              >
+                <User className="w-3.5 h-3.5" />
+                <span>My Account</span>
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => { navigateTo('login'); setMobileMenuOpen(false); }}
+                  className="flex-1 py-2 px-3 bg-[#FAF4E8] border border-[#E8DCCB] text-[#4A2B18] text-xs font-semibold rounded-full flex items-center justify-center gap-1.5"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-[#9A6B29]" />
+                  <span>Sign In</span>
+                </button>
+                <button
+                  onClick={() => { navigateTo('register'); setMobileMenuOpen(false); }}
+                  className="flex-1 py-2 px-3 bg-[#9A6B29] text-white text-xs font-semibold rounded-full flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>Register</span>
+                </button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </header>

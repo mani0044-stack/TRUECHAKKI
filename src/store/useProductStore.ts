@@ -1,9 +1,10 @@
 import { create } from 'zustand';
-import type { Product } from '../types';
+import type { Product, Category } from '../types';
 import { api } from '../services/api';
 
 interface ProductState {
   products: Product[];
+  categories: Category[];
   selectedCategory: string;
   searchQuery: string;
   sortBy: 'featured' | 'price-low' | 'price-high' | 'rating';
@@ -12,6 +13,7 @@ interface ProductState {
 
   // Actions
   fetchProducts: () => Promise<void>;
+  fetchCategories: () => Promise<void>;
   setSelectedCategory: (category: string) => void;
   setSearchQuery: (query: string) => void;
   setSortBy: (sort: 'featured' | 'price-low' | 'price-high' | 'rating') => void;
@@ -21,20 +23,38 @@ interface ProductState {
 
 export const useProductStore = create<ProductState>((set, get) => ({
   products: [],
+  categories: [],
   selectedCategory: 'all',
   searchQuery: '',
   sortBy: 'featured',
   isLoading: false,
   error: null,
 
+  fetchCategories: async () => {
+    try {
+      const data = await api.getCategories();
+      set({ categories: data || [] });
+    } catch (err: any) {
+      console.error('Failed to fetch categories:', err?.message);
+    }
+  },
+
   fetchProducts: async () => {
     set({ isLoading: true, error: null });
+    get().fetchCategories();
     try {
       const data = await api.getProducts();
       set({ products: data || [], isLoading: false });
     } catch (err: any) {
-      console.error('Failed to fetch products from backend API:', err?.message);
-      set({ error: err?.message || 'Failed to fetch products', isLoading: false, products: [] });
+      console.warn('Initial product fetch failed, retrying in 800ms...', err?.message);
+      try {
+        await new Promise((res) => setTimeout(res, 800));
+        const retryData = await api.getProducts();
+        set({ products: retryData || [], isLoading: false });
+      } catch (retryErr: any) {
+        console.error('Failed to fetch products from backend API after retry:', retryErr?.message);
+        set({ error: retryErr?.message || 'Failed to fetch products', isLoading: false });
+      }
     }
   },
 

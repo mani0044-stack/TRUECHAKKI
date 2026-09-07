@@ -1,8 +1,15 @@
-import type { Product, Order, UserProfile } from '../types';
+import type { Product, Category, Order, UserProfile } from '../types';
 
 const API_BASE_URL = '/api';
 
 export const api = {
+  // Categories
+  async getCategories(): Promise<Category[]> {
+    const res = await fetch(`${API_BASE_URL}/categories`);
+    if (!res.ok) throw new Error('Failed to fetch categories');
+    return res.json();
+  },
+
   // Products
   async getProducts(category?: string, search?: string): Promise<Product[]> {
     const params = new URLSearchParams();

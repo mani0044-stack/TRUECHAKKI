@@ -129,6 +129,16 @@ export const Footer: React.FC = () => {
                 </button>
               </li>
               <li>
+                <button onClick={() => navigateTo('login')} className="hover:text-[#C59A3F] transition-colors">
+                  Customer Sign In / Login
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigateTo('register')} className="hover:text-[#C59A3F] transition-colors">
+                  Create New Account
+                </button>
+              </li>
+              <li>
                 <button onClick={() => navigateTo('account')} className="hover:text-[#C59A3F] transition-colors">
                   My Account & Order Tracking
                 </button>

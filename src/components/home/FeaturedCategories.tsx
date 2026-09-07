@@ -6,36 +6,39 @@ import { useProductStore } from '../../store/useProductStore';
 export const FeaturedCategories: React.FC = () => {
   const navigateTo = useUIStore((state) => state.navigateTo);
   const setSelectedCategory = useProductStore((state) => state.setSelectedCategory);
+  const dbCategories = useProductStore((state) => state.categories);
 
-  const categories = [
+  const fallbackCategories = [
     {
       id: 'atta',
+      slug: 'atta',
       name: 'Stone Ground Atta',
       description: 'Slow-milled single-origin Sharbati wheat flour retaining natural germ & bran nutrients.',
       image: '/images/hero-bg.jpg',
-      itemCount: '4 Variants Available',
-      badge: 'Bestseller',
+      product_count: 4,
     },
     {
       id: 'oils',
+      slug: 'oils',
       name: 'Wood-Pressed Oils',
       description: 'Extracted using traditional wooden Kolhu without chemical heat processing or refining.',
       image: '/images/hero-bg.jpg',
-      itemCount: '3 Pure Extracts',
-      badge: 'Cold Pressed',
+      product_count: 3,
     },
     {
       id: 'pickles',
+      slug: 'pickles',
       name: 'Traditional Pickles',
       description: 'Handcrafted in earthen pots aged under natural sunshine with mustard oil & rock salt.',
       image: '/images/hero-bg.jpg',
-      itemCount: 'Vintage Recipes',
-      badge: 'Handcrafted',
+      product_count: 2,
     },
   ];
 
-  const handleCategoryClick = (catId: string) => {
-    setSelectedCategory(catId);
+  const categories = dbCategories && dbCategories.length > 0 ? dbCategories : fallbackCategories;
+
+  const handleCategoryClick = (slug: string) => {
+    setSelectedCategory(slug);
     navigateTo('shop');
   };
 
@@ -56,24 +59,24 @@ export const FeaturedCategories: React.FC = () => {
           </p>
         </div>
 
-        {/* 3 Categories Cards Grid */}
+        {/* Categories Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {categories.map((category) => (
             <div
               key={category.id}
-              onClick={() => handleCategoryClick(category.id)}
+              onClick={() => handleCategoryClick(category.slug)}
               className="group relative bg-[#FAF6EE] rounded-3xl border border-[#E8DCCB] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col justify-between"
             >
               {/* Image Banner */}
               <div className="relative aspect-4/3 overflow-hidden bg-[#E8DCCB]">
                 <img
-                  src={category.image}
+                  src={category.image || '/images/hero-bg.jpg'}
                   alt={category.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute top-4 left-4">
                   <span className="px-3 py-1 bg-[#9A6B29] text-white text-[11px] font-bold uppercase tracking-wider rounded-full shadow-md">
-                    {category.badge}
+                    100% Farm Fresh
                   </span>
                 </div>
               </div>
@@ -81,7 +84,7 @@ export const FeaturedCategories: React.FC = () => {
               {/* Card Details */}
               <div className="p-6 space-y-3">
                 <span className="text-xs font-semibold text-[#9A6B29]">
-                  {category.itemCount}
+                  {category.product_count !== undefined ? `${category.product_count} Products Available` : 'Fresh Farm Range'}
                 </span>
                 <h3 className="font-serif text-2xl font-bold text-[#4A2B18] group-hover:text-[#9A6B29] transition-colors">
                   {category.name}

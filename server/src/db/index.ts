@@ -12,18 +12,43 @@ if (!connectionString) {
 }
 
 export const pool = new Pool({
-  connectionString,
-  ssl: connectionString && !connectionString.includes('localhost')
-    ? { rejectUnauthorized: false }
-    : false,
+  connectionString: process.env.DATABASE_URL || connectionString,
+  ssl: (process.env.DATABASE_URL || connectionString)?.includes('localhost')
+    ? false
+    : { rejectUnauthorized: false },
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 });
 
-export const query = (text: string, params?: any[]) => {
-  if (!connectionString) {
-    throw new Error('DATABASE_URL environment variable is not configured in Vercel settings.');
+// Suppress unhandled idle client errors
+pool.on('error', (err) => {
+  console.error('⚠️ PostgreSQL pool idle client error (handled):', err.message);
+});
+
+export const query = async (text: string, params?: any[]) => {
+  const currentConn = process.env.DATABASE_URL || connectionString;
+  if (!currentConn) {
+    throw new Error('DATABASE_URL environment variable is not configured.');
   }
-  return pool.query(text, params);
+
+  try {
+    return await pool.query(text, params);
+  } catch (err: any) {
+    // Retry once if connection was terminated by Neon pooler or idle timeout
+    if (
+      err?.code === '57P01' ||
+      err?.code === 'ECONNRESET' ||
+      err?.message?.includes('closed') ||
+      err?.message?.includes('terminated')
+    ) {
+      console.warn('⚠️ PostgreSQL connection reset. Retrying query...');
+      return await pool.query(text, params);
+    }
+    throw err;
+  }
 };
 
 export const getClient = () => pool.connect();
+
 

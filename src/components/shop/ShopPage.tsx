@@ -13,16 +13,18 @@ export const ShopPage: React.FC = () => {
     searchQuery,
     setSearchQuery,
     getFilteredProducts,
+    categories: dbCategories,
   } = useProductStore();
 
   const navigateTo = useUIStore((state) => state.navigateTo);
   const products = getFilteredProducts();
 
-  const categories = [
+  const filterCategories = [
     { id: 'all', label: 'All Products' },
-    { id: 'atta', label: '🌾 Stone Ground Atta' },
-    { id: 'oils', label: '🏺 Wood-Pressed Oils' },
-    { id: 'pickles', label: '🌶️ Heritage Pickles' },
+    ...dbCategories.map((c) => ({
+      id: c.slug,
+      label: c.name,
+    })),
   ];
 
   return (
@@ -76,7 +78,7 @@ export const ShopPage: React.FC = () => {
                   Categories
                 </h3>
                 <div className="space-y-1.5">
-                  {categories.map((cat) => (
+                  {filterCategories.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.id)}

@@ -1,3 +1,12 @@
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  product_count?: number;
+}
+
 export interface ProductVariant {
   id: string;
   weightSize: string; // e.g. "500g", "1 Litre", "5kg"
