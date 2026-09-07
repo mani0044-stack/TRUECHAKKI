@@ -16,7 +16,8 @@ export const api = {
     if (category && category !== 'all') params.append('category', category);
     if (search) params.append('search', search);
 
-    const res = await fetch(`${API_BASE_URL}/products?${params.toString()}`);
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    const res = await fetch(`${API_BASE_URL}/products${queryString}`);
     if (!res.ok) throw new Error('Failed to fetch products');
     return res.json();
   },
