@@ -19,7 +19,7 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
-  category: 'atta' | 'oils' | 'pickles' | 'spices';
+  category: string;
   categoryName: string;
   description: string;
   shortDescription: string;
@@ -62,6 +62,7 @@ export interface UserProfile {
   name: string;
   email: string;
   phone?: string;
+  role?: 'ADMIN' | 'CUSTOMER';
   addresses: UserAddress[];
 }
 

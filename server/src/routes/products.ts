@@ -32,7 +32,7 @@ function formatProduct(row: any) {
     id: row.id,
     name: row.name,
     slug: row.slug,
-    category: (row.category_slug || 'atta') as 'atta' | 'oils' | 'pickles' | 'spices',
+    category: row.category_slug || '',
     categoryName: row.category_name || 'Category',
     description: row.description,
     shortDescription: row.description ? row.description.split('.')[0] + '.' : '',
@@ -190,6 +190,90 @@ productRouter.post('/', async (req: Request, res: Response) => {
   }
 });
 
+// PUT /api/products/:id - Update product & variants
+productRouter.put('/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const {
+      name,
+      slug,
+      description,
+      category,
+      categoryId,
+      basePrice,
+      rating,
+      isFeatured,
+      image,
+      gallery,
+      ingredients,
+      nutritionalInfo,
+      variants,
+    } = req.body;
+
+    let resolvedCategoryId = categoryId || null;
+    if (!resolvedCategoryId && category) {
+      const catRes = await query(`SELECT id FROM categories WHERE slug = $1 OR LOWER(name) = LOWER($1)`, [category]);
+      resolvedCategoryId = catRes.rows[0]?.id || null;
+    }
+
+    const updateSql = `
+      UPDATE products
+      SET
+        name = COALESCE($1, name),
+        slug = COALESCE($2, slug),
+        description = COALESCE($3, description),
+        category_id = COALESCE($4, category_id),
+        base_price = COALESCE($5, base_price),
+        rating = COALESCE($6, rating),
+        is_featured = COALESCE($7, is_featured),
+        image = COALESCE($8, image),
+        gallery = CASE WHEN $9::text IS NOT NULL THEN $9::jsonb ELSE gallery END,
+        ingredients = CASE WHEN $10::text IS NOT NULL THEN $10::jsonb ELSE ingredients END,
+        nutritional_info = CASE WHEN $11::text IS NOT NULL THEN $11::jsonb ELSE nutritional_info END,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = $12
+      RETURNING id
+    `;
+
+    const prodRes = await query(updateSql, [
+      name,
+      slug,
+      description,
+      resolvedCategoryId,
+      basePrice,
+      rating,
+      isFeatured,
+      image,
+      gallery ? JSON.stringify(gallery) : null,
+      ingredients ? JSON.stringify(ingredients) : null,
+      nutritionalInfo ? JSON.stringify(nutritionalInfo) : null,
+      id,
+    ]);
+
+    if (prodRes.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    if (variants && Array.isArray(variants)) {
+      // Re-sync variants for this product
+      await query(`DELETE FROM product_variants WHERE product_id = $1`, [id]);
+      for (const v of variants) {
+        await query(
+          `INSERT INTO product_variants (product_id, weight_size, price, stock, sku)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [id, v.weightSize, v.price, v.stock || 100, v.sku || `SKU-${Date.now()}-${Math.floor(Math.random()*1000)}`]
+        );
+      }
+    }
+
+    const updatedSql = `${SELECT_PRODUCTS_SQL} WHERE p.id = $1 GROUP BY p.id, c.id`;
+    const finalResult = await query(updatedSql, [id]);
+    res.json(formatProduct(finalResult.rows[0]));
+  } catch (error: any) {
+    res.status(400).json({ error: 'Failed to update product', details: error.message });
+  }
+});
+
 // DELETE /api/products/:id - Delete product
 productRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
@@ -200,3 +284,4 @@ productRouter.delete('/:id', async (req: Request, res: Response) => {
     res.status(400).json({ error: 'Failed to delete product', details: error.message });
   }
 });
+

@@ -10,6 +10,34 @@ export const api = {
     return res.json();
   },
 
+  async createCategory(categoryData: Partial<Category>): Promise<Category> {
+    const res = await fetch(`${API_BASE_URL}/categories`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(categoryData),
+    });
+    if (!res.ok) throw new Error('Failed to create category');
+    return res.json();
+  },
+
+  async updateCategory(id: string, categoryData: Partial<Category>): Promise<Category> {
+    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(categoryData),
+    });
+    if (!res.ok) throw new Error('Failed to update category');
+    return res.json();
+  },
+
+  async deleteCategory(id: string): Promise<{ success: boolean }> {
+    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to delete category');
+    return res.json();
+  },
+
   // Products
   async getProducts(category?: string, search?: string): Promise<Product[]> {
     const params = new URLSearchParams();
@@ -35,6 +63,24 @@ export const api = {
       body: JSON.stringify(productData),
     });
     if (!res.ok) throw new Error('Failed to create product');
+    return res.json();
+  },
+
+  async updateProduct(id: string, productData: Partial<Product>): Promise<Product> {
+    const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(productData),
+    });
+    if (!res.ok) throw new Error('Failed to update product');
+    return res.json();
+  },
+
+  async deleteProduct(id: string): Promise<{ success: boolean }> {
+    const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) throw new Error('Failed to delete product');
     return res.json();
   },
 
@@ -68,6 +114,12 @@ export const api = {
     };
   },
 
+  async getUsers(): Promise<any[]> {
+    const res = await fetch(`${API_BASE_URL}/auth/users`);
+    if (!res.ok) throw new Error('Failed to fetch users');
+    return res.json();
+  },
+
   // Orders
   async createOrder(orderData: Partial<Order> & { userId?: string; customerName?: string; customerEmail?: string; customerPhone?: string }): Promise<Order> {
     const res = await fetch(`${API_BASE_URL}/orders`, {
@@ -83,6 +135,16 @@ export const api = {
     const url = userId ? `${API_BASE_URL}/orders?userId=${userId}` : `${API_BASE_URL}/orders`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to fetch orders');
+    return res.json();
+  },
+
+  async updateOrderStatus(id: string, status: string): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/orders/${id}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    if (!res.ok) throw new Error('Failed to update order status');
     return res.json();
   },
 

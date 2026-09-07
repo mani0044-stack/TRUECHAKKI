@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type PageView = 'home' | 'shop' | 'pdp' | 'checkout' | 'account' | 'about' | 'contact' | 'blogs' | 'login' | 'register';
+export type PageView = 'home' | 'shop' | 'pdp' | 'checkout' | 'account' | 'about' | 'contact' | 'blogs' | 'login' | 'register' | 'admin';
 
 export const parseLocationToState = (pathname: string): { page: PageView; productSlug: string | null } => {
   const cleanPath = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
@@ -28,6 +28,9 @@ export const parseLocationToState = (pathname: string): { page: PageView; produc
   }
   if (cleanPath === '/account') {
     return { page: 'account', productSlug: null };
+  }
+  if (cleanPath === '/admin') {
+    return { page: 'admin', productSlug: null };
   }
   if (cleanPath === '/about') {
     return { page: 'about', productSlug: null };
@@ -60,6 +63,8 @@ export const getPageURL = (page: PageView, productSlug?: string): string => {
       return '/checkout';
     case 'account':
       return '/account';
+    case 'admin':
+      return '/admin';
     case 'about':
       return '/about';
     case 'blogs':

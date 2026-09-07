@@ -29,6 +29,7 @@ import { BlogsPage } from './components/info/BlogsPage';
 import { ContactPage } from './components/info/ContactPage';
 import { LoginPage } from './components/auth/LoginPage';
 import { RegisterPage } from './components/auth/RegisterPage';
+import { AdminPage } from './components/admin/AdminPage';
 
 export const App: React.FC = () => {
   const currentPage = useUIStore((state) => state.currentPage);
@@ -83,6 +84,8 @@ export const App: React.FC = () => {
         return <LoginPage />;
       case 'register':
         return <RegisterPage />;
+      case 'admin':
+        return <AdminPage />;
       case 'about':
         return <AboutPage />;
       case 'blogs':

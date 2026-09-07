@@ -35,10 +35,10 @@ export const useProductStore = create<ProductState>((set, get) => ({
   fetchCategories: async () => {
     try {
       const data = await api.getCategories();
-      // Trust the DB response even when it is empty, so deletions are reflected
-      set({ categories: data || [] });
+      set({ categories: Array.isArray(data) ? data : [] });
     } catch (err: any) {
       console.error('Failed to fetch categories:', err?.message);
+      set({ categories: [] });
     }
   },
 
@@ -49,11 +49,9 @@ export const useProductStore = create<ProductState>((set, get) => ({
     try {
       await get().fetchCategories();
       const data = await api.getProducts();
-      // Trust the DB response even when it is empty, so deletions are reflected
-      set({ products: data || [], error: null });
+      set({ products: Array.isArray(data) ? data : [], error: null });
     } catch (err: any) {
       console.error('Failed to fetch products:', err?.message);
-      // Keep whatever is currently displayed
       set({ error: err?.message || 'Failed to load products' });
     } finally {
       productsInFlight = false;

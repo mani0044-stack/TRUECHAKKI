@@ -26,6 +26,14 @@ authRouter.post('/login', async (req: Request, res: Response) => {
       user = newUserRes.rows[0];
     }
 
+    // Check if user is admin
+    const isAdmin = email.toLowerCase() === 'admin@truechakki.com' || user.role === 'ADMIN';
+    const userRole = isAdmin ? 'ADMIN' : 'CUSTOMER';
+
+    if (isAdmin && user.role !== 'ADMIN') {
+      await query(`UPDATE users SET role = 'ADMIN' WHERE id = $1`, [user.id]);
+    }
+
     // Fetch user addresses
     const addrRes = await query(`SELECT * FROM addresses WHERE user_id = $1`, [user.id]);
 
@@ -35,6 +43,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
         name: user.name,
         email: user.email,
         phone: user.phone || undefined,
+        role: userRole,
         addresses: addrRes.rows.map((a) => ({
           id: a.id,
           street: a.street,
@@ -45,7 +54,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
           isDefault: a.is_default,
         })),
       },
-      token: `mock-jwt-token-${user.id}`,
+      token: `jwt-token-${user.id}`,
     });
   } catch (error: any) {
     res.status(500).json({ error: 'Authentication failed', details: error.message });
@@ -73,3 +82,30 @@ authRouter.post('/address', async (req: Request, res: Response) => {
     res.status(400).json({ error: 'Failed to add address', details: error.message });
   }
 });
+
+// GET /api/auth/users - Get all users for admin
+authRouter.get('/users', async (_req: Request, res: Response) => {
+  try {
+    const result = await query(`
+      SELECT 
+        u.*,
+        COUNT(o.id)::int AS order_count
+      FROM users u
+      LEFT JOIN orders o ON o.user_id = u.id
+      GROUP BY u.id
+      ORDER BY u.created_at DESC
+    `);
+    res.json(result.rows.map(u => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      phone: u.phone,
+      role: u.role || 'CUSTOMER',
+      createdAt: u.created_at,
+      orderCount: u.order_count || 0
+    })));
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch users', details: error.message });
+  }
+});
+

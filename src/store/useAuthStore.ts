@@ -47,6 +47,7 @@ export const useAuthStore = create<AuthState>()(
             name,
             email,
             phone,
+            role: email.toLowerCase() === 'admin@truechakki.com' ? 'ADMIN' : 'CUSTOMER',
             addresses: [],
           };
           set({

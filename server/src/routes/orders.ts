@@ -233,3 +233,28 @@ orderRouter.get('/', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch orders', details: error.message });
   }
 });
+
+// PATCH /api/orders/:id/status - Update order status
+orderRouter.patch('/:id/status', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({ error: 'Status is required' });
+    }
+
+    const result = await query(
+      `UPDATE orders SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *`,
+      [status, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    res.json({ success: true, order: result.rows[0] });
+  } catch (error: any) {
+    res.status(400).json({ error: 'Failed to update order status', details: error.message });
+  }
+});

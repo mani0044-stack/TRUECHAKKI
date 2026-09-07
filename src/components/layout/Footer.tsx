@@ -9,6 +9,7 @@ export const Footer: React.FC = () => {
   
   const navigateTo = useUIStore((state) => state.navigateTo);
   const setSelectedCategory = useProductStore((state) => state.setSelectedCategory);
+  const categories = useProductStore((state) => state.categories);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,36 +75,26 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-sm text-[#FAF4E8]/80">
               <li>
                 <button 
-                  onClick={() => handleCategoryClick('atta')} 
-                  className="hover:text-[#C59A3F] transition-colors flex items-center gap-2"
-                >
-                  <Wheat className="w-4 h-4 text-[#C59A3F]" /> Stone Ground Atta
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => handleCategoryClick('oils')} 
-                  className="hover:text-[#C59A3F] transition-colors flex items-center gap-2"
-                >
-                  <Droplets className="w-4 h-4 text-[#C59A3F]" /> Wood-Pressed Kachi Ghani Oils
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => handleCategoryClick('pickles')} 
-                  className="hover:text-[#C59A3F] transition-colors flex items-center gap-2"
-                >
-                  <Apple className="w-4 h-4 text-[#C59A3F]" /> Traditional Handmade Pickles
-                </button>
-              </li>
-              <li>
-                <button 
                   onClick={() => handleCategoryClick('all')} 
                   className="hover:text-[#C59A3F] transition-colors flex items-center gap-2"
                 >
                   <Leaf className="w-4 h-4 text-[#C59A3F]" /> All Farm Fresh Products
                 </button>
               </li>
+              {categories.slice(0, 4).map((category, index) => {
+                const icons = [Wheat, Droplets, Apple, Leaf];
+                const Icon = icons[index % icons.length];
+                return (
+                  <li key={category.id}>
+                    <button 
+                      onClick={() => handleCategoryClick(category.slug)} 
+                      className="hover:text-[#C59A3F] transition-colors flex items-center gap-2"
+                    >
+                      <Icon className="w-4 h-4 text-[#C59A3F]" /> {category.name}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -141,6 +132,11 @@ export const Footer: React.FC = () => {
               <li>
                 <button onClick={() => navigateTo('account')} className="hover:text-[#C59A3F] transition-colors">
                   My Account & Order Tracking
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigateTo('admin')} className="hover:text-[#C59A3F] text-[#C59A3F] font-semibold transition-colors flex items-center gap-1">
+                  <span>⚡ Store Admin Control Panel</span>
                 </button>
               </li>
             </ul>

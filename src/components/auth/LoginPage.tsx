@@ -8,18 +8,29 @@ export const LoginPage: React.FC = () => {
   const login = useAuthStore((state) => state.login);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const user = useAuthStore((state) => state.user);
+
+  const [email, setEmail] = useState('admin@truechakki.com');
+  const [password, setPassword] = useState('admin123');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // If already authenticated, redirect to account
+  // If already authenticated, redirect to appropriate panel
   if (isAuthenticated) {
-    navigateTo('account');
+    if (user?.role === 'ADMIN' || user?.email === 'admin@truechakki.com') {
+      navigateTo('admin');
+    } else {
+      navigateTo('account');
+    }
     return null;
   }
+
+  const fillAdminCredentials = () => {
+    setEmail('admin@truechakki.com');
+    setPassword('admin123');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +48,12 @@ export const LoginPage: React.FC = () => {
       
       await login(formattedName, email);
       setIsSubmitting(false);
-      navigateTo('account');
+
+      if (email.toLowerCase() === 'admin@truechakki.com') {
+        navigateTo('admin');
+      } else {
+        navigateTo('account');
+      }
     } catch {
       setIsSubmitting(false);
       setErrorMessage('Invalid credentials. Please try again.');
@@ -79,6 +95,21 @@ export const LoginPage: React.FC = () => {
               <p className="text-xs text-[#7C5C43]">
                 Enter your registered email address and password below.
               </p>
+
+              {/* Admin Fixed Credentials Banner */}
+              <div className="mt-3 p-3.5 bg-[#FAF4E8] border border-[#9A6B29]/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+                <div className="text-xs text-[#4A2B18]">
+                  <span className="font-bold text-[#9A6B29] block">⚡ Admin Access Demo Credentials:</span>
+                  <span className="font-mono text-[11px] text-[#7C5C43]">admin@truechakki.com / admin123</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={fillAdminCredentials}
+                  className="px-3 py-1.5 bg-[#9A6B29] hover:bg-[#80561F] text-white text-[11px] font-bold uppercase tracking-wider rounded-lg transition-colors whitespace-nowrap shadow-sm"
+                >
+                  Autofill Admin
+                </button>
+              </div>
             </div>
 
             {errorMessage && (
