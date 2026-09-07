@@ -103,36 +103,27 @@ export const SearchModal: React.FC = () => {
               </div>
             )
           ) : (
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-xs uppercase tracking-wider font-semibold text-[#7C5C43] mb-3">
-                  Popular Categories
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => handleCategoryShortcut('atta')}
-                    className="px-4 py-2 bg-[#FAF4E8] hover:bg-[#9A6B29] hover:text-white border border-[#E8DCCB] text-[#4A2B18] rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5"
-                  >
-                    <Leaf className="w-3.5 h-3.5" />
-                    Stone Ground Atta
-                  </button>
-                  <button
-                    onClick={() => handleCategoryShortcut('oils')}
-                    className="px-4 py-2 bg-[#FAF4E8] hover:bg-[#9A6B29] hover:text-white border border-[#E8DCCB] text-[#4A2B18] rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5"
-                  >
-                    <Leaf className="w-3.5 h-3.5" />
-                    Wood-Pressed Oils
-                  </button>
-                  <button
-                    onClick={() => handleCategoryShortcut('pickles')}
-                    className="px-4 py-2 bg-[#FAF4E8] hover:bg-[#9A6B29] hover:text-white border border-[#E8DCCB] text-[#4A2B18] rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5"
-                  >
-                    <Leaf className="w-3.5 h-3.5" />
-                    Heritage Pickles
-                  </button>
+            popularCategories.length > 0 && (
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-xs uppercase tracking-wider font-semibold text-[#7C5C43] mb-3">
+                    Popular Categories
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {popularCategories.map((category) => (
+                      <button
+                        key={category.slug}
+                        onClick={() => handleCategoryShortcut(category.slug)}
+                        className="px-4 py-2 bg-[#FAF4E8] hover:bg-[#9A6B29] hover:text-white border border-[#E8DCCB] text-[#4A2B18] rounded-full text-xs font-semibold transition-colors flex items-center gap-1.5"
+                      >
+                        <Leaf className="w-3.5 h-3.5" />
+                        {category.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )
           )}
         </div>
       </div>
