@@ -8,14 +8,38 @@ import type { ProductVariant } from '../../types';
 export const ProductDetailPage: React.FC = () => {
   const activeSlug = useUIStore((state) => state.activeProductSlug) || 'whole-wheat-atta';
   const navigateTo = useUIStore((state) => state.navigateTo);
-  const product = useProductStore((state) => state.getProductBySlug(activeSlug)) || useProductStore.getState().products[0];
+  const product = useProductStore((state) => state.getProductBySlug(activeSlug)) || useProductStore((state) => state.products[0]);
+  const isLoading = useProductStore((state) => state.isLoading);
   
   const addToCart = useCartStore((state) => state.addToCart);
 
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(product.variants[0]);
+  const [selectedVariantOverride, setSelectedVariantOverride] = useState<ProductVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<'story' | 'nutrition' | 'ingredients' | 'reviews'>('story');
+
+  if (!product) {
+    return (
+      <div className="bg-[#FDFBF7] min-h-screen py-20 px-4 text-center space-y-4">
+        <h2 className="font-serif text-2xl font-bold text-[#4A2B18]">
+          {isLoading ? 'Loading Farm Fresh Product...' : 'Product Not Found'}
+        </h2>
+        <p className="text-xs text-[#7C5C43]">
+          {isLoading ? 'Fetching fresh details from our farm database.' : 'The requested item is not currently available.'}
+        </p>
+        <button
+          onClick={() => navigateTo('shop')}
+          className="px-6 py-2 bg-[#9A6B29] text-white text-xs font-semibold rounded-full shadow-md"
+        >
+          Back to Shop Catalog
+        </button>
+      </div>
+    );
+  }
+
+  const selectedVariant = selectedVariantOverride || product.variants[0] || { id: 'default', weightSize: 'Standard', price: product.basePrice, stock: 10, sku: 'DEFAULT' };
+
+  const setSelectedVariant = (v: ProductVariant) => setSelectedVariantOverride(v);
 
   const handleAddToCart = () => {
     addToCart(product, selectedVariant, quantity);
