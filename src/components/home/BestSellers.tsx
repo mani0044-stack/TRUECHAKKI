@@ -5,9 +5,15 @@ import { ProductCard } from '../ui/ProductCard';
 import { useUIStore } from '../../store/useUIStore';
 
 export const BestSellers: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'all' | 'atta' | 'oils' | 'pickles'>('all');
+  const [activeTab, setActiveTab] = useState<string>('all');
   const products = useProductStore((state) => state.products);
+  const categories = useProductStore((state) => state.categories);
   const navigateTo = useUIStore((state) => state.navigateTo);
+
+  const tabs = [
+    { slug: 'all', label: 'All Products' },
+    ...categories.map((c) => ({ slug: c.slug, label: c.name })),
+  ];
 
   const filteredProducts = products
     .filter((p) => activeTab === 'all' || p.category === activeTab)
@@ -31,28 +37,34 @@ export const BestSellers: React.FC = () => {
 
           {/* Filter Tabs */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
-            {(['all', 'atta', 'oils', 'pickles'] as const).map((tab) => (
+            {tabs.map((tab) => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
+                key={tab.slug}
+                onClick={() => setActiveTab(tab.slug)}
                 className={`px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all whitespace-nowrap ${
-                  activeTab === tab
+                  activeTab === tab.slug
                     ? 'bg-[#9A6B29] text-white shadow-md'
                     : 'bg-[#FAF4E8] text-[#7C5C43] hover:text-[#4A2B18] border border-[#E8DCCB]'
                 }`}
               >
-                {tab === 'all' ? 'All Products' : tab}
+                {tab.label}
               </button>
             ))}
           </div>
         </div>
 
         {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-sm text-[#7C5C43]">
+            No products are available in this range yet.
+          </div>
+        )}
 
         {/* View All Button */}
         <div className="mt-12 text-center">

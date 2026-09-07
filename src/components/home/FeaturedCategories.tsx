@@ -8,39 +8,14 @@ export const FeaturedCategories: React.FC = () => {
   const setSelectedCategory = useProductStore((state) => state.setSelectedCategory);
   const dbCategories = useProductStore((state) => state.categories);
 
-  const fallbackCategories = [
-    {
-      id: 'atta',
-      slug: 'atta',
-      name: 'Stone Ground Atta',
-      description: 'Slow-milled single-origin Sharbati wheat flour retaining natural germ & bran nutrients.',
-      image: '/images/hero-bg.jpg',
-      product_count: 4,
-    },
-    {
-      id: 'oils',
-      slug: 'oils',
-      name: 'Wood-Pressed Oils',
-      description: 'Extracted using traditional wooden Kolhu without chemical heat processing or refining.',
-      image: '/images/hero-bg.jpg',
-      product_count: 3,
-    },
-    {
-      id: 'pickles',
-      slug: 'pickles',
-      name: 'Traditional Pickles',
-      description: 'Handcrafted in earthen pots aged under natural sunshine with mustard oil & rock salt.',
-      image: '/images/hero-bg.jpg',
-      product_count: 2,
-    },
-  ];
-
-  const categories = dbCategories && dbCategories.length > 0 ? dbCategories : fallbackCategories;
+  const categories = dbCategories;
 
   const handleCategoryClick = (slug: string) => {
     setSelectedCategory(slug);
     navigateTo('shop');
   };
+
+  if (categories.length === 0) return null;
 
   return (
     <section className="py-16 bg-[#FDFBF7]">
