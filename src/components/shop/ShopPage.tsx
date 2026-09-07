@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Filter, SlidersHorizontal, RefreshCw, ChevronRight } from 'lucide-react';
 import { useProductStore } from '../../store/useProductStore';
 import { ProductCard } from '../ui/ProductCard';
@@ -14,10 +14,16 @@ export const ShopPage: React.FC = () => {
     setSearchQuery,
     getFilteredProducts,
     categories: dbCategories,
+    fetchProducts,
   } = useProductStore();
 
   const navigateTo = useUIStore((state) => state.navigateTo);
   const products = getFilteredProducts();
+
+  // Refresh catalog from the database whenever the shop page is opened
+  useEffect(() => {
+    fetchProducts(true);
+  }, [fetchProducts]);
 
   const filterCategories = [
     { id: 'all', label: 'All Products' },
@@ -122,9 +128,17 @@ export const ShopPage: React.FC = () => {
               <span className="text-xs font-semibold text-[#7C5C43]">
                 Showing <strong className="text-[#4A2B18]">{products.length}</strong> products
               </span>
-              <div className="flex items-center gap-2 text-xs text-[#7C5C43]">
+              <div className="flex items-center gap-3 text-xs text-[#7C5C43]">
                 <SlidersHorizontal className="w-4 h-4 text-[#9A6B29]" />
                 <span>Showing items for "{selectedCategory.toUpperCase()}"</span>
+                <button
+                  onClick={() => fetchProducts(true)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white border border-[#E8DCCB] hover:border-[#9A6B29] hover:text-[#9A6B29] rounded-full font-semibold transition-colors"
+                  title="Refresh catalog from database"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Sync</span>
+                </button>
               </div>
             </div>
 

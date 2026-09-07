@@ -12,7 +12,7 @@ interface ProductState {
   error: string | null;
 
   // Actions
-  fetchProducts: () => Promise<void>;
+  fetchProducts: (silent?: boolean) => Promise<void>;
   fetchCategories: () => Promise<void>;
   setSelectedCategory: (category: string) => void;
   setSearchQuery: (query: string) => void;
@@ -117,6 +117,8 @@ const FALLBACK_CATEGORIES: Category[] = [
   { id: 'c-spices', name: 'Pure Spices', slug: 'spices', description: 'Whole & stone-ground single origin aromatic Indian spices without artificial colors.', image: '/images/hero-bg.jpg', product_count: 1 },
 ];
 
+let productsInFlight = false;
+
 export const useProductStore = create<ProductState>((set, get) => ({
   products: FALLBACK_PRODUCTS,
   categories: FALLBACK_CATEGORIES,
@@ -129,41 +131,33 @@ export const useProductStore = create<ProductState>((set, get) => ({
   fetchCategories: async () => {
     try {
       const data = await api.getCategories();
-      if (data && data.length > 0) {
-        set({ categories: data });
-      } else {
-        set({ categories: FALLBACK_CATEGORIES });
-      }
+      // Trust the DB response even when it is empty, so deletions are reflected
+      set({ categories: data || [] });
     } catch (err: any) {
       console.error('Failed to fetch categories:', err?.message);
-      set({ categories: FALLBACK_CATEGORIES });
+      // Keep whatever we have; only fall back if we have never loaded real data
+      set((state) => ({
+        categories: state.categories.length > 0 ? state.categories : FALLBACK_CATEGORIES,
+      }));
     }
   },
 
-  fetchProducts: async () => {
-    set({ isLoading: true, error: null });
-    await get().fetchCategories();
+  fetchProducts: async (silent = false) => {
+    if (productsInFlight) return;
+    productsInFlight = true;
+    if (!silent) set({ isLoading: true, error: null });
     try {
+      await get().fetchCategories();
       const data = await api.getProducts();
-      if (data && data.length > 0) {
-        set({ products: data, isLoading: false });
-      } else {
-        set({ products: FALLBACK_PRODUCTS, isLoading: false });
-      }
+      // Trust the DB response even when it is empty, so deletions are reflected
+      set({ products: data || [], error: null });
     } catch (err: any) {
-      console.warn('Initial product fetch failed, retrying in 800ms...', err?.message);
-      try {
-        await new Promise((res) => setTimeout(res, 800));
-        const retryData = await api.getProducts();
-        if (retryData && retryData.length > 0) {
-          set({ products: retryData, isLoading: false });
-        } else {
-          set({ products: FALLBACK_PRODUCTS, isLoading: false });
-        }
-      } catch (retryErr: any) {
-        console.error('Failed to fetch products from backend API after retry:', retryErr?.message);
-        set({ products: FALLBACK_PRODUCTS, isLoading: false });
-      }
+      console.error('Failed to fetch products:', err?.message);
+      // Keep whatever is currently displayed; fallback only covers the initial offline load
+      set({ error: err?.message || 'Failed to load products' });
+    } finally {
+      productsInFlight = false;
+      if (!silent) set({ isLoading: false });
     }
   },
 

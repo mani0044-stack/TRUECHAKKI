@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star, Plus, Minus, ShoppingBag, ShieldCheck, Truck, RotateCcw, ChevronRight, Check, Leaf, Wheat, Salad } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 import { useProductStore } from '../../store/useProductStore';
@@ -10,6 +10,12 @@ export const ProductDetailPage: React.FC = () => {
   const navigateTo = useUIStore((state) => state.navigateTo);
   const allProducts = useProductStore((state) => state.products);
   const isLoading = useProductStore((state) => state.isLoading);
+  const fetchProducts = useProductStore((state) => state.fetchProducts);
+
+  // Refresh catalog from the database whenever the product page is opened
+  useEffect(() => {
+    fetchProducts(true);
+  }, [fetchProducts]);
 
   const product = allProducts.find((p) => p.slug === activeSlug) || allProducts[0];
   

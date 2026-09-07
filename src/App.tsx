@@ -35,8 +35,27 @@ export const App: React.FC = () => {
   const fetchProducts = useProductStore((state) => state.fetchProducts);
   const [preloaderDone, setPreloaderDone] = useState(false);
 
+  // Initial catalog load
   useEffect(() => {
     fetchProducts();
+  }, [fetchProducts]);
+
+  // Auto-sync catalog with the database so edits/deletes are reflected live
+  useEffect(() => {
+    const syncCatalog = () => fetchProducts(true);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') syncCatalog();
+    };
+
+    const intervalId = setInterval(syncCatalog, 30000);
+    window.addEventListener('focus', syncCatalog);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('focus', syncCatalog);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
   }, [fetchProducts]);
 
 
