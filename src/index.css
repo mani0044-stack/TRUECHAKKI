@@ -16,10 +16,15 @@
   --font-serif: "Playfair Display", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-price: "Outfit", system-ui, sans-serif;
+  --font-script: "Great Vibes", "Alex Brush", cursive;
 
   --shadow-pill: 0 8px 30px rgba(74, 43, 24, 0.08);
   --shadow-card: 0 4px 20px rgba(74, 43, 24, 0.05);
   --shadow-floating: 0 12px 40px rgba(74, 43, 24, 0.12);
+}
+
+.font-script {
+  font-family: "Great Vibes", "Alex Brush", cursive;
 }
 
 .font-price {
@@ -27,6 +32,7 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
 }
+
 
 @layer base {
   body {
@@ -41,6 +47,23 @@
 }
 
 /* Custom Utilities for smooth animations and aesthetic UI */
+@keyframes shimmer {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  50%, 100% { transform: translateX(300%) skewX(-20deg); }
+}
+
+.animate-shimmer-sweep {
+  animation: shimmer 3.5s infinite ease-in-out;
+}
+
+.btn-glow-gold {
+  box-shadow: 0 10px 25px -5px rgba(154, 107, 41, 0.4), 0 0 15px 0 rgba(207, 181, 127, 0.25);
+}
+
+.btn-glow-gold:hover {
+  box-shadow: 0 16px 35px -5px rgba(154, 107, 41, 0.55), 0 0 25px 2px rgba(207, 181, 127, 0.45);
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -57,3 +80,4 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #9A6B29;
 }
+

@@ -1,6 +1,7 @@
 import React from 'react';
-import { ArrowRight, Leaf, Wheat, Sparkles, HeartHandshake } from 'lucide-react';
+import { Leaf, Wheat, Sparkles, HeartHandshake, ShoppingBag } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
+
 
 export const HeroSection: React.FC = () => {
   const navigateTo = useUIStore((state) => state.navigateTo);
@@ -28,33 +29,39 @@ export const HeroSection: React.FC = () => {
           <div className="w-full sm:max-w-xl lg:max-w-2xl space-y-3.5 sm:space-y-6 flex flex-col items-center sm:items-start text-center sm:text-left">
 
             {/* Kicker Tag */}
-            <div className="inline-flex items-center justify-center">
-              <span className="text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-[0.15em] sm:tracking-[0.25em] text-[#4A2B18] bg-[#FAF4E8]/90 backdrop-blur-md border border-[#E8DCCB] px-3 sm:px-4 py-1 sm:py-1.5 rounded-full shadow-xs">
-                FROM OUR FARMS TO YOUR HOME
+            {/* <div className="inline-flex items-center justify-center">
+              <span className="text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-[0.18em] sm:tracking-[0.25em] text-[#4A2B18] bg-[#FAF4E8]/95 backdrop-blur-md border border-[#E8DCCB] px-3.5 sm:px-4.5 py-1.5 rounded-full shadow-xs flex items-center gap-2">
+                <Leaf className="w-3.5 h-3.5 text-[#9A6B29]" />
+                <span>FROM OUR FARMS TO YOUR HOME</span>
               </span>
-            </div>
+            </div> */}
 
             {/* Main Headline */}
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tight text-[#4A2B18] leading-[1.15] text-center sm:text-left">
+            <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#4A2B18] leading-[1.15] text-center sm:text-left drop-shadow-xs">
               Pure. Natural. <br />
-              <span className="italic font-semibold text-[#9A6B29]">Truly Yours.</span>
+              <span className="font-script text-5xl sm:text-7xl lg:text-8xl font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#B8860B] via-[#9A6B29] to-[#704815] inline-block pt-1 pb-1 drop-shadow-sm select-none hover:scale-[1.02] transition-transform duration-300">
+                Truly Yours.
+              </span>
             </h1>
 
             {/* Subtext */}
-            <p className="text-xs sm:text-base lg:text-lg text-[#4A2B18]/95 font-sans leading-relaxed max-w-xs sm:max-w-md lg:max-w-lg text-center sm:text-left mx-auto sm:mx-0">
+            <p className="text-xs sm:text-base lg:text-lg text-[#4A2B18]/90 font-sans leading-relaxed max-w-xs sm:max-w-md lg:max-w-lg text-center sm:text-left mx-auto sm:mx-0">
               True Chakki brings you the goodness of traditional farming. 100% natural products made with care, just like nature intended.
             </p>
 
-            {/* CTA Button */}
-            <div className="pt-1 sm:pt-2 flex justify-center sm:justify-start w-full sm:w-auto">
+            {/* Elevated Luxury CTA Buttons */}
+            <div className="pt-3 sm:pt-4 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-3.5 w-full sm:w-auto">
               <button
                 onClick={() => navigateTo('shop')}
-                className="group px-6 sm:px-8 py-3 sm:py-4 bg-[#9A6B29] hover:bg-[#80561F] text-white font-medium rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center justify-center gap-2.5 sm:gap-3 text-xs sm:text-base tracking-wide transform hover:-translate-y-0.5"
+                className="group px-7 py-3.5 sm:py-4 bg-[#FAF4E8]/90 hover:bg-[#FAF4E8] text-[#4A2B18] hover:text-[#9A6B29] font-semibold rounded-full border border-[#E8DCCB] hover:border-[#9A6B29]/40 backdrop-blur-md transition-all duration-300 shadow-xs hover:shadow-md flex items-center justify-center gap-2.5 text-xs sm:text-sm tracking-wide w-full sm:w-auto"
               >
-                <span>Shop Now</span>
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                <span>Explore Range</span>
+                <ShoppingBag className="w-4 h-4 text-[#9A6B29] group-hover:scale-110 transition-transform" />
               </button>
             </div>
+
+
+
 
           </div>
         </div>
