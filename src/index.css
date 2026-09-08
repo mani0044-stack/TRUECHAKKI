@@ -9,16 +9,23 @@
   --color-chakki-muted: #7C5C43;
   --color-chakki-primary: #9A6B29;
   --color-chakki-primary-hover: #80561F;
-  --color-chakki-gold: #C59A3F;
+  --color-chakki-gold: #CFB57F;
   --color-chakki-border: #E8DCCB;
   --color-chakki-dark: #351D0F;
 
   --font-serif: "Playfair Display", Georgia, serif;
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-price: "Outfit", system-ui, sans-serif;
 
   --shadow-pill: 0 8px 30px rgba(74, 43, 24, 0.08);
   --shadow-card: 0 4px 20px rgba(74, 43, 24, 0.05);
   --shadow-floating: 0 12px 40px rgba(74, 43, 24, 0.12);
+}
+
+.font-price {
+  font-family: "Outfit", system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 @layer base {

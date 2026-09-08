@@ -44,7 +44,8 @@ export const LoginPage: React.FC = () => {
       await login(formattedName, email, password);
       setIsSubmitting(false);
 
-      if (email.toLowerCase() === 'admin@truechakki.com' || user?.role === 'ADMIN') {
+      const currentUser = useAuthStore.getState().user;
+      if (email.toLowerCase().trim() === 'admin@truechakki.com' || currentUser?.role === 'ADMIN') {
         navigateTo('admin');
       } else {
         navigateTo('account');
@@ -56,7 +57,7 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#FDFBF7] min-h-screen pb-20 pt-24">
+    <div className="bg-[#FDFBF7] min-h-screen pb-20 pt-24 sm:pt-28">
       {/* Header Banner & Breadcrumb */}
       <div className="bg-[#FAF6EE] border-b border-[#E8DCCB] py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-2">

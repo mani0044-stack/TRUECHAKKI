@@ -87,7 +87,7 @@ export const SearchModal: React.FC = () => {
                         <h5 className="font-serif font-bold text-sm text-[#4A2B18] truncate group-hover:text-[#9A6B29]">
                           {product.name}
                         </h5>
-                        <span className="text-xs font-semibold text-[#4A2B18]">
+                        <span className="text-xs font-bold text-[#4A2B18] font-price">
                           ₹{product.basePrice}
                         </span>
                       </div>

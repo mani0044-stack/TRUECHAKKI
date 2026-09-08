@@ -28,7 +28,7 @@ export const ProductDetailPage: React.FC = () => {
 
   if (!product) {
     return (
-      <div className="bg-[#FDFBF7] min-h-screen py-20 px-4 text-center space-y-4">
+      <div className="bg-[#FDFBF7] min-h-screen pt-28 sm:pt-32 pb-20 px-4 text-center space-y-4">
         <h2 className="font-serif text-2xl font-bold text-[#4A2B18]">
           {isLoading ? 'Loading Farm Fresh Product...' : 'Product Not Found'}
         </h2>
@@ -64,7 +64,7 @@ export const ProductDetailPage: React.FC = () => {
     <div className="bg-[#FDFBF7] min-h-screen pb-20">
       
       {/* Breadcrumb Header */}
-      <div className="bg-[#FAF6EE] border-b border-[#E8DCCB] py-4 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#FAF6EE] border-b border-[#E8DCCB] pt-24 sm:pt-28 pb-4 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs text-[#7C5C43]">
           <button onClick={() => navigateTo('home')} className="hover:text-[#9A6B29]">Home</button>
           <ChevronRight className="w-3.5 h-3.5" />
@@ -102,7 +102,7 @@ export const ProductDetailPage: React.FC = () => {
                   {product.categoryName}
                 </span>
                 <div className="flex items-center gap-1 text-sm font-bold text-[#4A2B18]">
-                  <Star className="w-4 h-4 fill-[#C59A3F] text-[#C59A3F]" />
+                  <Star className="w-4 h-4 fill-[#CFB57F] text-[#CFB57F]" />
                   <span>{product.rating}</span>
                   <span className="text-[#7C5C43] font-normal text-xs">({product.reviewCount} reviews)</span>
                 </div>
@@ -119,7 +119,7 @@ export const ProductDetailPage: React.FC = () => {
 
             {/* Price Display */}
             <div className="p-4 bg-[#FAF6EE] border border-[#E8DCCB] rounded-2xl flex items-baseline gap-3">
-              <span className="font-serif text-3xl font-bold text-[#4A2B18]">
+              <span className="font-price text-3xl font-bold text-[#4A2B18]">
                 ₹{selectedVariant.price}
               </span>
               <span className="text-xs text-[#7C5C43]">
@@ -143,7 +143,7 @@ export const ProductDetailPage: React.FC = () => {
                         : 'bg-white text-[#4A2B18] border-[#E8DCCB] hover:border-[#9A6B29]'
                     }`}
                   >
-                    {v.weightSize} - ₹{v.price}
+                    {v.weightSize} - <span className="font-price font-bold">₹{v.price}</span>
                   </button>
                 ))}
               </div>
@@ -312,9 +312,9 @@ export const ProductDetailPage: React.FC = () => {
                 <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-[#E8DCCB]">
                   <div className="text-center pr-6 border-r border-[#E8DCCB]">
                     <span className="font-serif text-4xl font-bold text-[#4A2B18]">{product.rating}</span>
-                    <div className="flex justify-center text-[#C59A3F] my-1">
+                    <div className="flex justify-center text-[#CFB57F] my-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3.5 h-3.5 fill-[#C59A3F]" />
+                        <Star key={i} className="w-3.5 h-3.5 fill-[#CFB57F]" />
                       ))}
                     </div>
                     <span className="text-[10px] text-[#7C5C43]">Based on {product.reviewCount} reviews</span>

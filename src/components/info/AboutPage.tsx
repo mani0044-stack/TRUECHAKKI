@@ -3,7 +3,7 @@ import { Leaf, Award, HeartHandshake, ShieldCheck } from 'lucide-react';
 
 export const AboutPage: React.FC = () => {
   return (
-    <div className="bg-[#FDFBF7] min-h-screen py-16 px-4 sm:px-6 lg:px-8 space-y-16">
+    <div className="bg-[#FDFBF7] min-h-screen pt-28 sm:pt-32 pb-16 px-4 sm:px-6 lg:px-8 space-y-16">
       
       {/* Hero Banner */}
       <div className="max-w-4xl mx-auto text-center space-y-4">

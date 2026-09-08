@@ -82,7 +82,7 @@ export const ProcessSection: React.FC = () => {
             <span>100% Chemical-Free Guarantee</span>
           </div>
           <div className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-[#C59A3F]" />
+            <Award className="w-5 h-5 text-[#CFB57F]" />
             <span>Traditional Heritage Milling</span>
           </div>
           <div className="flex items-center gap-2">

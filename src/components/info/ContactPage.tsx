@@ -11,7 +11,7 @@ export const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#FDFBF7] min-h-screen py-16 px-4 sm:px-6 lg:px-8 space-y-12">
+    <div className="bg-[#FDFBF7] min-h-screen pt-28 sm:pt-32 pb-16 px-4 sm:px-6 lg:px-8 space-y-12">
       <div className="max-w-3xl mx-auto text-center space-y-3">
         <span className="text-xs uppercase font-semibold tracking-[0.2em] text-[#9A6B29]">
           WE ARE HERE TO HELP

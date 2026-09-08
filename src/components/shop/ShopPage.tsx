@@ -37,7 +37,7 @@ export const ShopPage: React.FC = () => {
     <div className="bg-[#FDFBF7] min-h-screen pb-20">
       
       {/* Shop Header & Breadcrumb Banner */}
-      <div className="bg-[#FAF6EE] border-b border-[#E8DCCB] py-10 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#FAF6EE] border-b border-[#E8DCCB] pt-24 sm:pt-28 pb-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-3">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs text-[#7C5C43]">

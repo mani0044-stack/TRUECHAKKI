@@ -53,13 +53,13 @@ export const Testimonials: React.FC = () => {
               key={review.id}
               className="bg-[#FAF6EE] p-8 rounded-3xl border border-[#E8DCCB] space-y-6 flex flex-col justify-between shadow-sm relative"
             >
-              <Quote className="w-10 h-10 text-[#C59A3F]/30 absolute top-6 right-6" />
+              <Quote className="w-10 h-10 text-[#CFB57F]/30 absolute top-6 right-6" />
 
               <div className="space-y-4">
                 {/* Rating Stars */}
                 <div className="flex items-center gap-1">
                   {[...Array(review.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-[#C59A3F] text-[#C59A3F]" />
+                    <Star key={i} className="w-4 h-4 fill-[#CFB57F] text-[#CFB57F]" />
                   ))}
                 </div>
 

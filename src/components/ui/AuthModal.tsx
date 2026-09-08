@@ -76,6 +76,18 @@ export const AuthModal: React.FC = () => {
                 <h5 className="text-xs uppercase font-semibold text-[#7C5C43] tracking-wider">
                   Quick Actions
                 </h5>
+                {(user.role === 'ADMIN' || user.email === 'admin@truechakki.com') && (
+                  <button
+                    onClick={() => { closeAuthModal(); navigateTo('admin'); }}
+                    className="w-full p-3 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl flex items-center justify-between text-xs font-semibold text-purple-900 transition-colors shadow-sm"
+                  >
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-purple-700" />
+                      <span>Open Admin Control Panel</span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-purple-700" />
+                  </button>
+                )}
                 <button
                   onClick={() => { closeAuthModal(); navigateTo('account'); }}
                   className="w-full p-3 bg-[#FAF4E8] hover:bg-[#F3E8D3] border border-[#E8DCCB] rounded-xl flex items-center justify-between text-xs font-semibold text-[#4A2B18] transition-colors"

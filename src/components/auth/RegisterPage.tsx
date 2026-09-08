@@ -17,9 +17,12 @@ export const RegisterPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const user = useAuthStore((state) => state.user);
+
   // Redirect if already logged in
   if (isAuthenticated) {
-    navigateTo('account');
+    const isAdmin = user?.role === 'ADMIN' || user?.email === 'admin@truechakki.com';
+    navigateTo(isAdmin ? 'admin' : 'account');
     return null;
   }
 
@@ -42,7 +45,12 @@ export const RegisterPage: React.FC = () => {
       // Register user and initialize session in DB
       await register(name, email, password, phone);
       setIsSubmitting(false);
-      navigateTo('account');
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser?.role === 'ADMIN' || currentUser?.email === 'admin@truechakki.com') {
+        navigateTo('admin');
+      } else {
+        navigateTo('account');
+      }
     } catch (err: any) {
       setIsSubmitting(false);
       setErrorMessage(err.message || 'Registration failed. Please try again.');
@@ -50,7 +58,7 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#FDFBF7] min-h-screen pb-20 pt-24">
+    <div className="bg-[#FDFBF7] min-h-screen pb-20 pt-24 sm:pt-28">
       {/* Header Banner & Breadcrumb */}
       <div className="bg-[#FAF6EE] border-b border-[#E8DCCB] py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-2">

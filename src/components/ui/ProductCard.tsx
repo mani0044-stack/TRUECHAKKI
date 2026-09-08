@@ -70,7 +70,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               {product.categoryName}
             </span>
             <div className="flex items-center gap-1 font-semibold text-[#4A2B18]">
-              <Star className="w-3.5 h-3.5 fill-[#C59A3F] text-[#C59A3F]" />
+              <Star className="w-3.5 h-3.5 fill-[#CFB57F] text-[#CFB57F]" />
               <span>{product.rating}</span>
               <span className="text-[#7C5C43]/70 font-normal">({product.reviewCount})</span>
             </div>
@@ -111,7 +111,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="flex items-center justify-between pt-2 border-t border-[#E8DCCB]/60">
             <div>
               <span className="text-xs text-[#7C5C43] block">Price</span>
-              <span className="font-serif text-xl font-bold text-[#4A2B18]">
+              <span className="font-price text-xl font-bold text-[#4A2B18]">
                 ₹{selectedVariant.price}
               </span>
             </div>

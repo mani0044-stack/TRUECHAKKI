@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { query } from '../db/index.js';
+import { query } from '../db/index';
+
 
 export const categoryRouter = Router();
 

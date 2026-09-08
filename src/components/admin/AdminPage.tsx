@@ -376,7 +376,7 @@ export const AdminPage: React.FC = () => {
                     <DollarSign className="w-5 h-5" />
                   </div>
                 </div>
-                <div className="font-serif text-3xl font-bold text-[#4A2B18]">
+                <div className="font-price text-3xl font-bold text-[#4A2B18]">
                   ₹{totalRevenue.toLocaleString('en-IN')}
                 </div>
                 <p className="text-[11px] text-[#7C5C43]">Lifetime earnings from processed sales</p>
@@ -474,7 +474,7 @@ export const AdminPage: React.FC = () => {
                           {typeof o.shippingAddress === 'object' ? (o.shippingAddress as any).name || 'Valued Customer' : 'Customer'}
                         </td>
                         <td className="py-3.5 px-3 text-[#7C5C43]">{o.date}</td>
-                        <td className="py-3.5 px-3 font-bold">₹{o.totalAmount}</td>
+                        <td className="py-3.5 px-3 font-bold font-price">₹{o.totalAmount}</td>
                         <td className="py-3.5 px-3">
                           <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
                             o.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
@@ -738,14 +738,14 @@ export const AdminPage: React.FC = () => {
                           <div className="space-y-1 max-w-xs">
                             {order.items?.map((it, idx) => (
                               <div key={idx} className="text-[11px] text-[#4A2B18]">
-                                <span className="font-bold">{it.quantity}x</span> {it.productName} ({it.variantName}) - ₹{it.unitPrice}
+                                <span className="font-bold">{it.quantity}x</span> {it.productName} ({it.variantName}) - <span className="font-price font-bold">₹{it.unitPrice}</span>
                               </div>
                             ))}
                           </div>
                         </td>
 
                         <td className="py-4 px-4">
-                          <span className="font-serif font-bold text-sm text-[#4A2B18] block">₹{order.totalAmount}</span>
+                          <span className="font-price font-bold text-sm text-[#4A2B18] block">₹{order.totalAmount}</span>
                           <span className="text-[10px] font-bold text-[#9A6B29] uppercase">{order.paymentMethod || 'COD'}</span>
                         </td>
 

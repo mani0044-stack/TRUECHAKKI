@@ -30,7 +30,7 @@ export const CheckoutPage: React.FC = () => {
 
   if (items.length === 0 && !isCompleted) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
+      <div className="max-w-4xl mx-auto px-4 pt-28 sm:pt-32 pb-20 text-center space-y-4">
         <div className="w-16 h-16 mx-auto rounded-full bg-[#FAF4E8] flex items-center justify-center text-[#9A6B29]">
           <ShoppingBag className="w-8 h-8" />
         </div>
@@ -121,7 +121,7 @@ export const CheckoutPage: React.FC = () => {
 
   if (isCompleted && completedOrder) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-16 text-center space-y-8 animate-fadeIn">
+      <div className="max-w-3xl mx-auto px-4 pt-28 sm:pt-32 pb-16 text-center space-y-8 animate-fadeIn">
         <div className="w-20 h-20 bg-green-100 text-green-700 rounded-full flex items-center justify-center mx-auto border-4 border-green-200 shadow-inner">
           <CheckCircle2 className="w-10 h-10" />
         </div>
@@ -151,14 +151,14 @@ export const CheckoutPage: React.FC = () => {
             {completedOrder.items.map((item) => (
               <div key={item.id} className="flex justify-between text-xs text-[#4A2B18]">
                 <span>{item.productName} ({item.variantName}) x {item.quantity}</span>
-                <span className="font-semibold">₹{item.unitPrice * item.quantity}</span>
+                <span className="font-bold font-price">₹{item.unitPrice * item.quantity}</span>
               </div>
             ))}
           </div>
 
           <div className="border-t border-[#E8DCCB] pt-3 flex justify-between font-serif font-bold text-base text-[#4A2B18]">
             <span>Total Paid</span>
-            <span className="text-[#9A6B29]">₹{completedOrder.totalAmount}</span>
+            <span className="text-[#9A6B29] font-price font-bold text-lg">₹{completedOrder.totalAmount}</span>
           </div>
 
           <div className="text-xs text-[#7C5C43] pt-2 border-t border-[#E8DCCB]/60">
@@ -180,7 +180,7 @@ export const CheckoutPage: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#FDFBF7] min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div className="bg-[#FDFBF7] min-h-screen pt-28 sm:pt-32 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header */}
@@ -321,7 +321,7 @@ export const CheckoutPage: React.FC = () => {
                       <h4 className="font-semibold text-[#4A2B18] line-clamp-1">{item.product.name}</h4>
                       <span className="text-[#7C5C43]">{item.selectedVariant.weightSize} x {item.quantity}</span>
                     </div>
-                    <span className="font-semibold text-[#4A2B18]">₹{item.selectedVariant.price * item.quantity}</span>
+                    <span className="font-bold text-[#4A2B18] font-price">₹{item.selectedVariant.price * item.quantity}</span>
                   </div>
                 ))}
               </div>
@@ -329,17 +329,17 @@ export const CheckoutPage: React.FC = () => {
               <div className="border-t border-[#E8DCCB] pt-4 space-y-2 text-xs text-[#7C5C43]">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-semibold text-[#4A2B18]">₹{subtotal}</span>
+                  <span className="font-bold text-[#4A2B18] font-price">₹{subtotal}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping Fee</span>
                   <span className="font-semibold text-[#4A2B18]">
-                    {shippingFee === 0 ? <span className="text-green-700 font-bold">FREE</span> : `₹${shippingFee}`}
+                    {shippingFee === 0 ? <span className="text-green-700 font-bold">FREE</span> : <span className="font-price font-bold">₹{shippingFee}</span>}
                   </span>
                 </div>
                 <div className="border-t border-[#E8DCCB] pt-2 flex justify-between text-base font-bold text-[#4A2B18]">
                   <span>Total Amount</span>
-                  <span className="text-[#9A6B29] font-serif text-xl">₹{grandTotal}</span>
+                  <span className="text-[#9A6B29] font-price font-bold text-xl">₹{grandTotal}</span>
                 </div>
               </div>
 

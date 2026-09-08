@@ -39,6 +39,19 @@ export const Navbar: React.FC = () => {
     setMobileMenuOpen(false);
   };
 
+  const user = useAuthStore((state) => state.user);
+  const isAdmin = user?.role === 'ADMIN' || user?.email === 'admin@truechakki.com';
+
+  const handleAccountClick = () => {
+    if (!isAuthenticated) {
+      navigateTo('login');
+    } else if (isAdmin) {
+      navigateTo('admin');
+    } else {
+      navigateTo('account');
+    }
+  };
+
   const navLinks: { name: string; page: PageView; hasDropdown?: boolean }[] = [
     { name: 'Home', page: 'home' },
     { name: 'Shop', page: 'shop' },
@@ -149,13 +162,13 @@ export const Navbar: React.FC = () => {
 
           {/* User Account / Login */}
           <button
-            onClick={() => navigateTo(isAuthenticated ? 'account' : 'login')}
+            onClick={handleAccountClick}
             className={`p-2 hover:text-[#9A6B29] hover:bg-[#F3E8D3]/50 rounded-full transition-colors ${
-              currentPage === 'login' || currentPage === 'register' || currentPage === 'account'
+              currentPage === 'login' || currentPage === 'register' || currentPage === 'account' || currentPage === 'admin'
                 ? 'text-[#9A6B29] bg-[#F3E8D3]/50'
                 : 'text-[#4A2B18]'
             }`}
-            title={isAuthenticated ? 'My Account' : 'Sign In / Register'}
+            title={isAuthenticated ? (isAdmin ? 'Admin Dashboard' : 'My Account') : 'Sign In / Register'}
           >
             <User className="w-5 h-5 stroke-[2.2]" />
           </button>
@@ -228,11 +241,11 @@ export const Navbar: React.FC = () => {
           <div className="pt-2 border-t border-[#E8DCCB] flex gap-2">
             {isAuthenticated ? (
               <button
-                onClick={() => { navigateTo('account'); setMobileMenuOpen(false); }}
+                onClick={() => { navigateTo(isAdmin ? 'admin' : 'account'); setMobileMenuOpen(false); }}
                 className="flex-1 py-2 px-3 bg-[#9A6B29] text-white text-xs font-semibold rounded-full flex items-center justify-center gap-1.5"
               >
                 <User className="w-3.5 h-3.5" />
-                <span>My Account</span>
+                <span>{isAdmin ? 'Admin Panel' : 'My Account'}</span>
               </button>
             ) : (
               <>
