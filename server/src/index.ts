@@ -1,10 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { productRouter } from './routes/products';
-import { authRouter } from './routes/auth';
-import { orderRouter } from './routes/orders';
-import { categoryRouter } from './routes/categories';
+import { productRouter } from './routes/products.js';
+import { authRouter } from './routes/auth.js';
+import { orderRouter } from './routes/orders.js';
+import { categoryRouter } from './routes/categories.js';
+
 
 dotenv.config();
 

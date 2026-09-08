@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Lock, LogOut, Package, MapPin, CheckCircle, ChevronRight } from 'lucide-react';
+import { X, User, Mail, Lock, LogOut, Package, MapPin, CheckCircle, ChevronRight, ShieldCheck } from 'lucide-react';
+
 import { useUIStore } from '../../store/useUIStore';
 import { useAuthStore } from '../../store/useAuthStore';
 

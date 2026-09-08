@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { query, getClient } from '../db/index';
+import { query, getClient } from '../db/index.js';
+
 
 
 export const orderRouter = Router();

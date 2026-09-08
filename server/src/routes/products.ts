@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { query } from '../db/index';
+import { query } from '../db/index.js';
+
 
 
 export const productRouter = Router();
