@@ -13,19 +13,19 @@ VALUES
     'Stone Ground Atta', 
     'atta', 
     'Freshly ground 100% natural stone chakki flour preserving all bran, fiber, and aroma.', 
-    '/images/hero-bg.jpg'
+    '/img/groundatta.PNG'
   ),
   (
     'Wood-Pressed Oils', 
-    'oils', 
+    'oils',
     'Traditional cold-pressed unrefined oils extracted in wooden kolhu at low RPM.', 
-    '/images/hero-bg.jpg'
+    '/img/woodpressedoil.PNG'
   ),
   (
     'Authentic Pickles', 
     'pickles', 
     'Sun-dried homemade pickles crafted with cold-pressed oils and heritage spices.', 
-    '/images/hero-bg.jpg'
+    '/img/authenticpickles.PNG'
   ),
   (
     'Pure Spices', 

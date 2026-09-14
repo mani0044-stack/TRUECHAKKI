@@ -3,13 +3,68 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 import { useProductStore } from '../../store/useProductStore';
 
+interface DefaultCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  product_count?: number;
+}
+
+const DEFAULT_CATEGORIES: DefaultCategory[] = [
+  {
+    id: 'cat-1',
+    name: 'Stone Ground Atta',
+    slug: 'atta',
+    description: 'Freshly ground 100% natural stone chakki flour preserving all bran, fiber, and aroma.',
+    image: '/img/groundatta.PNG',
+    product_count: 3,
+  },
+  {
+    id: 'cat-2',
+    name: 'Wood-Pressed Oils',
+    slug: 'oils',
+    description: 'Traditional cold-pressed unrefined oils extracted in wooden kolhu at low RPM.',
+    image: '/img/woodpressedoil.PNG',
+    product_count: 2,
+  },
+  {
+    id: 'cat-3',
+    name: 'Authentic Pickles',
+    slug: 'pickles',
+    description: 'Sun-dried homemade pickles crafted with cold-pressed oils and heritage spices.',
+    image: '/img/authenticpickles.PNG',
+    product_count: 2,
+  },
+];
+
+const getCategoryImage = (category: { slug?: string; name?: string; image?: string }): string => {
+  const slug = category.slug?.toLowerCase() || '';
+  const name = category.name?.toLowerCase() || '';
+
+  if (slug.includes('pickle') || name.includes('pickle')) {
+    return '/img/authenticpickles.PNG';
+  }
+  if (slug.includes('atta') || name.includes('atta') || slug.includes('flour') || name.includes('flour')) {
+    return '/img/groundatta.PNG';
+  }
+  if (slug.includes('oil') || name.includes('oil')) {
+    return '/img/woodpressedoil.PNG';
+  }
+  if (category.image && category.image !== '/images/hero-bg.jpg') {
+    return category.image;
+  }
+  return '/img/groundatta.PNG';
+};
+
 export const FeaturedCategories: React.FC = () => {
   const navigateTo = useUIStore((state) => state.navigateTo);
   const setSelectedCategory = useProductStore((state) => state.setSelectedCategory);
   const dbCategories = useProductStore((state) => state.categories);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const categories = dbCategories;
+  const categories = dbCategories.length > 0 ? dbCategories : DEFAULT_CATEGORIES;
 
   const handleCategoryClick = (slug: string) => {
     setSelectedCategory(slug);
@@ -51,7 +106,7 @@ export const FeaturedCategories: React.FC = () => {
               {/* Image Banner */}
               <div className="relative aspect-4/3 overflow-hidden bg-[#E8DCCB]">
                 <img
-                  src={category.image || '/images/hero-bg.jpg'}
+                  src={getCategoryImage(category)}
                   alt={category.name}
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />

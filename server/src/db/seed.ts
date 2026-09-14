@@ -9,19 +9,19 @@ const initialCategories = [
     name: 'Stone Ground Atta',
     slug: 'atta',
     description: 'Freshly ground 100% natural stone chakki flour preserving all bran, fiber, and aroma.',
-    image: '/images/hero-bg.jpg',
+    image: '/img/groundatta.PNG',
   },
   {
     name: 'Wood-Pressed Oils',
     slug: 'oils',
     description: 'Traditional cold-pressed unrefined oils extracted in wooden kolhu at low RPM.',
-    image: '/images/hero-bg.jpg',
+    image: '/img/woodpressedoil.PNG',
   },
   {
     name: 'Authentic Pickles',
     slug: 'pickles',
     description: 'Sun-dried homemade pickles crafted with cold-pressed oils and heritage spices.',
-    image: '/images/hero-bg.jpg',
+    image: '/img/authenticpickles.PNG',
   },
   {
     name: 'Pure Spices',
