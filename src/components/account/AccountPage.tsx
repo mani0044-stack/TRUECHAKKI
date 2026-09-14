@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Package, MapPin, ShieldCheck, Plus, ShoppingBag, ArrowRight, CheckCircle2, X } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
@@ -7,7 +7,13 @@ import { useProductStore } from '../../store/useProductStore';
 import type { Order } from '../../types';
 
 export const AccountPage: React.FC = () => {
-  const { user, orders, logout, addAddress } = useAuthStore();
+  const { user, orders, logout, addAddress, fetchUserOrders } = useAuthStore();
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchUserOrders();
+    }
+  }, [user?.id, fetchUserOrders]);
   const navigateTo = useUIStore((state) => state.navigateTo);
   const openCart = useCartStore((state) => state.openCart);
   const addToCart = useCartStore((state) => state.addToCart);

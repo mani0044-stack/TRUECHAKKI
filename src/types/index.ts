@@ -87,4 +87,7 @@ export interface Order {
   status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED';
   shippingAddress: UserAddress;
   paymentMethod: 'COD' | 'CARD' | 'UPI';
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
 }

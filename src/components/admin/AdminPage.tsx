@@ -248,6 +248,7 @@ export const AdminPage: React.FC = () => {
       await api.updateOrderStatus(orderId, newStatus);
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus as any } : o));
       notifySuccess(`Order status updated to ${newStatus}`);
+      useAuthStore.getState().fetchUserOrders();
     } catch (err: any) {
       alert(`Failed to update order status: ${err.message}`);
     }
@@ -721,16 +722,33 @@ export const AdminPage: React.FC = () => {
                           <span className="text-[11px] text-[#7C5C43]">{order.date}</span>
                         </td>
 
-                        <td className="py-4 px-4">
-                          <div className="space-y-0.5">
-                            <span className="font-bold text-[#4A2B18] block">
-                              {typeof order.shippingAddress === 'object' ? (order.shippingAddress as any).name || 'Valued Customer' : 'Customer'}
+                        <td className="py-4 px-4 min-w-[240px]">
+                          <div className="space-y-1">
+                            <span className="font-bold text-[#4A2B18] text-xs block">
+                              {order.customerName || (typeof order.shippingAddress === 'object' && (order.shippingAddress as any).name) || 'Valued Customer'}
                             </span>
-                            <span className="text-[11px] text-[#7C5C43] block">
-                              {typeof order.shippingAddress === 'object' ? 
-                                `${order.shippingAddress.street}, ${order.shippingAddress.city}` : 
-                                String(order.shippingAddress)}
-                            </span>
+
+                            {(order.customerPhone || order.customerEmail) && (
+                              <div className="text-[11px] text-[#9A6B29] font-medium space-y-0.5">
+                                {order.customerPhone && <div className="flex items-center gap-1 font-semibold text-[#4A2B18]">📞 {order.customerPhone}</div>}
+                                {order.customerEmail && <div className="font-mono text-[10px] text-[#7C5C43] truncate">{order.customerEmail}</div>}
+                              </div>
+                            )}
+
+                            <div className="text-[11px] text-[#7C5C43] leading-relaxed pt-1 border-t border-[#E8DCCB]/60">
+                              <span className="font-bold text-[#4A2B18] text-[10px] uppercase block tracking-wider">Full Delivery Address:</span>
+                              {typeof order.shippingAddress === 'object' && order.shippingAddress ? (
+                                <div className="bg-[#FAF6EE] p-2 rounded-lg border border-[#E8DCCB] mt-1 space-y-0.5 font-sans">
+                                  <div className="font-medium text-[#4A2B18]">{order.shippingAddress.street}</div>
+                                  <div>{order.shippingAddress.city}{order.shippingAddress.state ? `, ${order.shippingAddress.state}` : ''} - <span className="font-bold font-mono">{order.shippingAddress.zipCode}</span></div>
+                                  {order.shippingAddress.country && <div className="text-[10px] text-[#7C5C43]">{order.shippingAddress.country}</div>}
+                                </div>
+                              ) : (
+                                <div className="bg-[#FAF6EE] p-2 rounded-lg border border-[#E8DCCB] mt-1 font-medium text-[#4A2B18]">
+                                  {String(order.shippingAddress || 'No address specified')}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </td>
 

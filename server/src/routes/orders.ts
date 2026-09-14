@@ -213,6 +213,9 @@ orderRouter.get('/', async (req: Request, res: Response) => {
       result.rows.map((order) => ({
         id: order.id,
         orderNumber: order.order_number,
+        customerName: order.customer_name || 'Valued Customer',
+        customerEmail: order.customer_email || '',
+        customerPhone: order.customer_phone || '',
         date: new Date(order.created_at).toISOString().split('T')[0],
         items: (order.items || []).map((it: any) => ({
           id: it.id,
