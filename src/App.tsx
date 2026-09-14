@@ -33,8 +33,14 @@ import { AdminPage } from './components/admin/AdminPage';
 
 export const App: React.FC = () => {
   const currentPage = useUIStore((state) => state.currentPage);
+  const activeProductSlug = useUIStore((state) => state.activeProductSlug);
   const fetchProducts = useProductStore((state) => state.fetchProducts);
   const [preloaderDone, setPreloaderDone] = useState(false);
+
+  // Scroll to top on page or product navigation
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage, activeProductSlug]);
 
   // Initial catalog load
   useEffect(() => {

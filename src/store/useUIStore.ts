@@ -119,7 +119,12 @@ export const useUIStore = create<UIState>((set) => ({
       isSearchOpen: false,
       activeCategoryDropdown: false,
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 0);
+    }
   },
 
   openSearch: () => set({ isSearchOpen: true }),
