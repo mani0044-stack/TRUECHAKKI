@@ -10,13 +10,16 @@ export const HeroSection: React.FC = () => {
     <section className="relative w-full bg-[#FAF7F2] overflow-hidden">
 
       {/* Seamless Hero Container with Full-Opacity Responsive Background Image */}
-      <div className="relative w-full flex items-start sm:items-center min-h-[640px] sm:min-h-[720px] lg:min-h-[820px]">
+      <div className="relative w-full flex items-start sm:items-center min-h-[700px] sm:min-h-[720px] lg:min-h-[820px]">
 
         {/* Mobile Background Image (Visible on mobile < sm) */}
         <div
-          className="block sm:hidden absolute inset-0 bg-cover bg-center bg-no-repeat z-0 opacity-100"
+          className="block sm:hidden absolute inset-0 bg-cover bg-[position:center_bottom] bg-no-repeat z-0 opacity-100"
           style={{ backgroundImage: `url('/images/IMG_7401.PNG')` }}
         />
+
+        {/* Top subtle scrim overlay on mobile for crystal clear text readability */}
+        <div className="block sm:hidden absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-[#FAF7F2]/80 via-[#FAF7F2]/40 to-transparent z-1 pointer-events-none" />
 
         {/* Desktop Background Image (Visible on sm and up) */}
         <div
@@ -25,8 +28,8 @@ export const HeroSection: React.FC = () => {
         />
 
         {/* Text Content Overlay - Elevated Upside on Mobile */}
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-25 sm:pt-36 lg:pt-44 pb-22 sm:pb-24 lg:pb-32 w-full flex flex-col items-center sm:items-start text-center sm:text-left">
-          <div className="w-full sm:max-w-xl lg:max-w-2xl space-y-3.5 sm:space-y-6 flex flex-col items-center sm:items-start text-center sm:text-left">
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-36 lg:pt-44 pb-16 sm:pb-24 lg:pb-32 w-full flex flex-col items-center sm:items-start text-center sm:text-left">
+          <div className="w-full sm:max-w-xl lg:max-w-2xl space-y-3 sm:space-y-6 flex flex-col items-center sm:items-start text-center sm:text-left">
 
             {/* Kicker Tag */}
             {/* <div className="inline-flex items-center justify-center">
