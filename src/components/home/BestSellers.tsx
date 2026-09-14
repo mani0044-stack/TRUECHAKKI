@@ -53,9 +53,9 @@ export const BestSellers: React.FC = () => {
           </div>
         </div>
 
-        {/* Product Cards Grid */}
+        {/* Product Cards Grid - 2 Columns on Mobile for Clean Organization */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
