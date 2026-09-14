@@ -104,11 +104,11 @@ export const FeaturedCategories: React.FC = () => {
               className="group relative w-[280px] sm:w-[340px] md:w-[380px] shrink-0 snap-start bg-[#FAF6EE] rounded-3xl border border-[#E8DCCB] overflow-hidden shadow-sm hover:shadow-2xl hover:border-[#9A6B29]/50 transition-all duration-500 cursor-pointer flex flex-col justify-between transform hover:-translate-y-1.5"
             >
               {/* Image Banner */}
-              <div className="relative aspect-4/3 overflow-hidden bg-[#FAF6EE] flex items-center justify-center p-2">
+              <div className="relative aspect-4/3 overflow-hidden bg-[#E8DCCB]">
                 <img
                   src={getCategoryImage(category)}
                   alt={category.name}
-                  className="w-full h-full object-contain sm:object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                  className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
                 <div className="absolute top-4 left-4">

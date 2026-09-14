@@ -9,75 +9,59 @@ export const HeroSection: React.FC = () => {
   return (
     <section className="relative w-full bg-[#FAF7F2] overflow-hidden">
 
-      {/* Mobile Layout (Full Dimensions Uncut Photo) */}
-      <div className="block sm:hidden w-full bg-[#FAF7F2] pt-24 pb-8 px-4 text-center">
-        <div className="max-w-sm mx-auto space-y-4 flex flex-col items-center">
-          <h1 className="font-serif text-3xl font-extrabold tracking-tight text-[#4A2B18] leading-[1.15]">
-            Pure. Natural. <br />
-            <span className="font-script text-5xl font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#B8860B] via-[#9A6B29] to-[#704815] inline-block pt-1 pb-1 drop-shadow-sm">
-              Truly Yours.
-            </span>
-          </h1>
-          
-          <p className="text-xs text-[#4A2B18]/90 font-sans leading-relaxed max-w-xs">
-            True Chakki brings you the goodness of traditional farming. 100% natural products made with care, just like nature intended.
-          </p>
+      {/* Seamless Hero Container with Full-Opacity Responsive Background Image */}
+      <div className="relative w-full flex items-start sm:items-center min-h-[640px] sm:min-h-[720px] lg:min-h-[820px]">
 
-          <button
-            onClick={() => navigateTo('shop')}
-            className="px-7 py-3 bg-[#FAF4E8] text-[#4A2B18] font-semibold rounded-full border border-[#E8DCCB] flex items-center justify-center gap-2 text-xs shadow-xs"
-          >
-            <span>Explore Range</span>
-            <ShoppingBag className="w-4 h-4 text-[#9A6B29]" />
-          </button>
-
-          {/* Full Dimensions Uncut Photo on Mobile */}
-          <div className="w-full pt-3">
-            <img
-              src="/images/IMG_7401.PNG"
-              alt="True Chakki Natural Staples"
-              className="w-full h-auto object-contain rounded-2xl border border-[#E8DCCB] shadow-md max-h-[500px] mx-auto block"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Desktop Hero Container (Visible on sm and up) */}
-      <div className="hidden sm:flex relative w-full items-center min-h-[720px] lg:min-h-[820px]">
-
-        {/* Desktop Background Image */}
+        {/* Mobile Background Image (Visible on mobile < sm) */}
         <div
-          className="absolute inset-0 bg-cover bg-[position:78%_center] lg:bg-center bg-no-repeat z-0 opacity-100"
+          className="block sm:hidden absolute inset-0 bg-cover bg-center bg-no-repeat z-0 opacity-100"
+          style={{ backgroundImage: `url('/images/IMG_7401.PNG')` }}
+        />
+
+        {/* Desktop Background Image (Visible on sm and up) */}
+        <div
+          className="hidden sm:block absolute inset-0 bg-cover bg-[position:78%_center] lg:bg-center bg-no-repeat z-0 opacity-100"
           style={{ backgroundImage: `url('/images/IMG_7347.png')` }}
         />
 
-        {/* Desktop Text Content Overlay */}
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 lg:pt-44 pb-24 lg:pb-32 w-full flex flex-col items-start text-left">
-          <div className="w-full sm:max-w-xl lg:max-w-2xl space-y-6 flex flex-col items-start text-left">
+        {/* Text Content Overlay - Elevated Upside on Mobile */}
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-25 sm:pt-36 lg:pt-44 pb-22 sm:pb-24 lg:pb-32 w-full flex flex-col items-center sm:items-start text-center sm:text-left">
+          <div className="w-full sm:max-w-xl lg:max-w-2xl space-y-3.5 sm:space-y-6 flex flex-col items-center sm:items-start text-center sm:text-left">
+
+            {/* Kicker Tag */}
+            {/* <div className="inline-flex items-center justify-center">
+              <span className="text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-[0.18em] sm:tracking-[0.25em] text-[#4A2B18] bg-[#FAF4E8]/95 backdrop-blur-md border border-[#E8DCCB] px-3.5 sm:px-4.5 py-1.5 rounded-full shadow-xs flex items-center gap-2">
+                <Leaf className="w-3.5 h-3.5 text-[#9A6B29]" />
+                <span>FROM OUR FARMS TO YOUR HOME</span>
+              </span>
+            </div> */}
 
             {/* Main Headline */}
-            <h1 className="font-serif text-5xl lg:text-6xl font-extrabold tracking-tight text-[#4A2B18] leading-[1.15] text-left drop-shadow-xs">
+            <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#4A2B18] leading-[1.15] text-center sm:text-left drop-shadow-xs">
               Pure. Natural. <br />
-              <span className="font-script text-7xl lg:text-8xl font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#B8860B] via-[#9A6B29] to-[#704815] inline-block pt-1 pb-1 drop-shadow-sm select-none hover:scale-[1.02] transition-transform duration-300">
+              <span className="font-script text-5xl sm:text-7xl lg:text-8xl font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#B8860B] via-[#9A6B29] to-[#704815] inline-block pt-1 pb-1 drop-shadow-sm select-none hover:scale-[1.02] transition-transform duration-300">
                 Truly Yours.
               </span>
             </h1>
 
             {/* Subtext */}
-            <p className="text-base lg:text-lg text-[#4A2B18]/90 font-sans leading-relaxed max-w-md lg:max-w-lg text-left">
+            <p className="text-xs sm:text-base lg:text-lg text-[#4A2B18]/90 font-sans leading-relaxed max-w-xs sm:max-w-md lg:max-w-lg text-center sm:text-left mx-auto sm:mx-0">
               True Chakki brings you the goodness of traditional farming. 100% natural products made with care, just like nature intended.
             </p>
 
-            {/* CTA Button */}
-            <div className="pt-4 flex items-center justify-start">
+            {/* Elevated Luxury CTA Buttons */}
+            <div className="pt-3 sm:pt-4 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-3.5 w-full sm:w-auto">
               <button
                 onClick={() => navigateTo('shop')}
-                className="group px-7 py-4 bg-[#FAF4E8]/90 hover:bg-[#FAF4E8] text-[#4A2B18] hover:text-[#9A6B29] font-semibold rounded-full border border-[#E8DCCB] hover:border-[#9A6B29]/40 backdrop-blur-md transition-all duration-300 shadow-xs hover:shadow-md flex items-center justify-center gap-2.5 text-sm tracking-wide"
+                className="group px-7 py-3.5 sm:py-4 bg-[#FAF4E8]/90 hover:bg-[#FAF4E8] text-[#4A2B18] hover:text-[#9A6B29] font-semibold rounded-full border border-[#E8DCCB] hover:border-[#9A6B29]/40 backdrop-blur-md transition-all duration-300 shadow-xs hover:shadow-md flex items-center justify-center gap-2.5 text-xs sm:text-sm tracking-wide w-full sm:w-auto"
               >
                 <span>Explore Range</span>
                 <ShoppingBag className="w-4 h-4 text-[#9A6B29] group-hover:scale-110 transition-transform" />
               </button>
             </div>
+
+
+
 
           </div>
         </div>
