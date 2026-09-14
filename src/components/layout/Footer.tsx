@@ -26,59 +26,60 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[#351D0F] text-[#FAF4E8] pt-16 pb-8 border-t-4 border-[#9A6B29]">
+    <footer className="bg-[#351D0F] text-[#FAF4E8] pt-16 pb-8 border-t-4 border-[#9A6B29] text-center md:text-left">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main 4-Column Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-[#FAF4E8]/15">
           
           {/* Col 1: Brand Info */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#FAF4E8]/10 border border-[#CFB57F]/40 flex items-center justify-center">
-                <svg width="24" height="24" viewBox="0 0 40 40" fill="none">
-                  <circle cx="20" cy="20" r="18" fill="#FAF4E8" stroke="#9A6B29" strokeWidth="1.5" />
-                  <path d="M12 28C12 28 14 20 20 20C26 20 28 28 28 28H12Z" fill="#9A6B29" />
-                  <rect x="18" y="10" width="4" height="12" rx="2" fill="#4A2B18" transform="rotate(-15 18 10)" />
-                </svg>
-              </div>
-              <span className="font-serif text-2xl font-bold tracking-tight text-[#FAF4E8]">
-                true chakki
+          <div className="space-y-4 flex flex-col items-center md:items-start">
+            <div 
+              onClick={() => navigateTo('home')}
+              className="flex items-center gap-3 cursor-pointer group justify-center md:justify-start"
+            >
+              <img
+                src="/images/logo.png"
+                alt="True Chakki Logo"
+                className="h-12 sm:h-14 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform"
+              />
+              <span className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#FAF4E8] group-hover:text-[#CFB57F] transition-colors">
+                True Chakki
               </span>
             </div>
 
-            <p className="text-sm text-[#FAF4E8]/80 leading-relaxed">
+            <p className="text-sm text-[#FAF4E8]/80 leading-relaxed max-w-sm">
               True Chakki brings you the goodness of traditional farming. 100% natural stone-ground flour, wood-pressed oils, and sun-cured pickles made with love and purity.
             </p>
 
-            <div className="space-y-2 text-xs text-[#FAF4E8]/70 pt-2">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#CFB57F]" />
+            <div className="space-y-2 text-xs text-[#FAF4E8]/70 pt-2 flex flex-col items-center md:items-start">
+              <div className="flex items-center justify-center md:justify-start gap-2">
+                <MapPin className="w-4 h-4 text-[#CFB57F] shrink-0" />
                 <span>Farm Estate, NH-8, Gurugram, Haryana - 122001</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#CFB57F]" />
+              <div className="flex items-center justify-center md:justify-start gap-2">
+                <Phone className="w-4 h-4 text-[#CFB57F] shrink-0" />
                 <span>+91 98765 43210 / 1800-TRUE-CHAKKI</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#CFB57F]" />
+              <div className="flex items-center justify-center md:justify-start gap-2">
+                <Mail className="w-4 h-4 text-[#CFB57F] shrink-0" />
                 <span>care@truechakki.com</span>
               </div>
             </div>
           </div>
 
           {/* Col 2: Product Categories */}
-          <div className="space-y-4">
-            <h3 className="font-serif text-lg font-semibold text-[#CFB57F] border-b border-[#FAF4E8]/10 pb-2">
+          <div className="space-y-4 flex flex-col items-center md:items-start">
+            <h3 className="font-serif text-lg font-semibold text-[#CFB57F] border-b border-[#FAF4E8]/10 pb-2 w-full text-center md:text-left">
               Shop Categories
             </h3>
-            <ul className="space-y-2 text-sm text-[#FAF4E8]/80">
+            <ul className="space-y-2 text-sm text-[#FAF4E8]/80 w-full flex flex-col items-center md:items-start">
               <li>
                 <button 
                   onClick={() => handleCategoryClick('all')} 
-                  className="hover:text-[#CFB57F] transition-colors flex items-center gap-2"
+                  className="hover:text-[#CFB57F] transition-colors flex items-center justify-center md:justify-start gap-2"
                 >
-                  <Leaf className="w-4 h-4 text-[#CFB57F]" /> All Farm Fresh Products
+                  <Leaf className="w-4 h-4 text-[#CFB57F] shrink-0" /> All Farm Fresh Products
                 </button>
               </li>
               {categories.slice(0, 4).map((category, index) => {
@@ -88,9 +89,9 @@ export const Footer: React.FC = () => {
                   <li key={category.id}>
                     <button 
                       onClick={() => handleCategoryClick(category.slug)} 
-                      className="hover:text-[#CFB57F] transition-colors flex items-center gap-2"
+                      className="hover:text-[#CFB57F] transition-colors flex items-center justify-center md:justify-start gap-2"
                     >
-                      <Icon className="w-4 h-4 text-[#CFB57F]" /> {category.name}
+                      <Icon className="w-4 h-4 text-[#CFB57F] shrink-0" /> {category.name}
                     </button>
                   </li>
                 );
@@ -99,11 +100,11 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Col 3: Customer Care & Quick Links */}
-          <div className="space-y-4">
-            <h3 className="font-serif text-lg font-semibold text-[#CFB57F] border-b border-[#FAF4E8]/10 pb-2">
+          <div className="space-y-4 flex flex-col items-center md:items-start">
+            <h3 className="font-serif text-lg font-semibold text-[#CFB57F] border-b border-[#FAF4E8]/10 pb-2 w-full text-center md:text-left">
               Quick Links
             </h3>
-            <ul className="space-y-2 text-sm text-[#FAF4E8]/80">
+            <ul className="space-y-2 text-sm text-[#FAF4E8]/80 w-full flex flex-col items-center md:items-start">
               <li>
                 <button onClick={() => navigateTo('about')} className="hover:text-[#CFB57F] transition-colors">
                   Our Farm Story & Process
@@ -138,21 +139,21 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Col 4: Newsletter */}
-          <div className="space-y-4">
-            <h3 className="font-serif text-lg font-semibold text-[#CFB57F] border-b border-[#FAF4E8]/10 pb-2">
+          <div className="space-y-4 flex flex-col items-center md:items-start">
+            <h3 className="font-serif text-lg font-semibold text-[#CFB57F] border-b border-[#FAF4E8]/10 pb-2 w-full text-center md:text-left">
               Join Our Farm Family
             </h3>
-            <p className="text-xs text-[#FAF4E8]/80">
+            <p className="text-xs text-[#FAF4E8]/80 max-w-sm text-center md:text-left">
               Subscribe to get seasonal farm updates, exclusive recipes, and 10% off your first organic order.
             </p>
 
             {subscribed ? (
-              <div className="p-3 bg-[#9A6B29]/30 border border-[#CFB57F] rounded-xl flex items-center gap-2 text-xs text-[#FAF4E8]">
+              <div className="p-3 bg-[#9A6B29]/30 border border-[#CFB57F] rounded-xl flex items-center justify-center md:justify-start gap-2 text-xs text-[#FAF4E8]">
                 <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
                 <span>Thank you! You are now subscribed to True Chakki farm updates.</span>
               </div>
             ) : (
-              <form onSubmit={handleSubscribe} className="space-y-2">
+              <form onSubmit={handleSubscribe} className="space-y-2 w-full max-w-sm">
                 <div className="relative">
                   <input
                     type="email"
@@ -160,7 +161,7 @@ export const Footer: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email address..."
-                    className="w-full px-4 py-2.5 bg-[#FAF4E8]/10 border border-[#FAF4E8]/20 rounded-full text-xs text-[#FAF4E8] placeholder-[#FAF4E8]/50 focus:outline-none focus:border-[#CFB57F]"
+                    className="w-full px-4 py-2.5 bg-[#FAF4E8]/10 border border-[#FAF4E8]/20 rounded-full text-xs text-[#FAF4E8] placeholder-[#FAF4E8]/50 focus:outline-none focus:border-[#CFB57F] text-center md:text-left"
                   />
                   <button
                     type="submit"
@@ -175,9 +176,9 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#FAF4E8]/60">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#FAF4E8]/60 text-center md:text-left">
           <p>© {new Date().getFullYear()} True Chakki Natural Organics Ltd. All Rights Reserved.</p>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-center gap-1">
             <span>Crafted with</span>
             <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 inline" />
             <span>for natural & healthy living.</span>
