@@ -129,7 +129,11 @@ export const CheckoutPage: React.FC = () => {
           throw new Error('Failed to load Razorpay payment SDK. Please check your internet connection.');
         }
 
-        const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID || razorpayData.keyId || 'rzp_live_TcIZCXvK2Eq2oZ';
+        // Use the exact key the order was created with so the order_id matches the account
+        const razorpayKey = razorpayData.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID;
+        if (!razorpayKey) {
+          throw new Error('Razorpay is not configured. Please contact support or use Cash on Delivery.');
+        }
 
         // 2. Configure Razorpay checkout options
         const options = {
@@ -316,11 +320,23 @@ export const CheckoutPage: React.FC = () => {
 
         {/* Payment Error Alert */}
         {paymentError && (
-          <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl flex items-center gap-3 text-xs">
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-            <div className="flex-1">
-              <strong>Payment Warning:</strong> {paymentError}
+          <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+              <div>
+                <strong>Payment Notice:</strong> {paymentError}
+              </div>
             </div>
+            <button
+              type="button"
+              onClick={() => {
+                setPaymentMethod('COD');
+                setPaymentError(null);
+              }}
+              className="px-3.5 py-1.5 bg-[#9A6B29] hover:bg-[#80561F] text-white font-semibold rounded-xl text-[11px] transition-colors whitespace-nowrap shadow-sm"
+            >
+              Switch to Cash on Delivery
+            </button>
           </div>
         )}
 
