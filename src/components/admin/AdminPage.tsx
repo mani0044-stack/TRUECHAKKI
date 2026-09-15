@@ -285,12 +285,23 @@ export const AdminPage: React.FC = () => {
 
     const itemsSummary =
       order.items && order.items.length > 0
-        ? order.items.map((it) => `• ${it.quantity}x ${it.productName} (${it.variantName}) - ₹${it.unitPrice}`).join('\n')
-        : '• Store Order Items';
+        ? order.items.map((it) => `- ${it.quantity}x ${it.productName} (${it.variantName}) - Rs. ${it.unitPrice}`).join('\n')
+        : '- Store Order Items';
 
-    const message = `Hello ${customerName}! 👋\n\nYour order at *True Chakki* has been *CONFIRMED*! 🎉\n\n📦 *Order ID:* ${orderId}\n💰 *Total Amount:* ₹${totalAmount}\n💳 *Payment Method:* ${paymentMethod}\n\n*Ordered Items:*\n${itemsSummary}\n\nThank you for choosing True Chakki for 100% natural stone-ground products! 🌾 We are processing your order with care.`;
+    const message = `Hello ${customerName}!
 
-    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+Your order at *True Chakki* has been *CONFIRMED*!
+
+*Order ID:* ${orderId}
+*Total Amount:* Rs. ${totalAmount}
+*Payment Method:* ${paymentMethod}
+
+*Ordered Items:*
+${itemsSummary}
+
+Thank you for choosing True Chakki for 100% natural stone-ground products! We are processing your order with care.`;
+
+    const waUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank');
     notifySuccess(`Opened WhatsApp confirmation message for Order #${orderId}`);
   };
