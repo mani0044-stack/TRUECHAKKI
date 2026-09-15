@@ -165,7 +165,7 @@ export const api = {
   },
 
   // Razorpay Integration
-  async createRazorpayOrder(amount: number, receipt?: string): Promise<{ id: string; amount: number; currency: string; keyId: string }> {
+  async createRazorpayOrder(amount: number, receipt?: string): Promise<{ id: string; amount: number; currency: string; keyId: string; isMock?: boolean; warning?: string }> {
     const res = await fetch(`${API_BASE_URL}/razorpay/create-order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -173,12 +173,13 @@ export const api = {
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err?.error || err?.details || 'Failed to initialize Razorpay checkout');
+      const errorMsg = err?.details && err?.error ? `${err.error} (${err.details})` : (err?.error || err?.details || 'Failed to initialize Razorpay checkout');
+      throw new Error(errorMsg);
     }
     return res.json();
   },
 
-  async verifyRazorpayPayment(payload: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }): Promise<{ success: boolean; paymentId?: string }> {
+  async verifyRazorpayPayment(payload: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }): Promise<{ success: boolean; paymentId?: string; isMock?: boolean }> {
     const res = await fetch(`${API_BASE_URL}/razorpay/verify-payment`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -186,7 +187,8 @@ export const api = {
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err?.error || err?.details || 'Razorpay payment signature verification failed');
+      const errorMsg = err?.details && err?.error ? `${err.error} (${err.details})` : (err?.error || err?.details || 'Razorpay payment signature verification failed');
+      throw new Error(errorMsg);
     }
     return res.json();
   },
