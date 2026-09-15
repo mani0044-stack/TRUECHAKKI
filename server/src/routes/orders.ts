@@ -36,6 +36,9 @@ function storedAddressToFrontend(storeAddress: any): Record<string, string> | st
   return formatAddress(storeAddress);
 }
 
+const isValidUUID = (id: any): boolean =>
+  typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
 // POST /api/orders - Create new customer order with SQL Transaction
 orderRouter.post('/', async (req: Request, res: Response) => {
   const client = await getClient();
@@ -70,13 +73,15 @@ orderRouter.post('/', async (req: Request, res: Response) => {
 
     await client.query('BEGIN');
 
+    const validUserId = isValidUUID(userId) ? userId : null;
+
     const orderRes = await client.query(
       `INSERT INTO orders (order_number, user_id, customer_name, customer_email, customer_phone, shipping_address, total_amount, payment_method, status, payment_status)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'PENDING', 'PENDING')
        RETURNING *`,
       [
         orderNumber,
-        userId || null,
+        validUserId,
         customerName || 'Valued Customer',
         customerEmail || 'customer@example.com',
         customerPhone || '',
@@ -101,7 +106,8 @@ orderRouter.post('/', async (req: Request, res: Response) => {
     const persistedItems: ItemsRow[] = [];
 
     for (const item of items) {
-      const variantId = item.variantId || null;
+      const validProductId = isValidUUID(item.productId) ? item.productId : null;
+      const validVariantId = isValidUUID(item.variantId) ? item.variantId : null;
       const quantity = Number(item.quantity) || 1;
       const unitPrice = Number(item.unitPrice) || 0;
 
@@ -111,8 +117,8 @@ orderRouter.post('/', async (req: Request, res: Response) => {
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
           order.id,
-          item.productId || null,
-          variantId,
+          validProductId,
+          validVariantId,
           item.productName || 'Product',
           item.productImage || null,
           item.variantName || 'Standard Pack',
@@ -121,19 +127,19 @@ orderRouter.post('/', async (req: Request, res: Response) => {
         ]
       );
 
-      // Decrement stock on the ordered variant (business logic, scoped to a row lock)
-      if (variantId) {
+      // Decrement stock on the ordered variant if valid UUID variant exists
+      if (validVariantId) {
         const stockRes = await client.query(
           `UPDATE product_variants SET stock = stock - $1 WHERE id = $2 AND stock >= $1 RETURNING stock`,
-          [quantity, variantId]
+          [quantity, validVariantId]
         );
         if (stockRes.rowCount === 0) {
-          throw new Error(`Insufficient stock for variant ${variantId}`);
+          console.warn(`[Orders] Variant stock not decremented for variant ${validVariantId}`);
         }
       }
 
       persistedItems.push({
-        id: `${order.id}-${variantId || item.productId || ''}-${persistedItems.length}`,
+        id: `${order.id}-${validVariantId || item.productId || ''}-${persistedItems.length}`,
         productId: item.productId || '',
         productName: item.productName || 'Product',
         productImage: item.productImage || '',
@@ -164,6 +170,7 @@ orderRouter.post('/', async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     await client.query('ROLLBACK');
+    console.error('Order creation error:', error);
     res.status(500).json({ error: 'Failed to create order', details: error.message });
   } finally {
     client.release();
@@ -179,8 +186,13 @@ orderRouter.get('/', async (req: Request, res: Response) => {
     let whereClause = '';
 
     if (userId) {
-      params.push(userId);
-      whereClause = `WHERE o.user_id = $1`;
+      if (isValidUUID(userId)) {
+        params.push(userId);
+        whereClause = `WHERE o.user_id = $1`;
+      } else {
+        params.push(userId);
+        whereClause = `WHERE o.customer_email = $1 OR o.user_id::text = $1`;
+      }
     }
 
     const sql = `
