@@ -97,7 +97,7 @@ export const CheckoutPage: React.FC = () => {
           console.warn('[Checkout] Processing mock Razorpay order:', razorpayData);
           
           // Verify mock payment signature on backend
-          const verifyRes = await api.verifyRazorpayPayment({
+          await api.verifyRazorpayPayment({
             razorpay_order_id: razorpayData.id,
             razorpay_payment_id: `pay_mock_${Date.now()}`,
             razorpay_signature: 'mock_signature',
