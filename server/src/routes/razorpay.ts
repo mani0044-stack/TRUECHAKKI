@@ -69,11 +69,11 @@ razorpayRouter.post('/create-order', async (req: Request, res: Response) => {
       rawError: error,
     });
 
-    // In development or when fallback is allowed, provide a seamless mock fallback if API keys are unauthenticated
-    const allowMockFallback = process.env.NODE_ENV !== 'production' || process.env.RAZORPAY_ALLOW_MOCK_FALLBACK === 'true';
+    // Only fallback to mock if explicitly enabled via RAZORPAY_ALLOW_MOCK_FALLBACK=true
+    const allowMockFallback = process.env.RAZORPAY_ALLOW_MOCK_FALLBACK === 'true';
 
     if (isAuthError && allowMockFallback) {
-      console.warn('[Razorpay] Authentication failed with configured keys. Falling back to Mock Payment Order for testing/development.');
+      console.warn('[Razorpay] Authentication failed with configured keys. Falling back to Mock Payment Order as RAZORPAY_ALLOW_MOCK_FALLBACK=true.');
       return res.json({
         id: `order_mock_${Date.now()}`,
         amount: amountInPaise,
