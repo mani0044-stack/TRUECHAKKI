@@ -86,7 +86,7 @@ export interface Order {
   totalAmount: number;
   status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED';
   shippingAddress: UserAddress;
-  paymentMethod: 'COD' | 'CARD' | 'UPI';
+  paymentMethod: 'RAZORPAY' | 'COD' | 'CARD' | 'UPI';
   customerName?: string;
   customerEmail?: string;
   customerPhone?: string;

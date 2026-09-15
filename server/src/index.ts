@@ -5,6 +5,7 @@ import { productRouter } from './routes/products.js';
 import { authRouter } from './routes/auth.js';
 import { orderRouter } from './routes/orders.js';
 import { categoryRouter } from './routes/categories.js';
+import { razorpayRouter } from './routes/razorpay.js';
 
 
 dotenv.config();
@@ -52,6 +53,9 @@ app.use('/orders', orderRouter);
 
 app.use('/api/categories', categoryRouter);
 app.use('/categories', categoryRouter);
+
+app.use('/api/razorpay', razorpayRouter);
+app.use('/razorpay', razorpayRouter);
 
 // Global Error Handler
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Truck, CreditCard, ArrowRight, CheckCircle2, ShoppingBag } from 'lucide-react';
+import { ShieldCheck, Truck, CreditCard, ArrowRight, CheckCircle2, ShoppingBag, Loader2, AlertCircle } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
 import { api } from '../../services/api';
 import type { Order } from '../../types';
+
+const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if ((window as any).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 export const CheckoutPage: React.FC = () => {
   const { items, getSubtotal, getShippingFee, getGrandTotal, clearCart } = useCartStore();
@@ -13,6 +27,8 @@ export const CheckoutPage: React.FC = () => {
 
   const [isCompleted, setIsCompleted] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   // Form State
   const [name, setName] = useState(user?.name || '');
@@ -22,7 +38,7 @@ export const CheckoutPage: React.FC = () => {
   const [city, setCity] = useState(user?.addresses[0]?.city || '');
   const [state] = useState(user?.addresses[0]?.state || 'Delhi');
   const [zipCode, setZipCode] = useState(user?.addresses[0]?.zipCode || '');
-  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'CARD' | 'UPI'>('COD');
+  const [paymentMethod, setPaymentMethod] = useState<'RAZORPAY' | 'COD' | 'CARD' | 'UPI'>('RAZORPAY');
 
   const subtotal = getSubtotal();
   const shippingFee = getShippingFee();
@@ -38,7 +54,7 @@ export const CheckoutPage: React.FC = () => {
         <p className="text-xs text-[#7C5C43]">Please add products to your cart before proceeding to checkout.</p>
         <button
           onClick={() => navigateTo('shop')}
-          className="px-6 py-2.5 bg-[#9A6B29] text-white font-semibold rounded-full text-xs"
+          className="px-6 py-2.5 bg-[#9A6B29] text-white font-semibold rounded-full text-xs hover:bg-[#80561F] transition-colors"
         >
           Return to Shop
         </button>
@@ -48,74 +64,151 @@ export const CheckoutPage: React.FC = () => {
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+    setPaymentError(null);
 
-    try {
-      const createdOrder = await api.createOrder({
-        userId: user?.id,
-        customerName: name,
-        customerEmail: email,
-        customerPhone: phone,
-        shippingAddress: {
-          id: `addr-${Date.now()}`,
-          street,
-          city,
-          state,
-          zipCode,
-          country: 'India',
-          isDefault: true,
-        },
-        totalAmount: grandTotal,
-        paymentMethod,
-        items: items.map((item) => ({
-          id: item.id,
-          productId: item.product.id,
-          productName: item.product.name,
-          productImage: item.product.image,
-          variantName: item.selectedVariant.weightSize,
-          unitPrice: item.selectedVariant.price,
-          quantity: item.quantity,
-        })),
-      });
+    const shippingAddressObj = {
+      id: `addr-${Date.now()}`,
+      street,
+      city,
+      state,
+      zipCode,
+      country: 'India',
+      isDefault: true,
+    };
 
-      addOrder(createdOrder);
-      setCompletedOrder(createdOrder);
-      setIsCompleted(true);
-      clearCart();
-    } catch (err: any) {
-      console.error('Failed to create order via DB API:', err);
-      const fallbackOrder: Order = {
-        id: `ord-${Date.now()}`,
-        orderNumber: `TC-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
-        date: new Date().toISOString().split('T')[0],
-        items: items.map((item) => ({
-          id: item.id,
-          productId: item.product.id,
-          productName: item.product.name,
-          productImage: item.product.image,
-          variantName: item.selectedVariant.weightSize,
-          unitPrice: item.selectedVariant.price,
-          quantity: item.quantity,
-        })),
-        subtotal,
-        shippingFee,
-        totalAmount: grandTotal,
-        status: 'PROCESSING',
-        shippingAddress: {
-          id: `addr-${Date.now()}`,
-          street,
-          city,
-          state,
-          zipCode,
-          country: 'India',
-          isDefault: true,
-        },
-        paymentMethod,
-      };
+    const orderItems = items.map((item) => ({
+      id: item.id,
+      productId: item.product.id,
+      productName: item.product.name,
+      productImage: item.product.image,
+      variantName: item.selectedVariant.weightSize,
+      unitPrice: item.selectedVariant.price,
+      quantity: item.quantity,
+    }));
 
-      addOrder(fallbackOrder);
-      setCompletedOrder(fallbackOrder);
-      setIsCompleted(true);
-      clearCart();
+    if (paymentMethod === 'RAZORPAY') {
+      setIsProcessing(true);
+      try {
+        const loaded = await loadRazorpayScript();
+        if (!loaded) {
+          throw new Error('Failed to load Razorpay payment SDK. Please check your internet connection.');
+        }
+
+        // 1. Create Razorpay order via backend
+        const razorpayData = await api.createRazorpayOrder(grandTotal, `receipt_${Date.now()}`);
+
+        const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID || razorpayData.keyId || 'rzp_live_TcIZCXvK2Eq2oZ';
+
+        // 2. Configure Razorpay checkout options
+        const options = {
+          key: razorpayKey,
+          amount: razorpayData.amount,
+          currency: razorpayData.currency || 'INR',
+          name: 'True Chakki',
+          description: 'Payment for Freshly Milled Flour & Farm Goods',
+          image: '/images/logo.png',
+          order_id: razorpayData.id,
+          prefill: {
+            name,
+            email,
+            contact: phone,
+          },
+          theme: {
+            color: '#9A6B29',
+          },
+          handler: async function (response: any) {
+            try {
+              // 3. Verify payment signature on backend
+              await api.verifyRazorpayPayment({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              });
+
+              // 4. Save order to database upon successful payment verification
+              const createdOrder = await api.createOrder({
+                userId: user?.id,
+                customerName: name,
+                customerEmail: email,
+                customerPhone: phone,
+                shippingAddress: shippingAddressObj,
+                totalAmount: grandTotal,
+                paymentMethod: 'RAZORPAY',
+                items: orderItems,
+              });
+
+              addOrder(createdOrder);
+              setCompletedOrder(createdOrder);
+              setIsCompleted(true);
+              clearCart();
+            } catch (err: any) {
+              console.error('Razorpay verification error:', err);
+              setPaymentError(err?.message || 'Payment verification failed. Please contact support.');
+            } finally {
+              setIsProcessing(false);
+            }
+          },
+          modal: {
+            ondismiss: function () {
+              setIsProcessing(false);
+            },
+          },
+        };
+
+        const razorpayInstance = new (window as any).Razorpay(options);
+        razorpayInstance.on('payment.failed', function (response: any) {
+          console.error('Razorpay Payment Failed:', response.error);
+          setPaymentError(`Payment failed: ${response.error.description || response.error.reason}`);
+          setIsProcessing(false);
+        });
+
+        razorpayInstance.open();
+      } catch (err: any) {
+        console.error('Razorpay order creation error:', err);
+        setPaymentError(err?.message || 'Failed to initialize Razorpay checkout. Please try again.');
+        setIsProcessing(false);
+      }
+    } else {
+      // Cash on Delivery Flow
+      setIsProcessing(true);
+      try {
+        const createdOrder = await api.createOrder({
+          userId: user?.id,
+          customerName: name,
+          customerEmail: email,
+          customerPhone: phone,
+          shippingAddress: shippingAddressObj,
+          totalAmount: grandTotal,
+          paymentMethod: 'COD',
+          items: orderItems,
+        });
+
+        addOrder(createdOrder);
+        setCompletedOrder(createdOrder);
+        setIsCompleted(true);
+        clearCart();
+      } catch (err: any) {
+        console.error('Failed to create order via DB API:', err);
+        const fallbackOrder: Order = {
+          id: `ord-${Date.now()}`,
+          orderNumber: `TC-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+          date: new Date().toISOString().split('T')[0],
+          items: orderItems,
+          subtotal,
+          shippingFee,
+          totalAmount: grandTotal,
+          status: 'PROCESSING',
+          shippingAddress: shippingAddressObj,
+          paymentMethod: 'COD',
+        };
+
+        addOrder(fallbackOrder);
+        setCompletedOrder(fallbackOrder);
+        setIsCompleted(true);
+        clearCart();
+      } finally {
+        setIsProcessing(false);
+      }
     }
   };
 
@@ -143,7 +236,7 @@ export const CheckoutPage: React.FC = () => {
           <div className="flex justify-between items-center border-b border-[#E8DCCB] pb-3">
             <h3 className="font-serif font-bold text-base text-[#4A2B18]">Order Details</h3>
             <span className="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full">
-              {completedOrder.status}
+              {completedOrder.paymentMethod === 'RAZORPAY' ? 'PAID via Razorpay' : completedOrder.status}
             </span>
           </div>
 
@@ -189,9 +282,19 @@ export const CheckoutPage: React.FC = () => {
           <p className="text-xs text-[#7C5C43]">Complete your order details below to receive freshly milled farm products.</p>
         </div>
 
+        {/* Payment Error Alert */}
+        {paymentError && (
+          <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl flex items-center gap-3 text-xs">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+            <div className="flex-1">
+              <strong>Payment Warning:</strong> {paymentError}
+            </div>
+          </div>
+        )}
+
         <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
-          {/* Left Form (8 Cols) */}
+          {/* Left Form (7 Cols) */}
           <div className="lg:col-span-7 space-y-8">
             
             {/* Step 1: Contact & Address */}
@@ -273,33 +376,46 @@ export const CheckoutPage: React.FC = () => {
                 2. Select Payment Method
               </h3>
 
-              <div className="space-y-2 text-xs">
-                <label className={`flex items-center justify-between p-3.5 bg-white border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'COD' ? 'border-[#9A6B29] bg-[#FAF4E8]' : 'border-[#E8DCCB]'}`}>
-                  <div className="flex items-center gap-3">
+              <div className="space-y-3 text-xs">
+                {/* Razorpay Online Gateway Option */}
+                <label className={`flex items-center justify-between p-4 bg-white border-2 rounded-2xl cursor-pointer transition-all ${paymentMethod === 'RAZORPAY' ? 'border-[#9A6B29] bg-[#FAF4E8] shadow-sm' : 'border-[#E8DCCB] hover:border-[#9A6B29]/50'}`}>
+                  <div className="flex items-center gap-3.5">
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === 'RAZORPAY'}
+                      onChange={() => setPaymentMethod('RAZORPAY')}
+                      className="accent-[#9A6B29] w-4 h-4"
+                    />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-[#4A2B18] text-sm">Razorpay Secure Online Checkout</span>
+                        <span className="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Instant</span>
+                      </div>
+                      <p className="text-[11px] text-[#7C5C43] mt-0.5">UPI (GPay, PhonePe, Paytm), Credit/Debit Cards, Netbanking & Wallets</p>
+                    </div>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-1.5 opacity-80">
+                    <span className="text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">UPI</span>
+                    <span className="text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">Card</span>
+                  </div>
+                </label>
+
+                {/* Cash on Delivery Option */}
+                <label className={`flex items-center justify-between p-4 bg-white border rounded-2xl cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-[#9A6B29] bg-[#FAF4E8]' : 'border-[#E8DCCB]'}`}>
+                  <div className="flex items-center gap-3.5">
                     <input
                       type="radio"
                       name="payment"
                       checked={paymentMethod === 'COD'}
                       onChange={() => setPaymentMethod('COD')}
-                      className="accent-[#9A6B29]"
+                      className="accent-[#9A6B29] w-4 h-4"
                     />
-                    <span className="font-semibold text-[#4A2B18]">Cash on Delivery (COD)</span>
+                    <div>
+                      <span className="font-semibold text-[#4A2B18] text-sm">Cash on Delivery (COD)</span>
+                      <p className="text-[11px] text-[#7C5C43]">Pay cash at your doorstep upon order delivery</p>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-[#7C5C43]">Pay at doorstep</span>
-                </label>
-
-                <label className={`flex items-center justify-between p-3.5 bg-white border rounded-xl cursor-pointer transition-colors ${paymentMethod === 'UPI' ? 'border-[#9A6B29] bg-[#FAF4E8]' : 'border-[#E8DCCB]'}`}>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="payment"
-                      checked={paymentMethod === 'UPI'}
-                      onChange={() => setPaymentMethod('UPI')}
-                      className="accent-[#9A6B29]"
-                    />
-                    <span className="font-semibold text-[#4A2B18]">Instant UPI / QR Code</span>
-                  </div>
-                  <span className="text-[11px] text-[#7C5C43]">GPay, PhonePe, Paytm</span>
                 </label>
               </div>
             </div>
@@ -316,7 +432,7 @@ export const CheckoutPage: React.FC = () => {
               <div className="space-y-3 max-h-60 overflow-y-auto custom-scrollbar">
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-3 text-xs">
-                    <img src={item.product.image} alt={item.product.name} className="w-12 h-12 object-cover rounded-lg bg-white" />
+                    <img src={item.product.image} alt={item.product.name} className="w-12 h-12 object-cover rounded-lg bg-white border border-gray-100" />
                     <div className="flex-1">
                       <h4 className="font-semibold text-[#4A2B18] line-clamp-1">{item.product.name}</h4>
                       <span className="text-[#7C5C43]">{item.selectedVariant.weightSize} x {item.quantity}</span>
@@ -345,15 +461,25 @@ export const CheckoutPage: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full py-4 bg-[#9A6B29] hover:bg-[#80561F] text-white font-semibold rounded-full text-xs uppercase tracking-wider shadow-xl transition-all flex items-center justify-center gap-2"
+                disabled={isProcessing}
+                className="w-full py-4 bg-[#9A6B29] hover:bg-[#80561F] text-white font-semibold rounded-full text-xs uppercase tracking-wider shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed"
               >
-                <span>Place Order Now</span>
-                <ArrowRight className="w-4 h-4" />
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Processing Payment...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{paymentMethod === 'RAZORPAY' ? 'Proceed to Razorpay Payment' : 'Place Order Now'}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
 
               <div className="flex items-center justify-center gap-2 text-xs text-[#7C5C43] pt-2">
                 <ShieldCheck className="w-4 h-4 text-green-700" />
-                <span>100% Encrypted & Safe Order</span>
+                <span>100% Encrypted & Safe Razorpay Checkout</span>
               </div>
             </div>
           </div>

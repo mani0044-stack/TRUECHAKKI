@@ -164,6 +164,33 @@ export const api = {
     return res.json();
   },
 
+  // Razorpay Integration
+  async createRazorpayOrder(amount: number, receipt?: string): Promise<{ id: string; amount: number; currency: string; keyId: string }> {
+    const res = await fetch(`${API_BASE_URL}/razorpay/create-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount, receipt }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error || err?.details || 'Failed to initialize Razorpay checkout');
+    }
+    return res.json();
+  },
+
+  async verifyRazorpayPayment(payload: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }): Promise<{ success: boolean; paymentId?: string }> {
+    const res = await fetch(`${API_BASE_URL}/razorpay/verify-payment`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error || err?.details || 'Razorpay payment signature verification failed');
+    }
+    return res.json();
+  },
+
   // Health
   async checkHealth(): Promise<any> {
     const res = await fetch(`${API_BASE_URL}/health`);

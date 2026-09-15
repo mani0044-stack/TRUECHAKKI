@@ -4,6 +4,7 @@ import { useProductStore } from './store/useProductStore';
 
 // UI Preloader
 import { LogoPreloader } from './components/ui/LogoPreloader';
+import { YouTubeTopLoader } from './components/ui/YouTubeTopLoader';
 
 // Layout Components
 import { Navbar } from './components/layout/Navbar';
@@ -113,6 +114,9 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FDFBF7] text-[#4A2B18] antialiased">
+      {/* YouTube Navigation Top Loader */}
+      <YouTubeTopLoader />
+
       {/* Brand Logo Preloader */}
       {!preloaderDone && <LogoPreloader onComplete={() => setPreloaderDone(true)} />}
 
