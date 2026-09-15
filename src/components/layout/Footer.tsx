@@ -79,10 +79,15 @@ export const Footer: React.FC = () => {
             </p>
 
             <div className="space-y-2 text-xs text-[#FAF4E8]/70 pt-2 flex flex-col items-center md:items-start">
-              <div className="flex items-center justify-center md:justify-start gap-2">
+              <a
+                href="https://www.google.com/maps/place/MV54%2BMW8+True+Chakki,+Airport+Rd,+Gumtala+Sub+Urban,+Defence+Colony,D-Block,+Ranjit+Avenue,+Amritsar,+Punjab+143001/@31.6591504,74.8572704,16z/data=!4m6!3m5!1s0x391965007fe6d2c7:0x531acda800df9099!8m2!3d31.6591504!4d74.8572704!16s%2Fg%2F11yqk7rvzz?g_ep=Eg1tbF8yMDI2MDkwOF8wIOC7DCoASAJQAg%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center md:justify-start gap-2 hover:text-[#CFB57F] transition-colors group text-left"
+              >
                 <MapPin className="w-4 h-4 text-[#CFB57F] shrink-0" />
-                <span>Farm Estate, NH-8, Gurugram, Haryana - 122001</span>
-              </div>
+                <span>Airport Rd, Defence Colony, D-Block, Ranjit Avenue, Amritsar, Punjab 143001</span>
+              </a>
               <div className="flex items-center justify-center md:justify-start gap-2">
                 <Phone className="w-4 h-4 text-[#CFB57F] shrink-0" />
                 <span>+91 98765 43210 / 1800-TRUE-CHAKKI</span>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, MessageSquare, ExternalLink, Check, Copy } from 'lucide-react';
 
+const GOOGLE_MAPS_URL = "https://www.google.com/maps/place/MV54%2BMW8+True+Chakki,+Airport+Rd,+Gumtala+Sub+Urban,+Defence+Colony,D-Block,+Ranjit+Avenue,+Amritsar,+Punjab+143001/@31.6591504,74.8572704,16z/data=!4m6!3m5!1s0x391965007fe6d2c7:0x531acda800df9099!8m2!3d31.6591504!4d74.8572704!16s%2Fg%2F11yqk7rvzz?g_ep=Eg1tbF8yMDI2MDkwOF8wIOC7DCoASAJQAg%3D%3D";
+
 export const ContactPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -29,6 +31,10 @@ export const ContactPage: React.FC = () => {
     window.open('https://facebook.com/truechakki', '_blank');
   };
 
+  const openGoogleMaps = () => {
+    window.open(GOOGLE_MAPS_URL, '_blank');
+  };
+
   return (
     <div className="bg-[#FDFBF7] min-h-screen pt-28 sm:pt-32 pb-16 px-4 sm:px-6 lg:px-8 space-y-12 relative">
       {/* Toast Notification */}
@@ -48,7 +54,7 @@ export const ContactPage: React.FC = () => {
           Get in Touch with True Chakki
         </h1>
         <p className="text-sm sm:text-base text-[#7C5C43] leading-relaxed max-w-2xl mx-auto">
-          Connect directly with our team on social media or reach out to our farm office for product inquiries, bulk orders, and support.
+          Connect directly with our team on social media or visit our store & milling unit in Amritsar.
         </p>
       </div>
 
@@ -57,7 +63,7 @@ export const ContactPage: React.FC = () => {
         {/* Info Box & Store Details (5 Cols) */}
         <div className="lg:col-span-5 bg-[#FAF6EE] p-8 rounded-3xl border border-[#E8DCCB] space-y-8 shadow-xs">
           <div>
-            <h2 className="font-serif text-2xl font-bold text-[#4A2B18] mb-2">Contact Details</h2>
+            <h2 className="font-serif text-2xl font-bold text-[#4A2B18] mb-2">Contact & Store Location</h2>
             <p className="text-xs text-[#7C5C43]">Our team is always happy to assist you with fresh stone-milled flours, oils, and organic produce.</p>
           </div>
 
@@ -66,9 +72,23 @@ export const ContactPage: React.FC = () => {
               <div className="p-2.5 bg-[#9A6B29]/10 rounded-xl text-[#9A6B29] shrink-0 mt-0.5">
                 <MapPin className="w-5 h-5" />
               </div>
-              <div className="space-y-0.5">
-                <strong className="block font-semibold text-sm text-[#4A2B18]">Milling Unit & Farm Office</strong>
-                <span className="text-[#7C5C43] leading-relaxed block">Farm Estate, NH-8, Gurugram, Haryana - 122001</span>
+              <div className="space-y-2 w-full">
+                <strong className="block font-semibold text-sm text-[#4A2B18]">True Chakki Store & Milling Unit</strong>
+                <a
+                  href={GOOGLE_MAPS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#7C5C43] hover:text-[#9A6B29] leading-relaxed block transition-colors group"
+                >
+                  MV54+MW8 True Chakki, Airport Rd, Gumtala Sub Urban, Defence Colony, D-Block, Ranjit Avenue, Amritsar, Punjab 143001
+                </a>
+                <button
+                  onClick={openGoogleMaps}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#9A6B29] hover:bg-[#80561F] text-white text-[11px] font-semibold rounded-lg transition-colors cursor-pointer shadow-xs mt-1"
+                >
+                  <span>Open in Google Maps</span>
+                  <ExternalLink className="w-3 h-3" />
+                </button>
               </div>
             </div>
 
