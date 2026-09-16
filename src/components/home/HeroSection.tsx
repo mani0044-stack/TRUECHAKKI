@@ -24,7 +24,7 @@ export const HeroSection: React.FC = () => {
         {/* Desktop Background Image (Visible on sm and up) */}
         <div
           className="hidden sm:block absolute inset-0 bg-cover bg-[position:78%_center] lg:bg-center bg-no-repeat z-0 opacity-100"
-          style={{ backgroundImage: `url('/images/IMG_7347.png')` }}
+          style={{ backgroundImage: `url('/images/IMG_7637new.PNG')` }}
         />
 
         {/* Text Content Overlay - Elevated Upside on Mobile */}
