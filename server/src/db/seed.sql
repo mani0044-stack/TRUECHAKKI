@@ -1,240 +1,264 @@
--- True Chakki PostgreSQL Category & Product Insert Script
--- Works with any PostgreSQL client (pgAdmin, DBeaver, Neon Console, psql)
+-- True Chakki seed.sql
+-- IDs use simple deterministic UUIDs because schema.sql defines UUID primary/foreign keys.
+-- Category IDs: C001-C006 conceptually; Product IDs: P001-P035 conceptually.
+-- Seeds categories, products, and product variants from the supplied product catalogue.
+-- Run after schema.sql.
 
--- Enable UUID Extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+BEGIN;
 
--- ============================================================================
--- 1. INSERT CATEGORIES
--- ============================================================================
-INSERT INTO categories (name, slug, description, image)
-VALUES 
-  (
-    'Stone Ground Atta', 
-    'atta', 
-    'Freshly ground 100% natural stone chakki flour preserving all bran, fiber, and aroma.', 
-    '/img/groundatta.PNG'
-  ),
-  (
-    'Wood-Pressed Oils', 
-    'oils',
-    'Traditional cold-pressed unrefined oils extracted in wooden kolhu at low RPM.', 
-    '/img/woodpressedoil.PNG'
-  ),
-  (
-    'Authentic Pickles', 
-    'pickles', 
-    'Sun-dried homemade pickles crafted with cold-pressed oils and heritage spices.', 
-    '/img/authenticpickles.PNG'
-  ),
-  (
-    'Pure Spices', 
-    'spices', 
-    'Whole & stone-ground single origin aromatic Indian spices without artificial colors.', 
-    '/images/hero-bg.jpg'
-  )
-ON CONFLICT (slug) DO UPDATE 
-SET name = EXCLUDED.name, description = EXCLUDED.description, image = EXCLUDED.image;
+-- Clean existing catalogue data so this seed can be safely re-run.
+-- Product variants and products are removed before categories because of FK constraints.
+DELETE FROM product_variants;
+DELETE FROM products;
+DELETE FROM categories;
 
+-- ============================================================
+-- CATEGORIES
+-- ============================================================
 
--- ============================================================================
--- 2. INSERT PRODUCTS
--- ============================================================================
+INSERT INTO categories (id, name, slug, description, image)
+VALUES
+  ('00000000-0000-0000-0000-100000000001', 'Fresh Atta', 'fresh-atta',
+   'Stone Ground • No Preservatives • Freshly Milled', '/images/categories/fresh-atta.jpg'),
+  ('00000000-0000-0000-0000-100000000002', 'Fresh Biscuits', 'fresh-biscuits',
+   'Freshly baked biscuits made with wholesome ingredients.', '/images/categories/fresh-biscuits.jpg'),
+  ('00000000-0000-0000-0000-100000000003', 'Wood-Pressed Oils', 'wood-pressed-oils',
+   'Traditional wood-pressed oils made for everyday cooking and wellness.', '/images/categories/wood-pressed-oils.jpg'),
+  ('00000000-0000-0000-0000-100000000004', 'Achaar & Chutneys', 'achaar-chutneys',
+   'Traditional pickles, chutneys, dips and sauces.', '/images/categories/achaar-chutneys.jpg'),
+  ('00000000-0000-0000-0000-100000000005', 'Masalas & Tea', 'masalas-tea',
+   'Aromatic masalas and tea essentials for your kitchen.', '/images/categories/masalas-tea.jpg'),
+  ('00000000-0000-0000-0000-100000000006', 'Sharbat, Gulkand & Honey', 'sharbat-gulkand-honey',
+   'Traditional sharbats, gulkand and natural honey.', '/images/categories/sharbat-gulkand-honey.jpg');
 
--- Product 1: Whole Wheat Atta (Stone Ground)
-INSERT INTO products (
-  name, slug, category_id, description, base_price, rating, review_count, is_featured, image, gallery, ingredients, nutritional_info
-)
-VALUES (
-  'Whole Wheat Atta (Stone Ground)',
-  'whole-wheat-atta',
-  (SELECT id FROM categories WHERE slug = 'atta'),
-  '100% Natural Sharbati whole wheat ground using traditional stone chakki at slow RPM. Slow milling preserves natural bran, fiber, germ nutrients, and rich traditional aroma. No maida, no bleached flour, and zero chemical preservatives.',
-  380.00,
-  4.90,
-  248,
-  TRUE,
-  '/images/hero-bg.jpg',
-  '["/images/hero-bg.jpg"]'::jsonb,
-  '["100% Single-Origin Sharbati Whole Wheat Grains"]'::jsonb,
-  '{"calories": "364 kcal", "protein": "12.8g", "carbs": "71.2g", "fat": "1.9g", "fiber": "11.5g"}'::jsonb
-)
-ON CONFLICT (slug) DO UPDATE 
-SET name = EXCLUDED.name, base_price = EXCLUDED.base_price, description = EXCLUDED.description;
+-- ============================================================
+-- PRODUCTS + VARIANTS
+-- base_price = price of the first/default variant
+-- ============================================================
 
--- Product 2: Cold-Pressed Mustard Oil (Kachi Ghani)
-INSERT INTO products (
-  name, slug, category_id, description, base_price, rating, review_count, is_featured, image, gallery, ingredients, nutritional_info
-)
-VALUES (
-  'Cold-Pressed Mustard Oil (Kachi Ghani)',
-  'cold-pressed-mustard-oil',
-  (SELECT id FROM categories WHERE slug = 'oils'),
-  'Extracted from premium yellow mustard seeds using traditional wooden press (Kolhu) without heat generation or solvent extraction. Retains natural pungency, golden clarity, high MUFA, and essential Omega-3 fatty acids.',
-  245.00,
-  4.95,
-  194,
-  TRUE,
-  '/images/hero-bg.jpg',
-  '["/images/hero-bg.jpg"]'::jsonb,
-  '["100% Cold Pressed Yellow Mustard Seeds"]'::jsonb,
-  '{"calories": "884 kcal", "protein": "0g", "carbs": "0g", "fat": "100g", "fiber": "0g"}'::jsonb
-)
-ON CONFLICT (slug) DO UPDATE 
-SET name = EXCLUDED.name, base_price = EXCLUDED.base_price, description = EXCLUDED.description;
+-- Fresh Atta
+INSERT INTO products
+  (id, name, slug, description, category_id, base_price, rating, review_count, is_featured, image, gallery, nutritional_info, ingredients)
+VALUES
+  ('00000000-0000-0000-0001-100000000001', 'MP Sharbati Atta', 'mp-sharbati-atta',
+   'Freshly milled MP Sharbati Atta, stone ground with no preservatives.',
+   '00000000-0000-0000-0000-100000000001', 60, 4.9, 0, TRUE,
+   '/images/products/mp-sharbati-atta.jpg', '[]', '{}', '[]'),
 
--- Product 3: Traditional Mango Pickle (Aam Ka Achar)
-INSERT INTO products (
-  name, slug, category_id, description, base_price, rating, review_count, is_featured, image, gallery, ingredients, nutritional_info
-)
-VALUES (
-  'Traditional Mango Pickle (Aam Ka Achar)',
-  'traditional-mango-pickle',
-  (SELECT id FROM categories WHERE slug = 'pickles'),
-  'Handcrafted raw Ramkela mangoes marinated in raw mustard oil, fenugreek, nigella, and rock salt. Sun-cured in traditional ceramic jars (Barnis) for 21 days for authentic home flavor.',
-  290.00,
-  4.88,
-  162,
-  TRUE,
-  '/images/hero-bg.jpg',
-  '["/images/hero-bg.jpg"]'::jsonb,
-  '["Raw Mangoes", "Cold-Pressed Mustard Oil", "Fenugreek", "Fennel", "Nigella Seeds", "Rock Salt", "Turmeric"]'::jsonb,
-  '{"calories": "180 kcal", "protein": "2.1g", "carbs": "14.5g", "fat": "12.8g", "fiber": "3.2g"}'::jsonb
-)
-ON CONFLICT (slug) DO UPDATE 
-SET name = EXCLUDED.name, base_price = EXCLUDED.base_price, description = EXCLUDED.description;
+  ('00000000-0000-0000-0001-100000000002', 'Farm Fresh Atta', 'farm-fresh-atta',
+   'Freshly milled farm fresh atta, stone ground with no preservatives.',
+   '00000000-0000-0000-0000-100000000001', 46, 4.9, 0, TRUE,
+   '/images/products/farm-fresh-atta.jpg', '[]', '{}', '[]'),
 
--- Product 4: Stone-Ground Turmeric Powder (Haldi)
-INSERT INTO products (
-  name, slug, category_id, description, base_price, rating, review_count, is_featured, image, gallery, ingredients, nutritional_info
-)
-VALUES (
-  'Stone-Ground Turmeric Powder (Haldi)',
-  'stone-ground-turmeric-powder',
-  (SELECT id FROM categories WHERE slug = 'spices'),
-  'High-curcumin Lakadong turmeric rhizomes slow-milled on granite stones. Rich deep golden yellow color with high medicinal potency and zero artificial food dyes.',
-  190.00,
-  4.92,
-  118,
-  FALSE,
-  '/images/hero-bg.jpg',
-  '["/images/hero-bg.jpg"]'::jsonb,
-  '["100% Pure Single-Origin Lakadong Turmeric Roots"]'::jsonb,
-  '{"calories": "349 kcal", "protein": "7.8g", "carbs": "65g", "fat": "9.9g", "fiber": "21g"}'::jsonb
-)
-ON CONFLICT (slug) DO UPDATE 
-SET name = EXCLUDED.name, base_price = EXCLUDED.base_price, description = EXCLUDED.description;
+  ('00000000-0000-0000-0001-100000000003', 'Bajra Atta', 'bajra-atta',
+   'Freshly milled stone-ground Bajra Atta.',
+   '00000000-0000-0000-0000-100000000001', 80, 4.9, 0, FALSE,
+   '/images/products/bajra-atta.jpg', '[]', '{}', '[]'),
 
--- Product 5: 7 Grains Multigrain Super Atta
-INSERT INTO products (
-  name, slug, category_id, description, base_price, rating, review_count, is_featured, image, gallery, ingredients, nutritional_info
-)
-VALUES (
-  '7 Grains Multigrain Super Atta',
-  'multigrain-super-atta',
-  (SELECT id FROM categories WHERE slug = 'atta'),
-  'A nutrient-dense blend of 7 ancient grains: Sharbati Wheat, Desi Chana, Jowar, Bajra, Ragi, Oats, and Soybeans. Formulated for high dietary fiber, low glycemic index, and soft fluffy rotis.',
-  490.00,
-  4.85,
-  165,
-  FALSE,
-  '/images/hero-bg.jpg',
-  '["/images/hero-bg.jpg"]'::jsonb,
-  '["Sharbati Wheat", "Desi Chana", "Jowar", "Bajra", "Ragi", "Oats", "Defatted Soy"]'::jsonb,
-  '{"calories": "372 kcal", "protein": "15.4g", "carbs": "68.5g", "fat": "3.1g", "fiber": "14.2g"}'::jsonb
-)
-ON CONFLICT (slug) DO UPDATE 
-SET name = EXCLUDED.name, base_price = EXCLUDED.base_price, description = EXCLUDED.description;
+  ('00000000-0000-0000-0001-100000000004', 'Ragi Atta', 'ragi-atta',
+   'Freshly milled stone-ground Ragi Atta.',
+   '00000000-0000-0000-0000-100000000001', 90, 4.9, 0, FALSE,
+   '/images/products/ragi-atta.jpg', '[]', '{}', '[]'),
 
--- Product 6: Cold-Pressed Groundnut (Peanut) Oil
-INSERT INTO products (
-  name, slug, category_id, description, base_price, rating, review_count, is_featured, image, gallery, ingredients, nutritional_info
-)
-VALUES (
-  'Cold-Pressed Groundnut (Peanut) Oil',
-  'cold-pressed-groundnut-oil',
-  (SELECT id FROM categories WHERE slug = 'oils'),
-  'Cold-pressed from handpicked Saurashtra groundnuts. High smoke point makes it perfect for everyday Indian cooking and deep frying while retaining sweet nutty aroma.',
-  280.00,
-  4.91,
-  142,
-  FALSE,
-  '/images/hero-bg.jpg',
-  '["/images/hero-bg.jpg"]'::jsonb,
-  '["100% Native Groundnut Seeds"]'::jsonb,
-  '{"calories": "884 kcal", "protein": "0g", "carbs": "0g", "fat": "100g", "fiber": "0g"}'::jsonb
-)
-ON CONFLICT (slug) DO UPDATE 
-SET name = EXCLUDED.name, base_price = EXCLUDED.base_price, description = EXCLUDED.description;
+  ('00000000-0000-0000-0001-100000000005', 'Kangni Atta', 'kangni-atta',
+   'Freshly milled stone-ground Kangni Atta.',
+   '00000000-0000-0000-0000-100000000001', 90, 4.9, 0, FALSE,
+   '/images/products/kangni-atta.jpg', '[]', '{}', '[]'),
 
--- Product 7: Sun-Cured Spiced Lemon Pickle
-INSERT INTO products (
-  name, slug, category_id, description, base_price, rating, review_count, is_featured, image, gallery, ingredients, nutritional_info
-)
-VALUES (
-  'Sun-Cured Spiced Lemon Pickle',
-  'sun-cured-lemon-pickle',
-  (SELECT id FROM categories WHERE slug = 'pickles'),
-  'Juicy Kagzi lemons aged under the sun in earthen pots with digestive carom seeds (ajwain), black salt, and dry roasted spices. Oil-free traditional digestive pickles.',
-  230.00,
-  4.79,
-  88,
-  FALSE,
-  '/images/hero-bg.jpg',
-  '["/images/hero-bg.jpg"]'::jsonb,
-  '["Kagzi Lemons", "Sendha Namak (Rock Salt)", "Ajwain", "Black Pepper", "Cumin", "Asafoetida (Hing)"]'::jsonb,
-  '{"calories": "92 kcal", "protein": "1.2g", "carbs": "18.4g", "fat": "0.4g", "fiber": "5.2g"}'::jsonb
-)
-ON CONFLICT (slug) DO UPDATE 
-SET name = EXCLUDED.name, base_price = EXCLUDED.base_price, description = EXCLUDED.description;
+  ('00000000-0000-0000-0001-100000000006', 'Jowar Atta', 'jowar-atta',
+   'Freshly milled stone-ground Jowar Atta.',
+   '00000000-0000-0000-0000-100000000001', 90, 4.9, 0, FALSE,
+   '/images/products/jowar-atta.jpg', '[]', '{}', '[]'),
 
+  ('00000000-0000-0000-0001-100000000007', 'Jau Atta', 'jau-atta',
+   'Freshly milled stone-ground Jau Atta.',
+   '00000000-0000-0000-0000-100000000001', 90, 4.9, 0, FALSE,
+   '/images/products/jau-atta.jpg', '[]', '{}', '[]'),
 
--- ============================================================================
--- 3. INSERT PRODUCT VARIANTS
--- ============================================================================
+  ('00000000-0000-0000-0001-100000000008', 'Multigrain Atta', 'multigrain-atta',
+   'Freshly milled multigrain atta, stone ground with no preservatives.',
+   '00000000-0000-0000-0000-100000000001', 90, 4.9, 0, TRUE,
+   '/images/products/multigrain-atta.jpg', '[]', '{}', '[]'),
 
--- Variants for Whole Wheat Atta
-INSERT INTO product_variants (product_id, weight_size, price, stock, sku) VALUES
-  ((SELECT id FROM products WHERE slug = 'whole-wheat-atta'), '1kg Pack', 85.00, 150, 'TC-ATTA-1K'),
-  ((SELECT id FROM products WHERE slug = 'whole-wheat-atta'), '5kg Bag', 380.00, 80, 'TC-ATTA-5K'),
-  ((SELECT id FROM products WHERE slug = 'whole-wheat-atta'), '10kg Family Bag', 720.00, 45, 'TC-ATTA-10K')
-ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price, stock = EXCLUDED.stock;
+  ('00000000-0000-0000-0001-100000000009', 'Black Chana Atta', 'black-chana-atta',
+   'Freshly milled Black Chana Atta.',
+   '00000000-0000-0000-0000-100000000001', 120, 4.9, 0, FALSE,
+   '/images/products/black-chana-atta.jpg', '[]', '{}', '[]'),
 
--- Variants for Cold-Pressed Mustard Oil
-INSERT INTO product_variants (product_id, weight_size, price, stock, sku) VALUES
-  ((SELECT id FROM products WHERE slug = 'cold-pressed-mustard-oil'), '500ml Bottle', 130.00, 120, 'TC-OIL-500M'),
-  ((SELECT id FROM products WHERE slug = 'cold-pressed-mustard-oil'), '1 Litre Glass Bottle', 245.00, 95, 'TC-OIL-1L'),
-  ((SELECT id FROM products WHERE slug = 'cold-pressed-mustard-oil'), '5 Litre Can', 1150.00, 30, 'TC-OIL-5L')
-ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price, stock = EXCLUDED.stock;
+  ('00000000-0000-0000-0001-100000000010', 'Kodra Atta', 'kodra-atta',
+   'Freshly milled stone-ground Kodra Atta.',
+   '00000000-0000-0000-0000-100000000001', 110, 4.9, 0, FALSE,
+   '/images/products/kodra-atta.jpg', '[]', '{}', '[]'),
 
--- Variants for Traditional Mango Pickle
-INSERT INTO product_variants (product_id, weight_size, price, stock, sku) VALUES
-  ((SELECT id FROM products WHERE slug = 'traditional-mango-pickle'), '350g Glass Jar', 290.00, 60, 'TC-MANGO-350G'),
-  ((SELECT id FROM products WHERE slug = 'traditional-mango-pickle'), '700g Heritage Jar', 540.00, 40, 'TC-MANGO-700G')
-ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price, stock = EXCLUDED.stock;
+  ('00000000-0000-0000-0001-100000000011', 'Quinoa Atta', 'quinoa-atta',
+   'Freshly milled Quinoa Atta.',
+   '00000000-0000-0000-0000-100000000001', 160, 4.9, 0, FALSE,
+   '/images/products/quinoa-atta.jpg', '[]', '{}', '[]'),
 
--- Variants for Stone-Ground Turmeric Powder
-INSERT INTO product_variants (product_id, weight_size, price, stock, sku) VALUES
-  ((SELECT id FROM products WHERE slug = 'stone-ground-turmeric-powder'), '250g Pouch', 190.00, 90, 'TC-HALDI-250G'),
-  ((SELECT id FROM products WHERE slug = 'stone-ground-turmeric-powder'), '500g Eco Pack', 350.00, 50, 'TC-HALDI-500G')
-ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price, stock = EXCLUDED.stock;
+  ('00000000-0000-0000-0001-100000000012', 'Sugar-Free Atta', 'sugar-free-atta',
+   'Freshly milled Sugar-Free Atta.',
+   '00000000-0000-0000-0000-100000000001', 200, 4.9, 0, TRUE,
+   '/images/products/sugar-free-atta.jpg', '[]', '{}', '[]'),
 
--- Variants for 7 Grains Multigrain Super Atta
-INSERT INTO product_variants (product_id, weight_size, price, stock, sku) VALUES
-  ((SELECT id FROM products WHERE slug = 'multigrain-super-atta'), '5kg Bag', 490.00, 75, 'TC-MULTI-5K'),
-  ((SELECT id FROM products WHERE slug = 'multigrain-super-atta'), '10kg Bag', 920.00, 30, 'TC-MULTI-10K')
-ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price, stock = EXCLUDED.stock;
+  ('00000000-0000-0000-0001-100000000013', 'Khapli Atta', 'khapli-atta',
+   'Freshly milled Khapli Atta.',
+   '00000000-0000-0000-0000-100000000001', 200, 4.9, 0, TRUE,
+   '/images/products/khapli-atta.jpg', '[]', '{}', '[]'),
 
--- Variants for Cold-Pressed Groundnut Oil
-INSERT INTO product_variants (product_id, weight_size, price, stock, sku) VALUES
-  ((SELECT id FROM products WHERE slug = 'cold-pressed-groundnut-oil'), '1 Litre Bottle', 280.00, 85, 'TC-GNOIL-1L'),
-  ((SELECT id FROM products WHERE slug = 'cold-pressed-groundnut-oil'), '5 Litre Can', 1320.00, 25, 'TC-GNOIL-5L')
-ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price, stock = EXCLUDED.stock;
+-- Fresh Biscuits
+  ('00000000-0000-0000-0001-100000000014', 'Atta Biscuits', 'atta-biscuits',
+   'Fresh Atta Biscuits.', '00000000-0000-0000-0000-100000000002', 150, 4.9, 0, FALSE,
+   '/images/products/atta-biscuits.jpg', '[]', '{}', '[]'),
 
--- Variants for Sun-Cured Spiced Lemon Pickle
-INSERT INTO product_variants (product_id, weight_size, price, stock, sku) VALUES
-  ((SELECT id FROM products WHERE slug = 'sun-cured-lemon-pickle'), '300g Jar', 150.00, 75, 'TC-LMN-300G'),
-  ((SELECT id FROM products WHERE slug = 'sun-cured-lemon-pickle'), '500g Jar', 230.00, 40, 'TC-LMN-500G')
-ON CONFLICT (sku) DO UPDATE SET price = EXCLUDED.price, stock = EXCLUDED.stock;
+  ('00000000-0000-0000-0001-100000000015', 'Multigrain Biscuits', 'multigrain-biscuits',
+   'Fresh Multigrain Biscuits.', '00000000-0000-0000-0000-100000000002', 150, 4.9, 0, FALSE,
+   '/images/products/multigrain-biscuits.jpg', '[]', '{}', '[]'),
 
--- Done
+  ('00000000-0000-0000-0001-100000000016', 'Oats & Almond Biscuits', 'oats-almond-biscuits',
+   'Fresh Oats & Almond Biscuits.', '00000000-0000-0000-0000-100000000002', 150, 4.9, 0, TRUE,
+   '/images/products/oats-almond-biscuits.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000017', 'Namkeen Biscuits', 'namkeen-biscuits',
+   'Fresh savoury Namkeen Biscuits.', '00000000-0000-0000-0000-100000000002', 140, 4.9, 0, FALSE,
+   '/images/products/namkeen-biscuits.jpg', '[]', '{}', '[]'),
+
+-- Wood-Pressed Oils
+  ('00000000-0000-0000-0001-100000000018', 'Yellow Mustard Oil', 'yellow-mustard-oil',
+   'Traditional wood-pressed Yellow Mustard Oil.', '00000000-0000-0000-0000-100000000003', 420, 4.9, 0, TRUE,
+   '/images/products/yellow-mustard-oil.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000019', 'Black Mustard Oil', 'black-mustard-oil',
+   'Traditional wood-pressed Black Mustard Oil.', '00000000-0000-0000-0000-100000000003', 320, 4.9, 0, FALSE,
+   '/images/products/black-mustard-oil.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000020', 'Coconut Oil', 'coconut-oil',
+   'Traditional wood-pressed Coconut Oil.', '00000000-0000-0000-0000-100000000003', 1200, 4.9, 0, TRUE,
+   '/images/products/coconut-oil.jpg', '[]', '{}', '[]'),
+
+-- Achaar & Chutneys
+  ('00000000-0000-0000-0001-100000000021', 'Lemon Achaar', 'lemon-achaar',
+   'Traditional Lemon Achaar.', '00000000-0000-0000-0000-100000000004', 200, 4.9, 0, FALSE,
+   '/images/products/lemon-achaar.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000022', 'Garlic Achaar', 'garlic-achaar',
+   'Traditional Garlic Achaar.', '00000000-0000-0000-0000-100000000004', 280, 4.9, 0, TRUE,
+   '/images/products/garlic-achaar.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000023', 'Green Chilli Achaar', 'green-chilli-achaar',
+   'Traditional Green Chilli Achaar.', '00000000-0000-0000-0000-100000000004', 200, 4.9, 0, FALSE,
+   '/images/products/green-chilli-achaar.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000024', 'Plum Chutney', 'plum-chutney',
+   'Traditional Plum Chutney.', '00000000-0000-0000-0000-100000000004', 200, 4.9, 0, FALSE,
+   '/images/products/plum-chutney.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000025', 'Red Chilli Dip', 'red-chilli-dip',
+   'Rich and flavourful Red Chilli Dip.', '00000000-0000-0000-0000-100000000004', 250, 4.9, 0, FALSE,
+   '/images/products/red-chilli-dip.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000026', 'Amla Chutney', 'amla-chutney',
+   'Traditional Amla Chutney.', '00000000-0000-0000-0000-100000000004', 200, 4.9, 0, FALSE,
+   '/images/products/amla-chutney.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000027', 'Tomato Sauce', 'tomato-sauce',
+   'Rich Tomato Sauce.', '00000000-0000-0000-0000-100000000004', 160, 4.9, 0, FALSE,
+   '/images/products/tomato-sauce.jpg', '[]', '{}', '[]'),
+
+-- Masalas & Tea
+  ('00000000-0000-0000-0001-100000000028', 'Chai Masala', 'chai-masala',
+   'Aromatic Chai Masala.', '00000000-0000-0000-0000-100000000005', 100, 4.9, 0, FALSE,
+   '/images/products/chai-masala.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000029', 'Garam Masala', 'garam-masala',
+   'Aromatic Garam Masala.', '00000000-0000-0000-0000-100000000005', 200, 4.9, 0, TRUE,
+   '/images/products/garam-masala.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000030', 'Chai Patti', 'chai-patti',
+   'Everyday Chai Patti.', '00000000-0000-0000-0000-100000000005', 600, 4.9, 0, TRUE,
+   '/images/products/chai-patti.jpg', '[]', '{}', '[]'),
+
+-- Sharbat, Gulkand & Honey
+  ('00000000-0000-0000-0001-100000000031', 'Rose Sharbat', 'rose-sharbat',
+   'Traditional Rose Sharbat.', '00000000-0000-0000-0000-100000000006', 270, 4.9, 0, TRUE,
+   '/images/products/rose-sharbat.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000032', 'Bel Sharbat', 'bel-sharbat',
+   'Traditional Bel Sharbat.', '00000000-0000-0000-0000-100000000006', 250, 4.9, 0, FALSE,
+   '/images/products/bel-sharbat.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000033', 'Plum Sharbat', 'plum-sharbat',
+   'Traditional Plum Sharbat.', '00000000-0000-0000-0000-100000000006', 300, 4.9, 0, FALSE,
+   '/images/products/plum-sharbat.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000034', 'Multiflora Honey', 'multiflora-honey',
+   'Natural Multiflora Honey.', '00000000-0000-0000-0000-100000000006', 800, 4.9, 0, TRUE,
+   '/images/products/multiflora-honey.jpg', '[]', '{}', '[]'),
+
+  ('00000000-0000-0000-0001-100000000035', 'Mishri Gulkand', 'mishri-gulkand',
+   'Traditional Mishri Gulkand.', '00000000-0000-0000-0000-100000000006', 300, 4.9, 0, TRUE,
+   '/images/products/mishri-gulkand.jpg', '[]', '{}', '[]');
+
+-- ============================================================
+-- PRODUCT VARIANTS
+-- ============================================================
+
+INSERT INTO product_variants (product_id, weight_size, price, stock, sku)
+VALUES
+  -- Fresh Atta
+  ('00000000-0000-0000-0001-100000000001', '1 kg', 60, 100, 'TC-MSA-1KG'),
+  ('00000000-0000-0000-0001-100000000001', '5 kg Bag', 300, 100, 'TC-MSA-5KG'),
+
+  ('00000000-0000-0000-0001-100000000002', '1 kg', 46, 100, 'TC-FFA-1KG'),
+  ('00000000-0000-0000-0001-100000000002', '5 kg Bag', 230, 100, 'TC-FFA-5KG'),
+
+  ('00000000-0000-0000-0001-100000000003', '1 kg', 80, 100, 'TC-BAJRA-1KG'),
+  ('00000000-0000-0000-0001-100000000004', '1 kg', 90, 100, 'TC-RAGI-1KG'),
+  ('00000000-0000-0000-0001-100000000005', '1 kg', 90, 100, 'TC-KANGNI-1KG'),
+  ('00000000-0000-0000-0001-100000000006', '1 kg', 90, 100, 'TC-JOWAR-1KG'),
+  ('00000000-0000-0000-0001-100000000007', '1 kg', 90, 100, 'TC-JAU-1KG'),
+  ('00000000-0000-0000-0001-100000000008', '1 kg', 90, 100, 'TC-MULTIGRAIN-1KG'),
+  ('00000000-0000-0000-0001-100000000009', '1 kg', 120, 100, 'TC-BLACKCHANA-1KG'),
+  ('00000000-0000-0000-0001-100000000010', '1 kg', 110, 100, 'TC-KODRA-1KG'),
+  ('00000000-0000-0000-0001-100000000011', '1 kg', 160, 100, 'TC-QUINOA-1KG'),
+  ('00000000-0000-0000-0001-100000000012', '1 kg', 200, 100, 'TC-SUGARFREE-1KG'),
+  ('00000000-0000-0000-0001-100000000013', '1 kg', 200, 100, 'TC-KHAPLI-1KG'),
+
+  -- Fresh Biscuits (catalogue prices are per kg)
+  ('00000000-0000-0000-0001-100000000014', '1 kg', 150, 100, 'TC-ATTA-BISCUITS-1KG'),
+  ('00000000-0000-0000-0001-100000000015', '1 kg', 150, 100, 'TC-MULTIGRAIN-BISCUITS-1KG'),
+  ('00000000-0000-0000-0001-100000000016', '1 kg', 150, 100, 'TC-OATS-ALMOND-BISCUITS-1KG'),
+  ('00000000-0000-0000-0001-100000000017', '1 kg', 140, 100, 'TC-NAMKEEN-BISCUITS-1KG'),
+
+  -- Wood-Pressed Oils
+  ('00000000-0000-0000-0001-100000000018', '1 L', 420, 100, 'TC-YMO-1L'),
+  ('00000000-0000-0000-0001-100000000018', '5 L', 1950, 100, 'TC-YMO-5L'),
+
+  ('00000000-0000-0000-0001-100000000019', '1 L', 320, 100, 'TC-BMO-1L'),
+  ('00000000-0000-0000-0001-100000000019', '5 L', 1450, 100, 'TC-BMO-5L'),
+
+  ('00000000-0000-0000-0001-100000000020', '1 L', 1200, 100, 'TC-CO-1L'),
+  ('00000000-0000-0000-0001-100000000020', '500 ml', 600, 100, 'TC-CO-500ML'),
+  ('00000000-0000-0000-0001-100000000020', '250 ml', 300, 100, 'TC-CO-250ML'),
+
+  -- Achaar & Chutneys
+  ('00000000-0000-0000-0001-100000000021', '400 g', 200, 100, 'TC-LA-400G'),
+  ('00000000-0000-0000-0001-100000000022', '400 g', 280, 100, 'TC-GA-400G'),
+  ('00000000-0000-0000-0001-100000000023', '400 g', 200, 100, 'TC-GCA-400G'),
+  ('00000000-0000-0000-0001-100000000024', '300 g', 200, 100, 'TC-PC-300G'),
+  ('00000000-0000-0000-0001-100000000025', '300 g', 250, 100, 'TC-RCD-300G'),
+  ('00000000-0000-0000-0001-100000000026', '300 g', 200, 100, 'TC-AC-300G'),
+  ('00000000-0000-0000-0001-100000000027', '500 g', 160, 100, 'TC-TS-500G'),
+
+  -- Masalas & Tea
+  ('00000000-0000-0000-0001-100000000028', '50 g', 100, 100, 'TC-CM-50G'),
+  ('00000000-0000-0000-0001-100000000029', '200 g', 200, 100, 'TC-GM-200G'),
+  ('00000000-0000-0000-0001-100000000030', '1 kg', 600, 100, 'TC-CP-1KG'),
+
+  -- Sharbat, Gulkand & Honey
+  ('00000000-0000-0000-0001-100000000031', '750 ml', 270, 100, 'TC-RS-750ML'),
+  ('00000000-0000-0000-0001-100000000032', '750 ml', 250, 100, 'TC-BS-750ML'),
+  ('00000000-0000-0000-0001-100000000033', '750 ml', 300, 100, 'TC-PS-750ML'),
+  ('00000000-0000-0000-0001-100000000034', '1 kg', 800, 100, 'TC-MH-1KG'),
+  ('00000000-0000-0000-0001-100000000035', '500 g', 300, 100, 'TC-MG-500G');
+
+COMMIT;
