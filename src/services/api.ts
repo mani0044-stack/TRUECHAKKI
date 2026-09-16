@@ -1,16 +1,6 @@
 import type { Product, Category, Order, UserProfile, UserAddress } from '../types';
 
-const getApiBaseUrl = (): string => {
-  if (typeof window !== 'undefined') {
-    const host = window.location.hostname;
-    if (host === 'www.truechakki.com') {
-      return 'https://truechakki.com/api';
-    }
-  }
-  return '/api';
-};
-
-const API_BASE_URL = getApiBaseUrl();
+const API_BASE_URL = '/api';
 
 export const api = {
   // Categories
