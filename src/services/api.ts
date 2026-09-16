@@ -1,6 +1,9 @@
 import type { Product, Category, Order, UserProfile, UserAddress } from '../types';
 
-const API_BASE_URL = '/api';
+// In production the API base points at the canonical www host (its /api responses
+// carry Access-Control-Allow-Origin: *, so pages served from the bare apex domain
+// also work - the apex /api paths 308-redirect to www without CORS headers).
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export const api = {
   // Categories
