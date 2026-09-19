@@ -1,0 +1,21 @@
+# True Chakki - Official Robots.txt File
+# Allow all search engines and AI crawlers to index public products and pages
+
+User-agent: *
+Allow: /
+Allow: /shop
+Allow: /product/
+Allow: /about
+Allow: /blogs
+Allow: /contact
+Allow: /images/
+Allow: /public/
+
+# Disallow private user & administrative endpoints
+Disallow: /admin
+Disallow: /account
+Disallow: /checkout
+Disallow: /api/
+
+# Specify XML Sitemap Location for Google, Bing, Yahoo & Perplexity
+Sitemap: https://www.truechakki.com/sitemap.xml

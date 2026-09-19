@@ -35,7 +35,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="relative aspect-4/3 overflow-hidden bg-[#FAF6EE] p-2.5 sm:p-4 flex items-center justify-center">
         <img
           src={product.image}
-          alt={product.name}
+          alt={`${product.name} - 100% Organic & Stone Ground by True Chakki`}
+          loading="lazy"
           className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
         />
 

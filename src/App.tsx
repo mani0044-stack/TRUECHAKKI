@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useUIStore } from './store/useUIStore';
 import { useProductStore } from './store/useProductStore';
 
+// SEO Manager
+import { SEOManager } from './components/seo/SEOManager';
+
 // UI Preloader
 import { LogoPreloader } from './components/ui/LogoPreloader';
 import { YouTubeTopLoader } from './components/ui/YouTubeTopLoader';
@@ -114,6 +117,9 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FDFBF7] text-[#4A2B18] antialiased">
+      {/* Real-time Dynamic SEO Manager */}
+      <SEOManager />
+
       {/* YouTube Navigation Top Loader */}
       <YouTubeTopLoader />
 

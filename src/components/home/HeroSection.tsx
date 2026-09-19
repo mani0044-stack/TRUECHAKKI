@@ -39,8 +39,9 @@ export const HeroSection: React.FC = () => {
               </span>
             </div> */}
 
-            {/* Main Headline */}
+            {/* Main Headline with High-Intent Keyword Density */}
             <h1 className="font-serif text-2xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#4A2B18] leading-[1.15] text-center sm:text-left drop-shadow-xs">
+              <span className="sr-only">True Chakki - 100% Organic Stone-Ground Atta & Pure Cold-Pressed Oils | </span>
               Pure. Natural. <br />
               <span className="font-script text-4xl sm:text-7xl lg:text-8xl font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#B8860B] via-[#9A6B29] to-[#704815] inline-block pt-0.5 pb-0.5 drop-shadow-sm select-none hover:scale-[1.02] transition-transform duration-300">
                 Truly Yours.
@@ -49,7 +50,7 @@ export const HeroSection: React.FC = () => {
 
             {/* Subtext */}
             <p className="text-[11px] sm:text-base lg:text-lg text-[#4A2B18]/90 font-sans leading-relaxed max-w-xs sm:max-w-md lg:max-w-lg text-center sm:text-left mx-auto sm:mx-0">
-              True Chakki brings you the goodness of traditional farming. 100% natural products made with care, just like nature intended.
+              True Chakki brings you unadulterated goodness directly from traditional farms. 100% natural stone-ground Sharbati atta, wood-pressed Kachi Ghani oils, and traditional sun-cured pickles.
             </p>
 
             {/* Elevated Luxury CTA Buttons */}
