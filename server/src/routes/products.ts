@@ -98,7 +98,7 @@ productRouter.get('/', async (req: Request, res: Response) => {
     }
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-    const sql = `${SELECT_PRODUCTS_SQL} ${whereClause} GROUP BY p.id, c.id ORDER BY p.created_at DESC`;
+    const sql = `${SELECT_PRODUCTS_SQL} ${whereClause} GROUP BY p.id, c.id, c.name, c.slug ORDER BY p.created_at DESC`;
 
     const result = await query(sql, params);
     res.json(result.rows.map(formatProduct));
@@ -111,7 +111,7 @@ productRouter.get('/', async (req: Request, res: Response) => {
 productRouter.get('/:slug', async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
-    const sql = `${SELECT_PRODUCTS_SQL} WHERE p.slug = $1 GROUP BY p.id, c.id`;
+    const sql = `${SELECT_PRODUCTS_SQL} WHERE p.slug = $1 GROUP BY p.id, c.id, c.name, c.slug`;
 
     const result = await query(sql, [slug]);
     if (result.rows.length === 0) {
@@ -188,7 +188,7 @@ productRouter.post('/', async (req: Request, res: Response) => {
       }
     }
 
-    const createdSql = `${SELECT_PRODUCTS_SQL} WHERE p.id = $1 GROUP BY p.id, c.id`;
+    const createdSql = `${SELECT_PRODUCTS_SQL} WHERE p.id = $1 GROUP BY p.id, c.id, c.name, c.slug`;
     const finalResult = await query(createdSql, [productId]);
     res.status(201).json(formatProduct(finalResult.rows[0]));
   } catch (error: any) {
@@ -276,7 +276,7 @@ productRouter.put('/:id', async (req: Request, res: Response) => {
       }
     }
 
-    const updatedSql = `${SELECT_PRODUCTS_SQL} WHERE p.id = $1 GROUP BY p.id, c.id`;
+    const updatedSql = `${SELECT_PRODUCTS_SQL} WHERE p.id = $1 GROUP BY p.id, c.id, c.name, c.slug`;
     const finalResult = await query(updatedSql, [id]);
     res.json(formatProduct(finalResult.rows[0]));
   } catch (error: any) {

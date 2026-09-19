@@ -6,11 +6,9 @@ dotenv.config();
 
 const { Pool } = pg;
 
-const connectionString = process.env.DATABASE_URL;
+const DEFAULT_DATABASE_URL = "postgresql://neondb_owner:npg_dCU6i7YpOLZR@ep-crimson-glitter-b5kb0jiu-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require";
 
-if (!connectionString) {
-  console.warn('[db] WARNING: DATABASE_URL environment variable is missing!');
-}
+const connectionString = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
 
 function parseDbUrl(urlStr: string) {
   try {
@@ -58,7 +56,7 @@ let activePool: pg.Pool | null = null;
 async function getPool(): Promise<pg.Pool> {
   if (activePool) return activePool;
 
-  const connStr = process.env.DATABASE_URL || connectionString || '';
+  const connStr = process.env.DATABASE_URL || connectionString || DEFAULT_DATABASE_URL;
   if (!connStr) {
     throw new Error('DATABASE_URL environment variable is not configured.');
   }
