@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { pool } from './index.js';
+import { pool } from './index';
 
 async function main() {
   console.log('[seed] Starting direct SQL database setup & seed...');
