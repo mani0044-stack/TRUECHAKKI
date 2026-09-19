@@ -1,17 +1,10 @@
 import type { Product, Category, Order, UserProfile, UserAddress } from '../types';
 
-// In production, use relative '/api' so fetch() targets the exact hostname the user loaded,
-// preventing apex vs www domain redirects that strip CORS headers and block requests.
-const getApiBaseUrl = (): string => {
-  const envUrl = import.meta.env.VITE_API_BASE_URL;
-  if (envUrl && envUrl.startsWith('/')) return envUrl;
-  if (typeof window !== 'undefined' && envUrl && !envUrl.includes('localhost')) {
-    return '/api';
-  }
-  return envUrl || '/api';
-};
-
-const API_BASE_URL = getApiBaseUrl();
+// Same-origin relative base. The SPA is only ever served from Vercel's primary
+// host (the other domain 308-redirects to it), and fetch() resolves relative
+// URLs against the host actually serving the page, so these calls never cross
+// domains and can't be blocked by the redirect's missing CORS headers.
+const API_BASE_URL = '/api';
 
 export const api = {
   // Categories
