@@ -21,6 +21,7 @@ export const ProductDetailPage: React.FC = () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   const addToCart = useCartStore((state) => state.addToCart);
 
   const [selectedVariantOverride, setSelectedVariantOverride] = useState<ProductVariant | null>(null);
@@ -35,14 +36,15 @@ export const ProductDetailPage: React.FC = () => {
     const uniqueList = rawList.filter((url, idx, self) => self.indexOf(url) === idx);
     return uniqueList.slice(0, 3);
   }, [product]);
+=======
+  
+  const addToCart = useCartStore((state) => state.addToCart);
+>>>>>>> parent of 9ce354e (m)
 
-  const [activePhoto, setActivePhoto] = useState<string>('');
-
-  useEffect(() => {
-    if (photos3.length > 0) {
-      setActivePhoto(photos3[0]);
-    }
-  }, [photos3]);
+  const [selectedVariantOverride, setSelectedVariantOverride] = useState<ProductVariant | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [added, setAdded] = useState(false);
+  const [activeTab, setActiveTab] = useState<'story' | 'nutrition' | 'ingredients' | 'reviews'>('story');
 
   if (!product) {
     return (
