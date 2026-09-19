@@ -2,20 +2,54 @@ import type { Product, Category, Order, UserProfile, UserAddress } from '../type
 
 // Same-origin relative base. The SPA is only ever served from Vercel's primary
 // host (the other domain 308-redirects to it), and fetch() resolves relative
-// URLs against the host actually serving the page, so these calls never cross
-// domains and can't be blocked by the redirect's missing CORS headers.
+// URLs against the host actually serving the page.
 const API_BASE_URL = '/api';
+
+const PAGE_ORIGIN = typeof window !== 'undefined' ? window.location.origin : '';
+
+// Vercel hosts the API on every attached domain, but its automatic apex<->www
+// host redirect flips over time. A request that lands on the non-primary host
+// gets a 308 whose response carries no CORS headers, so the browser rejects it.
+// apiFetch retries that request against the other canonical hosts so checkout
+// and catalog loading keep working no matter which domain Vercel marks primary.
+const ALTERNATE_BASES = [
+  API_BASE_URL,
+  'https://www.truechakki.com/api',
+  'https://truechakki.com/api',
+];
+
+let pinnedBase: string | null = null;
+
+async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
+  const candidates = [
+    ...(pinnedBase ? [pinnedBase] : []),
+    ...(PAGE_ORIGIN ? [`${PAGE_ORIGIN}/api`] : []),
+    ...ALTERNATE_BASES,
+  ];
+
+  let lastError: unknown;
+  for (const base of new Set(candidates)) {
+    try {
+      const res = await fetch(`${base}${path}`, init);
+      pinnedBase = res.redirected ? `${new URL(res.url).origin}/api` : base;
+      return res;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError;
+}
 
 export const api = {
   // Categories
   async getCategories(): Promise<Category[]> {
-    const res = await fetch(`${API_BASE_URL}/categories`);
+    const res = await apiFetch(`${API_BASE_URL}/categories`);
     if (!res.ok) throw new Error('Failed to fetch categories');
     return res.json();
   },
 
   async createCategory(categoryData: Partial<Category>): Promise<Category> {
-    const res = await fetch(`${API_BASE_URL}/categories`, {
+    const res = await apiFetch(`${API_BASE_URL}/categories`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(categoryData),
@@ -25,7 +59,7 @@ export const api = {
   },
 
   async updateCategory(id: string, categoryData: Partial<Category>): Promise<Category> {
-    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
+    const res = await apiFetch(`${API_BASE_URL}/categories/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(categoryData),
@@ -35,7 +69,7 @@ export const api = {
   },
 
   async deleteCategory(id: string): Promise<{ success: boolean }> {
-    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
+    const res = await apiFetch(`${API_BASE_URL}/categories/${id}`, {
       method: 'DELETE',
     });
     if (!res.ok) throw new Error('Failed to delete category');
@@ -49,19 +83,19 @@ export const api = {
     if (search) params.append('search', search);
 
     const queryString = params.toString() ? `?${params.toString()}` : '';
-    const res = await fetch(`${API_BASE_URL}/products${queryString}`);
+    const res = await apiFetch(`${API_BASE_URL}/products${queryString}`);
     if (!res.ok) throw new Error('Failed to fetch products');
     return res.json();
   },
 
   async getProductBySlug(slug: string): Promise<Product> {
-    const res = await fetch(`${API_BASE_URL}/products/${slug}`);
+    const res = await apiFetch(`${API_BASE_URL}/products/${slug}`);
     if (!res.ok) throw new Error('Product not found');
     return res.json();
   },
 
   async createProduct(productData: Partial<Product>): Promise<Product> {
-    const res = await fetch(`${API_BASE_URL}/products`, {
+    const res = await apiFetch(`${API_BASE_URL}/products`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(productData),
@@ -71,7 +105,7 @@ export const api = {
   },
 
   async updateProduct(id: string, productData: Partial<Product>): Promise<Product> {
-    const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+    const res = await apiFetch(`${API_BASE_URL}/products/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(productData),
@@ -81,7 +115,7 @@ export const api = {
   },
 
   async deleteProduct(id: string): Promise<{ success: boolean }> {
-    const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+    const res = await apiFetch(`${API_BASE_URL}/products/${id}`, {
       method: 'DELETE',
     });
     if (!res.ok) throw new Error('Failed to delete product');
@@ -90,7 +124,7 @@ export const api = {
 
   // Auth & Profile
   async login(name: string, email: string, password?: string, phone?: string): Promise<{ user: UserProfile; token: string }> {
-    const res = await fetch(`${API_BASE_URL}/auth/login`, {
+    const res = await apiFetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password, phone }),
@@ -103,7 +137,7 @@ export const api = {
   },
 
   async register(name: string, email: string, password?: string, phone?: string): Promise<{ user: UserProfile; token: string }> {
-    const res = await fetch(`${API_BASE_URL}/auth/register`, {
+    const res = await apiFetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password, phone }),
@@ -116,7 +150,7 @@ export const api = {
   },
 
   async addAddress(addressData: { userId: string; street: string; city: string; state: string; zipCode: string; country?: string; isDefault?: boolean }): Promise<UserAddress> {
-    const res = await fetch(`${API_BASE_URL}/auth/address`, {
+    const res = await apiFetch(`${API_BASE_URL}/auth/address`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(addressData),
@@ -135,14 +169,14 @@ export const api = {
   },
 
   async getUsers(): Promise<any[]> {
-    const res = await fetch(`${API_BASE_URL}/auth/users`);
+    const res = await apiFetch(`${API_BASE_URL}/auth/users`);
     if (!res.ok) throw new Error('Failed to fetch users');
     return res.json();
   },
 
   // Orders
   async createOrder(orderData: Partial<Order> & { userId?: string; customerName?: string; customerEmail?: string; customerPhone?: string }): Promise<Order> {
-    const res = await fetch(`${API_BASE_URL}/orders`, {
+    const res = await apiFetch(`${API_BASE_URL}/orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(orderData),
@@ -153,13 +187,13 @@ export const api = {
 
   async getOrders(userId?: string): Promise<Order[]> {
     const url = userId ? `${API_BASE_URL}/orders?userId=${userId}` : `${API_BASE_URL}/orders`;
-    const res = await fetch(url);
+    const res = await apiFetch(url);
     if (!res.ok) throw new Error('Failed to fetch orders');
     return res.json();
   },
 
   async updateOrderStatus(id: string, status: string): Promise<any> {
-    const res = await fetch(`${API_BASE_URL}/orders/${id}/status`, {
+    const res = await apiFetch(`${API_BASE_URL}/orders/${id}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
@@ -170,7 +204,7 @@ export const api = {
 
   // Razorpay Integration
   async createRazorpayOrder(amount: number, receipt?: string): Promise<{ id: string; amount: number; currency: string; keyId: string; isMock?: boolean; warning?: string }> {
-    const res = await fetch(`${API_BASE_URL}/razorpay/create-order`, {
+    const res = await apiFetch(`${API_BASE_URL}/razorpay/create-order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount, receipt }),
@@ -184,7 +218,7 @@ export const api = {
   },
 
   async verifyRazorpayPayment(payload: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }): Promise<{ success: boolean; paymentId?: string; isMock?: boolean }> {
-    const res = await fetch(`${API_BASE_URL}/razorpay/verify-payment`, {
+    const res = await apiFetch(`${API_BASE_URL}/razorpay/verify-payment`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -199,7 +233,7 @@ export const api = {
 
   // Health
   async checkHealth(): Promise<any> {
-    const res = await fetch(`${API_BASE_URL}/health`);
+    const res = await apiFetch(`${API_BASE_URL}/health`);
     if (!res.ok) throw new Error('Backend health check failed');
     return res.json();
   },
