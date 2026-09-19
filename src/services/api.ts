@@ -20,7 +20,11 @@ const ALTERNATE_BASES = [
 
 let pinnedBase: string | null = null;
 
-async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
+// `url` is a route like `${API_BASE_URL}/categories`. Strip the leading /api so
+// candidates (which already end with /api) compose to a single prefix.
+async function apiFetch(url: string, init?: RequestInit): Promise<Response> {
+  const path = url.startsWith('/api') ? url.slice('/api'.length) : url;
+
   const candidates = [
     ...(pinnedBase ? [pinnedBase] : []),
     ...(PAGE_ORIGIN ? [`${PAGE_ORIGIN}/api`] : []),
