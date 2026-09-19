@@ -1,9 +1,17 @@
 import type { Product, Category, Order, UserProfile, UserAddress } from '../types';
 
-// In production the API base points at the canonical www host (its /api responses
-// carry Access-Control-Allow-Origin: *, so pages served from the bare apex domain
-// also work - the apex /api paths 308-redirect to www without CORS headers).
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+// In production, use relative '/api' so fetch() targets the exact hostname the user loaded,
+// preventing apex vs www domain redirects that strip CORS headers and block requests.
+const getApiBaseUrl = (): string => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (envUrl && envUrl.startsWith('/')) return envUrl;
+  if (typeof window !== 'undefined' && envUrl && !envUrl.includes('localhost')) {
+    return '/api';
+  }
+  return envUrl || '/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export const api = {
   // Categories
