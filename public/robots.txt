@@ -19,3 +19,4 @@ Disallow: /api/
 
 # Specify XML Sitemap Location for Google, Bing, Yahoo & Perplexity
 Sitemap: https://www.truechakki.com/sitemap.xml
+Sitemap: https://truechakki.com/sitemap.xml
