@@ -24,8 +24,8 @@ export const SEOManager: React.FC = () => {
 
     switch (currentPage) {
       case 'home':
-        title = `Buy 100% Pure Stone-Ground Atta & Cold-Pressed Oils Online | ${BRAND_NAME}`;
-        description = 'Order 100% organic, farm-fresh Sharbati atta, cold-pressed mustard & groundnut oils, and traditional sun-cured pickles delivered straight from our farm to your home.';
+        title = `100% Organic Stone-Ground Atta & Cold-Pressed Oils | ${BRAND_NAME}`;
+        description = 'Buy 100% natural stone-ground Sharbati wheat flour, cold-pressed Kachi Ghani oils, and traditional sun-cured pickles online from True Chakki. Milled fresh on order.';
         keywords = 'true chakki, stone ground atta, cold pressed oil, organic sharbati wheat, kachi ghani mustard oil, buy atta online amritsar punjab';
         canonicalUrl = `${SITE_URL}/`;
         break;
@@ -195,6 +195,7 @@ export const SEOManager: React.FC = () => {
       '@id': `${SITE_URL}/#website`,
       url: SITE_URL,
       name: BRAND_NAME,
+      alternateName: ['TrueChakki', 'True Chakki Organics'],
       description: '100% Natural Stone-Ground Atta & Cold-Pressed Oils',
       publisher: {
         '@id': `${SITE_URL}/#organization`,
