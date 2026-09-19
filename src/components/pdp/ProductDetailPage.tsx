@@ -19,6 +19,7 @@ export const ProductDetailPage: React.FC = () => {
 
   const product = allProducts.find((p) => p.slug === activeSlug) || allProducts[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
   const addToCart = useCartStore((state) => state.addToCart);
 
   const [selectedVariantOverride, setSelectedVariantOverride] = useState<ProductVariant | null>(null);
@@ -33,6 +34,10 @@ export const ProductDetailPage: React.FC = () => {
     const uniqueList = rawList.filter((url, idx, self) => self.indexOf(url) === idx);
     return uniqueList.slice(0, 3);
   }, [product]);
+=======
+  
+  const addToCart = useCartStore((state) => state.addToCart);
+>>>>>>> parent of 9ce354e (m)
 =======
   
   const addToCart = useCartStore((state) => state.addToCart);
