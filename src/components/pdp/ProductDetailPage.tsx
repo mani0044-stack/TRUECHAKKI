@@ -17,6 +17,14 @@ export const ProductDetailPage: React.FC = () => {
     fetchProducts(true);
   }, [fetchProducts]);
 
+  const product = allProducts.find((p) => p.slug === activeSlug) || allProducts[0];
+  const addToCart = useCartStore((state) => state.addToCart);
+
+  const [selectedVariantOverride, setSelectedVariantOverride] = useState<ProductVariant | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [added, setAdded] = useState(false);
+  const [activeTab, setActiveTab] = useState<'story' | 'nutrition' | 'ingredients' | 'reviews'>('story');
+
   // Prepare max 3 photos gallery
   const photos3 = React.useMemo(() => {
     if (!product) return [];
