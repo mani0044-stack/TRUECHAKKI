@@ -26,6 +26,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     navigateTo('pdp', product.slug);
   };
 
+  const photos3 = (product.gallery && product.gallery.length > 0) ? product.gallery.slice(0, 3) : [product.image];
+  const secondaryPhoto = photos3[1] || photos3[0];
+
   return (
     <div 
       onClick={handleCardClick}
@@ -33,12 +36,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     >
       {/* Top Image Container */}
       <div className="relative aspect-4/3 overflow-hidden bg-[#FAF6EE] p-2.5 sm:p-4 flex items-center justify-center">
+        {/* Main Image */}
         <img
           src={product.image}
           alt={`${product.name} - 100% Organic & Stone Ground by True Chakki`}
           loading="lazy"
-          className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+          className={`w-full h-full object-cover rounded-xl transition-all duration-500 ${
+            photos3.length > 1 ? 'group-hover:opacity-0 group-hover:scale-105' : 'group-hover:scale-105'
+          }`}
         />
+
+        {/* Hover Secondary Photo (if 2+ photos exist) */}
+        {photos3.length > 1 && (
+          <img
+            src={secondaryPhoto}
+            alt={`${product.name} Detail View`}
+            loading="lazy"
+            className="absolute inset-2.5 sm:inset-4 w-[calc(100%-1.25rem)] sm:w-[calc(100%-2rem)] h-[calc(100%-1.25rem)] sm:h-[calc(100%-2rem)] object-cover rounded-xl opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+          />
+        )}
 
         {/* Badges */}
         <div className="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-col gap-1 z-10">
@@ -52,10 +68,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </span>
         </div>
 
+        {/* 3-Photo Count Indicator Badge */}
+        {photos3.length > 1 && (
+          <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-10 px-2 py-0.5 bg-[#4A2B18]/80 text-white text-[9px] font-bold rounded-full backdrop-blur-md flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#CFB57F] animate-pulse" />
+            <span>{photos3.length} Photos</span>
+          </div>
+        )}
+
         {/* Quick View Floating Button */}
         <button 
           onClick={(e) => { e.stopPropagation(); navigateTo('pdp', product.slug); }}
-          className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md text-[#4A2B18] hover:text-[#9A6B29] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md"
+          className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md text-[#4A2B18] hover:text-[#9A6B29] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md z-10"
           title="View Details"
         >
           <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />

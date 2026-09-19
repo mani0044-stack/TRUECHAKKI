@@ -48,7 +48,7 @@ export const AdminPage: React.FC = () => {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
-  // Product Form State
+  // Product Form State (Supports Limit 3 Photos)
   const [productForm, setProductForm] = useState({
     name: '',
     slug: '',
@@ -56,6 +56,7 @@ export const AdminPage: React.FC = () => {
     basePrice: '',
     description: '',
     image: '',
+    gallery: ['', '', ''] as [string, string, string],
     isFeatured: false,
     variants: [
       { weightSize: '1kg Pack', price: 100, stock: 50, sku: '' }
@@ -111,7 +112,8 @@ export const AdminPage: React.FC = () => {
       category: categories[0]?.slug || 'atta',
       basePrice: '',
       description: '',
-      image: '/images/hero-bg.jpg',
+      image: '/images/groundatta.PNG',
+      gallery: ['/images/groundatta.PNG', '/images/IMG_7401.PNG', '/images/IMG_7637new.PNG'],
       isFeatured: false,
       variants: [{ weightSize: '1kg Pack', price: 100, stock: 50, sku: '' }]
     });
@@ -120,13 +122,24 @@ export const AdminPage: React.FC = () => {
 
   const openEditProductModal = (product: Product) => {
     setEditingProduct(product);
+    const rawGallery = (product.gallery && product.gallery.length > 0)
+      ? product.gallery
+      : [product.image];
+
+    const photos3: [string, string, string] = [
+      rawGallery[0] || product.image || '',
+      rawGallery[1] || '',
+      rawGallery[2] || ''
+    ];
+
     setProductForm({
       name: product.name,
       slug: product.slug,
       category: product.category,
       basePrice: String(product.basePrice),
       description: product.description,
-      image: product.image,
+      image: photos3[0] || product.image,
+      gallery: photos3,
       isFeatured: Boolean(product.isFeatured),
       variants: product.variants.map(v => ({
         weightSize: v.weightSize,
@@ -143,13 +156,18 @@ export const AdminPage: React.FC = () => {
     if (!productForm.name || !productForm.basePrice) return;
 
     try {
+      const activePhotos = productForm.gallery.map(g => g.trim()).filter(Boolean).slice(0, 3);
+      const mainCover = activePhotos[0] || productForm.image || '/images/hero-bg.jpg';
+      if (activePhotos.length === 0) activePhotos.push(mainCover);
+
       const payload: Partial<Product> = {
         name: productForm.name,
         slug: productForm.slug || productForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
         category: productForm.category,
         basePrice: Number(productForm.basePrice),
         description: productForm.description,
-        image: productForm.image || '/images/hero-bg.jpg',
+        image: mainCover,
+        gallery: activePhotos,
         isFeatured: productForm.isFeatured,
         variants: productForm.variants.map((v, idx) => ({
           id: `v-${idx}`,
@@ -162,10 +180,10 @@ export const AdminPage: React.FC = () => {
 
       if (editingProduct) {
         await api.updateProduct(editingProduct.id, payload);
-        notifySuccess(`Updated product "${productForm.name}" successfully!`);
+        notifySuccess(`Updated product "${productForm.name}" with ${activePhotos.length} photos!`);
       } else {
         await api.createProduct(payload);
-        notifySuccess(`Created product "${productForm.name}" successfully!`);
+        notifySuccess(`Created product "${productForm.name}" with ${activePhotos.length} photos!`);
       }
 
       setIsProductModalOpen(false);
@@ -604,14 +622,26 @@ Thank you for choosing True Chakki for 100% natural stone-ground products! We ar
                       <tr key={product.id} className="hover:bg-[#FAF6EE]/70 transition-colors">
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-3">
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="w-12 h-12 object-cover rounded-xl border border-[#E8DCCB] bg-[#FAF6EE]"
-                            />
+                            {/* Up to 3 Photo Thumbnails Preview */}
+                            <div className="flex items-center -space-x-2 overflow-hidden py-1">
+                              {((product.gallery && product.gallery.length > 0) ? product.gallery.slice(0, 3) : [product.image]).map((imgUrl, i) => (
+                                <img
+                                  key={i}
+                                  src={imgUrl}
+                                  alt={`${product.name} photo ${i + 1}`}
+                                  className="w-10 h-10 object-cover rounded-xl border-2 border-white shadow-xs bg-[#FAF6EE]"
+                                  title={`Photo ${i + 1}`}
+                                />
+                              ))}
+                            </div>
                             <div>
                               <span className="font-serif font-bold text-sm text-[#4A2B18] block">{product.name}</span>
-                              <span className="text-[11px] text-[#7C5C43] font-mono">slug: {product.slug}</span>
+                              <div className="flex items-center gap-2 text-[10px] text-[#7C5C43]">
+                                <span className="font-mono">slug: {product.slug}</span>
+                                <span className="px-1.5 py-0.2 bg-[#FAF4E8] text-[#9A6B29] font-bold rounded border border-[#E8DCCB]">
+                                  {product.gallery?.length || 1}/3 Photos
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </td>
@@ -957,28 +987,78 @@ Thank you for choosing True Chakki for 100% natural stone-ground products! We ar
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="font-semibold text-[#4A2B18]">Base Price (₹) *</label>
-                  <input
-                    type="number"
-                    required
-                    value={productForm.basePrice}
-                    onChange={(e) => setProductForm({ ...productForm, basePrice: e.target.value })}
-                    placeholder="e.g. 290"
-                    className="w-full p-3 bg-[#FAF6EE] border border-[#E8DCCB] rounded-xl text-xs text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
-                  />
+              <div className="space-y-1">
+                <label className="font-semibold text-[#4A2B18]">Base Price (₹) *</label>
+                <input
+                  type="number"
+                  required
+                  value={productForm.basePrice}
+                  onChange={(e) => setProductForm({ ...productForm, basePrice: e.target.value })}
+                  placeholder="e.g. 290"
+                  className="w-full p-3 bg-[#FAF6EE] border border-[#E8DCCB] rounded-xl text-xs text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
+                />
+              </div>
+
+              {/* Product Photos Section (Limit to 3 Photos) */}
+              <div className="space-y-3 pt-2 border-t border-[#E8DCCB]">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold uppercase tracking-wider text-[#7C5C43] text-[11px] flex items-center gap-1.5">
+                    <span>Product Photos (Limit Max 3 Photos)</span>
+                    <span className="px-2 py-0.5 bg-[#9A6B29] text-white text-[10px] rounded-full font-semibold">Max 3</span>
+                  </label>
+                  <span className="text-[10px] text-[#7C5C43]">Photo 1 is the main cover image</span>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="font-semibold text-[#4A2B18]">Image URL</label>
-                  <input
-                    type="text"
-                    value={productForm.image}
-                    onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                    placeholder="/images/hero-bg.jpg"
-                    className="w-full p-3 bg-[#FAF6EE] border border-[#E8DCCB] rounded-xl text-xs text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[0, 1, 2].map((idx) => {
+                    const photoUrl = productForm.gallery[idx] || (idx === 0 ? productForm.image : '');
+                    return (
+                      <div key={idx} className="bg-[#FAF6EE] p-3 rounded-2xl border border-[#E8DCCB] space-y-2 flex flex-col justify-between">
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="font-bold text-[#4A2B18]">
+                            Photo {idx + 1} {idx === 0 ? '(Main)' : ''}
+                          </span>
+                          {photoUrl && (
+                            <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-1.5 py-0.5 rounded">Active</span>
+                          )}
+                        </div>
+
+                        {/* Image Preview Thumbnail */}
+                        <div className="aspect-square bg-white rounded-xl border border-[#E8DCCB] overflow-hidden flex items-center justify-center p-1 relative shadow-xs">
+                          {photoUrl ? (
+                            <img
+                              src={photoUrl}
+                              alt={`Photo ${idx + 1}`}
+                              className="w-full h-full object-cover rounded-lg"
+                              onError={(e: any) => { e.target.src = '/images/hero-bg.jpg'; }}
+                            />
+                          ) : (
+                            <div className="text-center p-2 space-y-1 text-[#7C5C43]">
+                              <Plus className="w-6 h-6 mx-auto opacity-40" />
+                              <span className="text-[10px] block font-medium">Add Photo {idx + 1}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Input URL */}
+                        <input
+                          type="text"
+                          value={photoUrl}
+                          onChange={(e) => {
+                            const newGallery: [string, string, string] = [...productForm.gallery];
+                            newGallery[idx] = e.target.value;
+                            setProductForm({
+                              ...productForm,
+                              image: newGallery[0] || productForm.image,
+                              gallery: newGallery,
+                            });
+                          }}
+                          placeholder={idx === 0 ? "/images/groundatta.PNG" : `/images/photo${idx + 1}.png or URL`}
+                          className="w-full p-2 bg-white border border-[#E8DCCB] rounded-xl text-[11px] text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 

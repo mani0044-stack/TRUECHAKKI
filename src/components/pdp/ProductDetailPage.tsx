@@ -17,14 +17,21 @@ export const ProductDetailPage: React.FC = () => {
     fetchProducts(true);
   }, [fetchProducts]);
 
-  const product = allProducts.find((p) => p.slug === activeSlug) || allProducts[0];
-  
-  const addToCart = useCartStore((state) => state.addToCart);
+  // Prepare max 3 photos gallery
+  const photos3 = React.useMemo(() => {
+    if (!product) return [];
+    const rawList = [product.image, ...(product.gallery || [])].filter(Boolean);
+    const uniqueList = rawList.filter((url, idx, self) => self.indexOf(url) === idx);
+    return uniqueList.slice(0, 3);
+  }, [product]);
 
-  const [selectedVariantOverride, setSelectedVariantOverride] = useState<ProductVariant | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [added, setAdded] = useState(false);
-  const [activeTab, setActiveTab] = useState<'story' | 'nutrition' | 'ingredients' | 'reviews'>('story');
+  const [activePhoto, setActivePhoto] = useState<string>('');
+
+  useEffect(() => {
+    if (photos3.length > 0) {
+      setActivePhoto(photos3[0]);
+    }
+  }, [photos3]);
 
   if (!product) {
     return (
@@ -60,6 +67,8 @@ export const ProductDetailPage: React.FC = () => {
     navigateTo('checkout');
   };
 
+  const currentDisplayPhoto = activePhoto || photos3[0] || product.image;
+
   return (
     <div className="bg-[#FDFBF7] min-h-screen pb-20">
       
@@ -78,18 +87,49 @@ export const ProductDetailPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           
-          {/* Left Column: High-Res Image Gallery */}
+          {/* Left Column: High-Res Image Gallery (Up to 3 Photos) */}
           <div className="space-y-4">
-            <div className="aspect-square bg-[#FAF6EE] rounded-3xl border border-[#E8DCCB] p-6 overflow-hidden relative shadow-sm flex items-center justify-center">
+            <div className="aspect-square bg-[#FAF6EE] rounded-3xl border border-[#E8DCCB] p-6 overflow-hidden relative shadow-sm flex items-center justify-center group">
               <img
-                src={product.image}
+                src={currentDisplayPhoto}
                 alt={product.name}
-                className="w-full h-full object-cover rounded-2xl"
+                className="w-full h-full object-cover rounded-2xl transition-all duration-300"
               />
               <span className="absolute top-4 left-4 px-3 py-1 bg-[#9A6B29] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md">
                 100% Stone Ground
               </span>
+              {photos3.length > 1 && (
+                <span className="absolute top-4 right-4 px-3 py-1 bg-[#4A2B18]/80 text-white text-[11px] font-bold rounded-full backdrop-blur-md">
+                  Photo {photos3.indexOf(currentDisplayPhoto) + 1} of {photos3.length}
+                </span>
+              )}
             </div>
+
+            {/* 3 Photos Interactive Thumbnail Selector Bar */}
+            {photos3.length > 0 && (
+              <div className="grid grid-cols-3 gap-3">
+                {photos3.map((photoUrl, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActivePhoto(photoUrl)}
+                    className={`relative aspect-square rounded-2xl overflow-hidden border-2 transition-all p-1 bg-[#FAF6EE] cursor-pointer ${
+                      currentDisplayPhoto === photoUrl
+                        ? 'border-[#9A6B29] ring-2 ring-[#9A6B29]/30 shadow-md scale-102'
+                        : 'border-[#E8DCCB] opacity-75 hover:opacity-100 hover:border-[#9A6B29]/60'
+                    }`}
+                  >
+                    <img
+                      src={photoUrl}
+                      alt={`${product.name} Photo ${idx + 1}`}
+                      className="w-full h-full object-cover rounded-xl"
+                    />
+                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-[#4A2B18]/90 text-white text-[9px] font-bold rounded shadow-xs">
+                      #{idx + 1}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right Column: Product Details & Buying Options */}
