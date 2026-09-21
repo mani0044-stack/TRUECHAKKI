@@ -156,11 +156,21 @@ export const AdminPage: React.FC = () => {
     if (!productForm.name || !productForm.basePrice) return;
 
     try {
-      const mainImg = productForm.image || '/images/hero-bg.jpg';
-      const cleanGallery = productForm.gallery.filter(Boolean);
-      if (!cleanGallery.includes(mainImg)) {
-        cleanGallery.unshift(mainImg);
+      // Preserve exact order of photos as entered by the user
+      let cleanGallery = productForm.gallery.map(s => (s || '').trim()).filter(Boolean);
+
+      // If user typed an image URL in the cover image input that isn't in gallery yet, append it
+      const explicitCover = (productForm.image || '').trim();
+      if (explicitCover && !cleanGallery.includes(explicitCover)) {
+        cleanGallery.push(explicitCover);
       }
+
+      // Default fallback if no images provided
+      if (cleanGallery.length === 0) {
+        cleanGallery = ['/images/hero-bg.jpg'];
+      }
+
+      const mainImg = cleanGallery[0];
 
       const payload: Partial<Product> = {
         name: productForm.name,
@@ -991,12 +1001,21 @@ Thank you for choosing True Chakki for 100% natural stone-ground products! We ar
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-semibold text-[#4A2B18]">Image URL</label>
+                  <label className="font-semibold text-[#4A2B18]">Main Cover Image URL (Position 1)</label>
                   <input
                     type="text"
                     value={productForm.image}
-                    onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                    placeholder="/images/hero-bg.jpg"
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      const updatedGallery = [...productForm.gallery];
+                      if (updatedGallery.length > 0) {
+                        updatedGallery[0] = val;
+                      } else {
+                        updatedGallery.push(val);
+                      }
+                      setProductForm({ ...productForm, image: val, gallery: updatedGallery });
+                    }}
+                    placeholder="https://... or /images/..."
                     className="w-full p-3 bg-[#FAF6EE] border border-[#E8DCCB] rounded-xl text-xs text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
                   />
                 </div>
@@ -1036,7 +1055,7 @@ Thank you for choosing True Chakki for 100% natural stone-ground products! We ar
                     type="button"
                     onClick={() => setProductForm({
                       ...productForm,
-                      gallery: [...productForm.gallery, '/images/hero-bg.jpg']
+                      gallery: [...productForm.gallery, '']
                     })}
                     className="text-[11px] font-bold text-[#9A6B29] hover:underline"
                   >
@@ -1047,27 +1066,38 @@ Thank you for choosing True Chakki for 100% natural stone-ground products! We ar
                 <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
                   {productForm.gallery.map((gUrl, idx) => (
                     <div key={idx} className="flex items-center gap-2 bg-[#FAF6EE] p-2 rounded-xl border border-[#E8DCCB]">
-                      <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 border border-[#E8DCCB] bg-white">
-                        <img src={gUrl} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                      <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 border border-[#E8DCCB] bg-white flex items-center justify-center text-[10px] text-[#7C5C43] font-bold">
+                        {gUrl ? (
+                          <img src={gUrl} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                        ) : (
+                          <span>#{idx + 1}</span>
+                        )}
                       </div>
                       <input
                         type="text"
                         value={gUrl}
                         onChange={(e) => {
+                          const val = e.target.value;
                           const updated = [...productForm.gallery];
-                          updated[idx] = e.target.value;
-                          setProductForm({ ...productForm, gallery: updated });
+                          updated[idx] = val;
+                          setProductForm({
+                            ...productForm,
+                            gallery: updated,
+                            image: idx === 0 ? val : productForm.image
+                          });
                         }}
-                        placeholder="Photo URL (e.g. /images/products/item-2.jpg)"
+                        placeholder={`Photo #${idx + 1} URL (e.g. /images/products/photo-${idx + 1}.jpg)`}
                         className="flex-1 p-2 bg-white border border-[#E8DCCB] rounded-lg text-xs text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
                       />
                       <button
                         type="button"
                         onClick={() => {
                           if (productForm.gallery.length <= 1) return;
+                          const updated = productForm.gallery.filter((_, i) => i !== idx);
                           setProductForm({
                             ...productForm,
-                            gallery: productForm.gallery.filter((_, i) => i !== idx)
+                            gallery: updated,
+                            image: updated[0] || productForm.image
                           });
                         }}
                         className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
