@@ -15,9 +15,12 @@ export const BestSellers: React.FC = () => {
     ...categories.map((c) => ({ slug: c.slug, label: c.name })),
   ];
 
-  const filteredProducts = products
-    .filter((p) => activeTab === 'all' || p.category === activeTab)
-    .slice(0, 4);
+  const filteredProducts = React.useMemo(() => {
+    let list = products.filter((p) => activeTab === 'all' || p.category === activeTab);
+    // Sort so featured products always appear first at the top of Best Sellers
+    list = [...list].sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+    return list.slice(0, 8);
+  }, [products, activeTab]);
 
   return (
     <section className="py-16 bg-[#FAF7F2] border-t border-b border-[#E8DCCB]/60">

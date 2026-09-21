@@ -39,13 +39,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       onClick={handleCardClick}
       className="group bg-white rounded-2xl border border-[#E8DCCB] overflow-hidden shadow-sm hover:shadow-xl hover:border-[#9A6B29]/40 transition-all duration-300 flex flex-col justify-between cursor-pointer"
     >
-      {/* Top Image Container - Increased Photo Size */}
-      <div className="relative aspect-square overflow-hidden bg-[#FAF6EE] p-1.5 sm:p-2 flex items-center justify-center">
+      {/* Top Image Container - Edge-to-Edge Photo, Zero Side Bezel */}
+      <div className="relative aspect-square overflow-hidden bg-[#FAF6EE] p-0 flex items-center justify-center">
         <img
           src={activePhoto}
           alt={`${product.name} - 100% Organic & Stone Ground by True Chakki`}
           loading="lazy"
-          className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-all duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
         />
 
         {/* Badges */}

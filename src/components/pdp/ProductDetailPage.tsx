@@ -87,13 +87,13 @@ export const ProductDetailPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
-          {/* Left Column: Enlarged High-Res Image Gallery */}
+          {/* Left Column: Enlarged High-Res Image Gallery - Zero Side Bezel */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="aspect-[4/3] sm:aspect-square bg-[#FAF6EE] rounded-3xl border border-[#E8DCCB] p-2 sm:p-3 overflow-hidden relative shadow-md group flex items-center justify-center">
+            <div className="aspect-[4/3] sm:aspect-square bg-[#FAF6EE] rounded-3xl border border-[#E8DCCB] p-0 overflow-hidden relative shadow-md group flex items-center justify-center">
               <img
                 src={galleryImages[activeImageIndex] || product.image}
                 alt={product.name}
-                className="w-full h-full object-cover rounded-2xl transition-all duration-300 cursor-zoom-in"
+                className="w-full h-full object-cover transition-all duration-300 cursor-zoom-in group-hover:scale-105"
                 onClick={() => setIsLightboxOpen(true)}
               />
               <span className="absolute top-4 left-4 px-3 py-1 bg-[#9A6B29] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md z-10">
