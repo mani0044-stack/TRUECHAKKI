@@ -16,10 +16,10 @@ export const BestSellers: React.FC = () => {
   ];
 
   const filteredProducts = React.useMemo(() => {
-    let list = products.filter((p) => activeTab === 'all' || p.category === activeTab);
-    // Sort so featured products always appear first at the top of Best Sellers
-    list = [...list].sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
-    return list.slice(0, 8);
+    // ONLY display products that have been explicitly ticked as featured in admin panel
+    const featuredList = products.filter((p) => Boolean(p.isFeatured));
+    // Filter by active category tab (or all) with NO restriction on number of products
+    return featuredList.filter((p) => activeTab === 'all' || p.category === activeTab);
   }, [products, activeTab]);
 
   return (
