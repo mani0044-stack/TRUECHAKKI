@@ -49,13 +49,24 @@ export const AdminPage: React.FC = () => {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   // Product Form State
-  const [productForm, setProductForm] = useState({
+  const [productForm, setProductForm] = useState<{
+    name: string;
+    slug: string;
+    category: string;
+    basePrice: string;
+    description: string;
+    image: string;
+    gallery: string[];
+    isFeatured: boolean;
+    variants: Array<{ weightSize: string; price: number; stock: number; sku: string }>;
+  }>({
     name: '',
     slug: '',
     category: '',
     basePrice: '',
     description: '',
     image: '',
+    gallery: [],
     isFeatured: false,
     variants: [
       { weightSize: '1kg Pack', price: 100, stock: 50, sku: '' }
@@ -112,6 +123,7 @@ export const AdminPage: React.FC = () => {
       basePrice: '',
       description: '',
       image: '/images/hero-bg.jpg',
+      gallery: ['/images/hero-bg.jpg'],
       isFeatured: false,
       variants: [{ weightSize: '1kg Pack', price: 100, stock: 50, sku: '' }]
     });
@@ -127,6 +139,7 @@ export const AdminPage: React.FC = () => {
       basePrice: String(product.basePrice),
       description: product.description,
       image: product.image,
+      gallery: product.gallery && product.gallery.length > 0 ? product.gallery : [product.image],
       isFeatured: Boolean(product.isFeatured),
       variants: product.variants.map(v => ({
         weightSize: v.weightSize,
@@ -143,13 +156,20 @@ export const AdminPage: React.FC = () => {
     if (!productForm.name || !productForm.basePrice) return;
 
     try {
+      const mainImg = productForm.image || '/images/hero-bg.jpg';
+      const cleanGallery = productForm.gallery.filter(Boolean);
+      if (!cleanGallery.includes(mainImg)) {
+        cleanGallery.unshift(mainImg);
+      }
+
       const payload: Partial<Product> = {
         name: productForm.name,
         slug: productForm.slug || productForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
         category: productForm.category,
         basePrice: Number(productForm.basePrice),
         description: productForm.description,
-        image: productForm.image || '/images/hero-bg.jpg',
+        image: mainImg,
+        gallery: cleanGallery,
         isFeatured: productForm.isFeatured,
         variants: productForm.variants.map((v, idx) => ({
           id: `v-${idx}`,
@@ -1004,6 +1024,60 @@ Thank you for choosing True Chakki for 100% natural stone-ground products! We ar
                 <label htmlFor="isFeatured" className="font-semibold text-[#4A2B18] cursor-pointer">
                   Feature this product on homepage Best Sellers
                 </label>
+              </div>
+
+              {/* Multiple Photos / Gallery Section */}
+              <div className="space-y-3 pt-2 border-t border-[#E8DCCB]">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold uppercase tracking-wider text-[#7C5C43] text-[11px]">
+                    Multiple Product Photos Gallery ({productForm.gallery.length})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setProductForm({
+                      ...productForm,
+                      gallery: [...productForm.gallery, '/images/hero-bg.jpg']
+                    })}
+                    className="text-[11px] font-bold text-[#9A6B29] hover:underline"
+                  >
+                    + Add Photo URL
+                  </button>
+                </div>
+
+                <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                  {productForm.gallery.map((gUrl, idx) => (
+                    <div key={idx} className="flex items-center gap-2 bg-[#FAF6EE] p-2 rounded-xl border border-[#E8DCCB]">
+                      <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 border border-[#E8DCCB] bg-white">
+                        <img src={gUrl} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                      </div>
+                      <input
+                        type="text"
+                        value={gUrl}
+                        onChange={(e) => {
+                          const updated = [...productForm.gallery];
+                          updated[idx] = e.target.value;
+                          setProductForm({ ...productForm, gallery: updated });
+                        }}
+                        placeholder="Photo URL (e.g. /images/products/item-2.jpg)"
+                        className="flex-1 p-2 bg-white border border-[#E8DCCB] rounded-lg text-xs text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (productForm.gallery.length <= 1) return;
+                          setProductForm({
+                            ...productForm,
+                            gallery: productForm.gallery.filter((_, i) => i !== idx)
+                          });
+                        }}
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Remove photo"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Variants Setup */}

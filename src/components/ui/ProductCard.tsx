@@ -11,7 +11,15 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(product.variants[0]);
   const [added, setAdded] = useState(false);
-  
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
+  const galleryPhotos = React.useMemo(() => {
+    const list = [product.image, ...(product.gallery || [])].filter(Boolean);
+    return Array.from(new Set(list));
+  }, [product]);
+
+  const activePhoto = galleryPhotos[currentPhotoIndex] || product.image;
+
   const addToCart = useCartStore((state) => state.addToCart);
   const navigateTo = useUIStore((state) => state.navigateTo);
 
@@ -31,13 +39,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       onClick={handleCardClick}
       className="group bg-white rounded-2xl border border-[#E8DCCB] overflow-hidden shadow-sm hover:shadow-xl hover:border-[#9A6B29]/40 transition-all duration-300 flex flex-col justify-between cursor-pointer"
     >
-      {/* Top Image Container */}
-      <div className="relative aspect-4/3 overflow-hidden bg-[#FAF6EE] p-2.5 sm:p-4 flex items-center justify-center">
+      {/* Top Image Container - Increased Photo Size */}
+      <div className="relative aspect-square overflow-hidden bg-[#FAF6EE] p-1.5 sm:p-2 flex items-center justify-center">
         <img
-          src={product.image}
+          src={activePhoto}
           alt={`${product.name} - 100% Organic & Stone Ground by True Chakki`}
           loading="lazy"
-          className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-all duration-500"
         />
 
         {/* Badges */}
@@ -52,10 +60,29 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </span>
         </div>
 
+        {/* Gallery Dots indicator if multiple photos exist */}
+        {galleryPhotos.length > 1 && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2 py-1 bg-[#4A2B18]/60 backdrop-blur-md rounded-full z-10">
+            {galleryPhotos.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentPhotoIndex(idx);
+                }}
+                className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all ${
+                  currentPhotoIndex === idx ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'
+                }`}
+                title={`View photo ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
         {/* Quick View Floating Button */}
         <button 
           onClick={(e) => { e.stopPropagation(); navigateTo('pdp', product.slug); }}
-          className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md text-[#4A2B18] hover:text-[#9A6B29] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md"
+          className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md text-[#4A2B18] hover:text-[#9A6B29] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md z-10"
           title="View Details"
         >
           <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />

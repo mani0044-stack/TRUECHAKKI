@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Plus, Minus, ShoppingBag, ShieldCheck, Truck, RotateCcw, ChevronRight, Check, Leaf, Wheat, Salad } from 'lucide-react';
+import { Star, Plus, Minus, ShoppingBag, ShieldCheck, Truck, RotateCcw, ChevronRight, ChevronLeft, Check, Leaf, Wheat, Salad, Maximize2, X } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 import { useProductStore } from '../../store/useProductStore';
 import { useCartStore } from '../../store/useCartStore';
@@ -24,6 +24,16 @@ export const ProductDetailPage: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeTab, setActiveTab] = useState<'story' | 'nutrition' | 'ingredients' | 'reviews'>('story');
+
+  // Multi-photo gallery support
+  const galleryImages = React.useMemo(() => {
+    if (!product) return [];
+    const list = [product.image, ...(product.gallery || [])].filter(Boolean);
+    return Array.from(new Set(list));
+  }, [product]);
+
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   if (!product) {
     return (
@@ -75,24 +85,87 @@ export const ProductDetailPage: React.FC = () => {
 
       {/* Main PDP Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
-          {/* Left Column: High-Res Image Gallery */}
-          <div className="space-y-4">
-            <div className="aspect-square bg-[#FAF6EE] rounded-3xl border border-[#E8DCCB] p-6 overflow-hidden relative shadow-sm flex items-center justify-center">
+          {/* Left Column: Enlarged High-Res Image Gallery */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="aspect-[4/3] sm:aspect-square bg-[#FAF6EE] rounded-3xl border border-[#E8DCCB] p-2 sm:p-3 overflow-hidden relative shadow-md group flex items-center justify-center">
               <img
-                src={product.image}
+                src={galleryImages[activeImageIndex] || product.image}
                 alt={product.name}
-                className="w-full h-full object-cover rounded-2xl"
+                className="w-full h-full object-cover rounded-2xl transition-all duration-300 cursor-zoom-in"
+                onClick={() => setIsLightboxOpen(true)}
               />
-              <span className="absolute top-4 left-4 px-3 py-1 bg-[#9A6B29] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md">
+              <span className="absolute top-4 left-4 px-3 py-1 bg-[#9A6B29] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md z-10">
                 100% Stone Ground
               </span>
+
+              {galleryImages.length > 1 && (
+                <span className="absolute bottom-4 left-4 px-3 py-1 bg-[#4A2B18]/70 backdrop-blur-md text-white text-[11px] font-semibold rounded-full shadow-sm z-10">
+                  Photo {activeImageIndex + 1} of {galleryImages.length}
+                </span>
+              )}
+
+              <button
+                onClick={() => setIsLightboxOpen(true)}
+                className="absolute top-4 right-4 p-2.5 bg-white/90 backdrop-blur-md text-[#4A2B18] hover:text-[#9A6B29] rounded-full opacity-80 hover:opacity-100 transition-all shadow-md z-10"
+                title="View Fullscreen"
+              >
+                <Maximize2 className="w-4 h-4" />
+              </button>
+
+              {galleryImages.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1))}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/80 backdrop-blur-md text-[#4A2B18] hover:bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
+                    title="Previous Photo"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setActiveImageIndex((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0))}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/80 backdrop-blur-md text-[#4A2B18] hover:bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
+                    title="Next Photo"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
             </div>
+
+            {/* Multiple Photos Thumbnails Strip */}
+            {galleryImages.length > 1 && (
+              <div className="space-y-2">
+                <span className="text-[11px] uppercase font-bold tracking-wider text-[#7C5C43] block">
+                  Product Photos ({galleryImages.length}):
+                </span>
+                <div className="flex items-center gap-3 overflow-x-auto pb-2 custom-scrollbar">
+                  {galleryImages.map((imgUrl, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`relative rounded-2xl overflow-hidden border-2 transition-all duration-200 shrink-0 w-20 h-20 sm:w-24 sm:h-24 ${
+                        activeImageIndex === idx
+                          ? 'border-[#9A6B29] ring-2 ring-[#9A6B29]/30 scale-105 shadow-md'
+                          : 'border-[#E8DCCB] opacity-70 hover:opacity-100 hover:border-[#9A6B29]/50'
+                      }`}
+                    >
+                      <img src={imgUrl} alt={`${product.name} view ${idx + 1}`} className="w-full h-full object-cover rounded-xl" />
+                      {activeImageIndex === idx && (
+                        <span className="absolute top-1 right-1 bg-[#9A6B29] text-white p-0.5 rounded-full shadow-sm">
+                          <Check className="w-3 h-3" />
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column: Product Details & Buying Options */}
-          <div className="space-y-6">
+          <div className="lg:col-span-5 space-y-6">
             
             {/* Category & Rating */}
             <div className="space-y-2">
@@ -329,6 +402,49 @@ export const ProductDetailPage: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Lightbox / Fullscreen Modal for Product Photos */}
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-50 bg-[#4A2B18]/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 animate-fadeIn">
+          <button
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute top-6 right-6 p-3 bg-white/20 hover:bg-white/40 text-white rounded-full transition-all z-20"
+            title="Close Lightbox"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          <div className="relative max-w-4xl max-h-[85vh] flex flex-col items-center justify-center">
+            <img
+              src={galleryImages[activeImageIndex] || product.image}
+              alt={`${product.name} enlarged view ${activeImageIndex + 1}`}
+              className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl"
+            />
+            <span className="mt-4 text-white text-sm font-semibold tracking-wide bg-[#4A2B18]/60 px-4 py-1.5 rounded-full border border-white/20">
+              {product.name} — Photo {activeImageIndex + 1} of {galleryImages.length}
+            </span>
+
+            {galleryImages.length > 1 && (
+              <>
+                <button
+                  onClick={() => setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1))}
+                  className="absolute left-2 sm:-left-14 top-1/2 -translate-y-1/2 p-3 bg-white/20 hover:bg-white/40 text-white rounded-full transition-all"
+                  title="Previous Photo"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  onClick={() => setActiveImageIndex((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0))}
+                  className="absolute right-2 sm:-right-14 top-1/2 -translate-y-1/2 p-3 bg-white/20 hover:bg-white/40 text-white rounded-full transition-all"
+                  title="Next Photo"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
     </div>
   );
