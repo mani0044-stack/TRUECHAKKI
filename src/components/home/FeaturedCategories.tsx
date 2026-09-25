@@ -18,7 +18,7 @@ const DEFAULT_CATEGORIES: DefaultCategory[] = [
     name: 'Stone Ground Atta',
     slug: 'atta',
     description: 'Freshly ground 100% natural stone chakki flour preserving all bran, fiber, and aroma.',
-    image: '/img/groundatta.PNG',
+    image: '/images/groundatta.PNG',
     product_count: 3,
   },
   {
@@ -44,13 +44,13 @@ const getCategoryImage = (category: { slug?: string; name?: string; image?: stri
   const name = category.name?.toLowerCase() || '';
 
   if (slug.includes('pickle') || name.includes('pickle')) {
-    return '/img/authenticpickles.PNG';
+    return '/images/authenticpickles.PNG';
   }
   if (slug.includes('atta') || name.includes('atta') || slug.includes('flour') || name.includes('flour')) {
-    return '/img/groundatta.PNG';
+    return '/images/groundatta.PNG';
   }
   if (slug.includes('oil') || name.includes('oil')) {
-    return '/img/woodpressedoil.PNG';
+    return '/images/woodpressedoil.PNG';
   }
   if (category.image && category.image !== '/images/hero-bg.jpg') {
     return category.image;
