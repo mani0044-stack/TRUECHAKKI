@@ -10,22 +10,22 @@ const processSteps: ProcessStep[] = [
   {
     step: '01',
     title: 'Direct Farm Sourcing',
-    image: '/img/Directfromframs.png',
+    image: '/images/Directfromframs.png',
   },
   {
     step: '02',
     title: 'Traditional Stone Milling',
-    image: '/img/TraditionalStoneMilling.png',
+    image: '/images/TraditionalStoneMilling.png',
   },
   {
     step: '03',
     title: 'Wood-Pressed Kolhu Extraction',
-    image: '/img/Woodpressed.png',
+    image: '/images/Woodpressed.png',
   },
   {
     step: '04',
     title: 'Zero Chemical Packaging',
-    image: '/img/Packaging.png',
+    image: '/images/Packaging.png',
   },
 ];
 
