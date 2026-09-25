@@ -20,6 +20,25 @@ const loadRazorpayScript = (): Promise<boolean> => {
   });
 };
 
+// --- Input limits / validation helpers -------------------------------
+const NAME_MAX_LENGTH = 50;
+const STREET_MAX_LENGTH = 150;
+const CITY_MAX_LENGTH = 50;
+const PHONE_LENGTH = 10;
+const PINCODE_LENGTH = 6;
+
+// Letters, spaces, apostrophes and hyphens only (e.g. "Mary-Jane O'Neil")
+const sanitizeName = (value: string) =>
+  value.replace(/[^a-zA-Z\s'-]/g, '').slice(0, NAME_MAX_LENGTH);
+
+// Digits only, capped at PHONE_LENGTH
+const sanitizePhone = (value: string) =>
+  value.replace(/\D/g, '').slice(0, PHONE_LENGTH);
+
+// Digits only, capped at PINCODE_LENGTH
+const sanitizePincode = (value: string) =>
+  value.replace(/\D/g, '').slice(0, PINCODE_LENGTH);
+
 export const CheckoutPage: React.FC = () => {
   const { items, getSubtotal, getShippingFee, getGrandTotal, clearCart } = useCartStore();
   const { user, addOrder } = useAuthStore();
@@ -44,6 +63,13 @@ export const CheckoutPage: React.FC = () => {
   const shippingFee = getShippingFee();
   const grandTotal = getGrandTotal();
 
+  // Basic front-end validity checks used to disable the submit button
+  const isPhoneValid = phone.length === PHONE_LENGTH;
+  const isPincodeValid = zipCode.length === PINCODE_LENGTH;
+  const isNameValid = name.trim().length > 0;
+  const isStreetValid = street.trim().length > 0;
+  const isFormValid = isNameValid && isPhoneValid && isPincodeValid && isStreetValid;
+
   if (items.length === 0 && !isCompleted) {
     return (
       <div className="max-w-4xl mx-auto px-4 pt-28 sm:pt-32 pb-20 text-center space-y-4">
@@ -65,6 +91,11 @@ export const CheckoutPage: React.FC = () => {
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setPaymentError(null);
+
+    if (!isFormValid) {
+      setPaymentError('Please check your name, mobile number, address and pincode before continuing.');
+      return;
+    }
 
     const shippingAddressObj = {
       id: `addr-${Date.now()}`,
@@ -359,7 +390,11 @@ export const CheckoutPage: React.FC = () => {
                     type="text"
                     required
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setName(sanitizeName(e.target.value))}
+                    maxLength={NAME_MAX_LENGTH}
+                    pattern="[A-Za-z\s'-]+"
+                    title="Only letters, spaces, apostrophes and hyphens are allowed"
+                    placeholder="e.g. Priya Sharma"
                     className="w-full p-2.5 bg-white border border-[#E8DCCB] rounded-xl text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
                   />
                 </div>
@@ -368,10 +403,18 @@ export const CheckoutPage: React.FC = () => {
                   <input
                     type="tel"
                     required
+                    inputMode="numeric"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => setPhone(sanitizePhone(e.target.value))}
+                    maxLength={PHONE_LENGTH}
+                    pattern="[0-9]{10}"
+                    title="Enter a 10-digit mobile number"
+                    placeholder="10-digit mobile number"
                     className="w-full p-2.5 bg-white border border-[#E8DCCB] rounded-xl text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
                   />
+                  {phone.length > 0 && !isPhoneValid && (
+                    <p className="mt-1 text-[10px] text-red-600">Enter a valid 10-digit mobile number.</p>
+                  )}
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block font-semibold text-[#4A2B18] mb-1">Email Address</label>
@@ -380,6 +423,7 @@ export const CheckoutPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    maxLength={100}
                     className="w-full p-2.5 bg-white border border-[#E8DCCB] rounded-xl text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
                   />
                 </div>
@@ -389,7 +433,8 @@ export const CheckoutPage: React.FC = () => {
                     type="text"
                     required
                     value={street}
-                    onChange={(e) => setStreet(e.target.value)}
+                    onChange={(e) => setStreet(e.target.value.slice(0, STREET_MAX_LENGTH))}
+                    maxLength={STREET_MAX_LENGTH}
                     placeholder="House No., Street Name, Landmark"
                     className="w-full p-2.5 bg-white border border-[#E8DCCB] rounded-xl text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
                   />
@@ -400,7 +445,8 @@ export const CheckoutPage: React.FC = () => {
                     type="text"
                     required
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}
+                    onChange={(e) => setCity(sanitizeName(e.target.value).slice(0, CITY_MAX_LENGTH))}
+                    maxLength={CITY_MAX_LENGTH}
                     className="w-full p-2.5 bg-white border border-[#E8DCCB] rounded-xl text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
                   />
                 </div>
@@ -409,10 +455,18 @@ export const CheckoutPage: React.FC = () => {
                   <input
                     type="text"
                     required
+                    inputMode="numeric"
                     value={zipCode}
-                    onChange={(e) => setZipCode(e.target.value)}
+                    onChange={(e) => setZipCode(sanitizePincode(e.target.value))}
+                    maxLength={PINCODE_LENGTH}
+                    pattern="[0-9]{6}"
+                    title="Enter a 6-digit pincode"
+                    placeholder="6-digit pincode"
                     className="w-full p-2.5 bg-white border border-[#E8DCCB] rounded-xl text-[#4A2B18] focus:outline-none focus:border-[#9A6B29]"
                   />
+                  {zipCode.length > 0 && !isPincodeValid && (
+                    <p className="mt-1 text-[10px] text-red-600">Enter a valid 6-digit pincode.</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -509,7 +563,7 @@ export const CheckoutPage: React.FC = () => {
 
               <button
                 type="submit"
-                disabled={isProcessing}
+                disabled={isProcessing || !isFormValid}
                 className="w-full py-4 bg-[#9A6B29] hover:bg-[#80561F] text-white font-semibold rounded-full text-xs uppercase tracking-wider shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed"
               >
                 {isProcessing ? (

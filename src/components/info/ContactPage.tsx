@@ -20,11 +20,11 @@ export const ContactPage: React.FC = () => {
 
   const handleWhatsApp = () => {
     const msg = encodeURIComponent("Hello True Chakki! I would like to inquire about your products.");
-    window.open(`https://wa.me/919876543210?text=${msg}`, '_blank');
+    window.open(`https://wa.me/919877614747?text=${msg}`, '_blank');
   };
 
   const handleInstagram = () => {
-    window.open('https://instagram.com/truechakki', '_blank');
+    window.open('https://www.instagram.com/_truechakki_/', '_blank');
   };
 
   const handleFacebook = () => {
@@ -99,7 +99,7 @@ export const ContactPage: React.FC = () => {
               <div className="space-y-0.5 w-full">
                 <strong className="block font-semibold text-sm text-[#4A2B18]">Customer Helpline</strong>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[#7C5C43]">+91 98765 43210</span>
+                  <span className="text-[#7C5C43]">+91 98776 14747</span>
                   <button 
                     onClick={() => copyToClipboard('+919876543210', 'Phone number')}
                     className="p-1 hover:bg-[#9A6B29]/10 rounded text-[#9A6B29] transition-colors cursor-pointer"
@@ -172,7 +172,7 @@ export const ContactPage: React.FC = () => {
                       <h3 className="font-serif font-bold text-[#4A2B18] text-base">WhatsApp Support</h3>
                       <span className="bg-[#25D366]/10 text-[#128C7E] text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">Fastest</span>
                     </div>
-                    <p className="text-xs font-semibold text-[#9A6B29] mt-0.5">+91 98765 43210</p>
+                    <p className="text-xs font-semibold text-[#9A6B29] mt-0.5">+91 98776 14747</p>
                     <p className="text-xs text-[#7C5C43] mt-1">Instant chat for product inquiry & live assistance</p>
                   </div>
                 </div>

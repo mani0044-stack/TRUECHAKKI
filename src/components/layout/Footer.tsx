@@ -20,7 +20,7 @@ export const Footer: React.FC = () => {
   const handleWhatsAppClick = () => {
     const encodedMsg = encodeURIComponent(defaultMessage);
     showToast("Opening WhatsApp with pre-typed inquiry message...");
-    window.open(`https://wa.me/919876543210?text=${encodedMsg}`, '_blank');
+    window.open(`https://wa.me/919877614747?text=${encodedMsg}`, '_blank');
   };
 
   const handleInstagramClick = () => {
@@ -28,7 +28,7 @@ export const Footer: React.FC = () => {
       navigator.clipboard.writeText(defaultMessage).catch(() => {});
     }
     showToast("Message copied to clipboard! Opening Instagram...");
-    window.open('https://instagram.com/truechakki', '_blank');
+    window.open('https://www.instagram.com/_truechakki_/', '_blank');
   };
 
   const handleFacebookClick = () => {
@@ -90,7 +90,7 @@ export const Footer: React.FC = () => {
               </a>
               <div className="flex items-center justify-center md:justify-start gap-2">
                 <Phone className="w-4 h-4 text-[#CFB57F] shrink-0" />
-                <span>+91 98765 43210 / 1800-TRUE-CHAKKI</span>
+                <span>+91 98776 14747 / 1800-TRUE-CHAKKI</span>
               </div>
               <div className="flex items-center justify-center md:justify-start gap-2">
                 <Mail className="w-4 h-4 text-[#CFB57F] shrink-0" />
