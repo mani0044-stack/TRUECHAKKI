@@ -107,7 +107,7 @@
     <link rel="preload" as="image" href="/images/IMG_7401.PNG" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/logo.png" fetchpriority="high" />
 
-    <!-- Critical Inline Styles for Immediate First Contentful Paint -->
+    <!-- Critical Inline Styles -->
     <style>
       body {
         margin: 0;
@@ -117,43 +117,11 @@
         font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
         -webkit-font-smoothing: antialiased;
       }
-      .initial-skeleton {
-        min-height: 80vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 6rem 1.5rem 2rem;
-      }
-      .initial-skeleton h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #4A2B18;
-        margin-bottom: 1rem;
-        line-height: 1.15;
-      }
-      .initial-skeleton p {
-        font-size: 1.125rem;
-        color: rgba(74, 43, 24, 0.9);
-        max-width: 32rem;
-      }
     </style>
   </head>
 
   <body class="bg-[#FDFBF7] text-[#4A2B18] antialiased selection:bg-[#9A6B29] selection:text-white font-sans min-h-screen">
-    <!-- Initial Pre-rendered Semantic DOM Shell for Instant FCP & LCP Observer Validation -->
-    <div id="root">
-      <header style="height: 80px; width: 100%; background: #FAF6EE; border-bottom: 1px solid #E8DCCB;"></header>
-      <main className="initial-skeleton">
-        <div style="max-width: 600px;">
-          <span style="font-size: 12px; font-weight: 700; color: #9A6B29; text-transform: uppercase; letter-spacing: 0.2em;">TRADITIONAL STONE MILLING</span>
-          <h1 style="font-family: serif; font-size: 2.75rem; color: #4A2B18; margin-top: 0.5rem;">Pure. Natural. Stone-Ground Fresh.</h1>
-          <p style="color: #7C5C43; font-size: 1rem; line-height: 1.6;">100% natural stone-ground Sharbati wheat flour, cold-pressed Kachi Ghani oils, and traditional sun-cured pickles delivered fresh from farm to home.</p>
-        </div>
-      </main>
-    </div>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+:root {
   --color-chakki-bg: #FDFBF7;
   --color-chakki-surface: #FAF4E8;
   --color-chakki-pill: #F6EFE3;
