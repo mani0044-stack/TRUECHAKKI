@@ -246,7 +246,7 @@ export const LoginPage: React.FC = () => {
 
             <div className="p-4 bg-[#9A6B29]/10 rounded-2xl border border-[#9A6B29]/20 text-center space-y-1">
               <span className="font-serif text-sm font-bold text-[#4A2B18]">Need Assistance?</span>
-              <p className="text-[11px] text-[#7C5C43]">Contact our farm support at support@truechakki.com or +91 98765 43210</p>
+              <p className="text-[11px] text-[#7C5C43]">Contact our farm support at truechakki@gmail.com or +91 98776 14747</p>
             </div>
           </div>
 

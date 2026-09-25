@@ -358,7 +358,7 @@ export const CheckoutPage: React.FC = () => {
                 <strong>Payment Notice:</strong> {paymentError}
               </div>
             </div>
-            <button
+            {/* <button
               type="button"
               onClick={() => {
                 setPaymentMethod('COD');
@@ -367,7 +367,7 @@ export const CheckoutPage: React.FC = () => {
               className="px-3.5 py-1.5 bg-[#9A6B29] hover:bg-[#80561F] text-white font-semibold rounded-xl text-[11px] transition-colors whitespace-nowrap shadow-sm"
             >
               Switch to Cash on Delivery
-            </button>
+            </button> */}
           </div>
         )}
 
@@ -502,8 +502,8 @@ export const CheckoutPage: React.FC = () => {
                     <span className="text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">Card</span>
                   </div>
                 </label>
-
-                {/* Cash on Delivery Option */}
+{/* 
+                Cash on Delivery Option
                 <label className={`flex items-center justify-between p-4 bg-white border rounded-2xl cursor-pointer transition-all ${paymentMethod === 'COD' ? 'border-[#9A6B29] bg-[#FAF4E8]' : 'border-[#E8DCCB]'}`}>
                   <div className="flex items-center gap-3.5">
                     <input
@@ -518,7 +518,7 @@ export const CheckoutPage: React.FC = () => {
                       <p className="text-[11px] text-[#7C5C43]">Pay cash at your doorstep upon order delivery</p>
                     </div>
                   </div>
-                </label>
+                </label> */}
               </div>
             </div>
 
