@@ -25,7 +25,7 @@ const processSteps: ProcessStep[] = [
   {
     step: '04',
     title: 'Zero Chemical Packaging',
-    image: '/images/Packaging.png',
+    image: '/images/packaging.png',
   },
 ];
 
