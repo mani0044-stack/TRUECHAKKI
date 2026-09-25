@@ -13,19 +13,31 @@ export const HeroSection: React.FC = () => {
       <div className="relative w-full flex items-start sm:items-center min-h-[820px] sm:min-h-[720px] lg:min-h-[820px]">
 
         {/* Mobile Background Image (Visible on mobile < sm) */}
-        <div
-          className="block sm:hidden absolute inset-0 bg-cover bg-[position:center_bottom] bg-no-repeat z-0 opacity-100"
-          style={{ backgroundImage: `url('/images/IMG_7401.PNG')` }}
-        />
+        <div className="block sm:hidden absolute inset-0 z-0 overflow-hidden">
+          <img 
+            src="/images/IMG_7401.PNG" 
+            alt="True Chakki Organic Farm" 
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover object-bottom"
+          />
+        </div>
 
         {/* Top subtle scrim overlay on mobile for crystal clear text readability */}
         <div className="block sm:hidden absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-[#FAF7F2]/90 via-[#FAF7F2]/45 to-transparent z-1 pointer-events-none" />
 
         {/* Desktop Background Image (Visible on sm and up) */}
-        <div
-          className="hidden sm:block absolute inset-0 bg-cover bg-[position:78%_center] lg:bg-center bg-no-repeat z-0 opacity-100"
-          style={{ backgroundImage: `url('/images/IMG_7637new.PNG')` }}
-        />
+        <div className="hidden sm:block absolute inset-0 z-0 overflow-hidden">
+          <img 
+            src="/images/IMG_7637new.PNG" 
+            alt="True Chakki Traditional Stone Grinding" 
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover object-[78%_center] lg:object-center"
+          />
+        </div>
 
         {/* Text Content Overlay - Elevated Upside on Mobile */}
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-36 lg:pt-44 pb-16 sm:pb-24 lg:pb-32 w-full flex flex-col items-center sm:items-start text-center sm:text-left">

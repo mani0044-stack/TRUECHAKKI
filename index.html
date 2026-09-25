@@ -89,14 +89,71 @@
     }
     </script>
 
-    <!-- Preconnect & Google Fonts Optimization -->
+    <!-- Preconnect & Asynchronous Google Fonts Optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link 
+      rel="preload" 
+      as="style" 
+      href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" />
+    </noscript>
+
+    <!-- Critical Above-the-Fold LCP Image Preloads -->
+    <link rel="preload" as="image" href="/images/IMG_7637new.PNG" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/IMG_7401.PNG" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/logo.png" fetchpriority="high" />
+
+    <!-- Critical Inline Styles for Immediate First Contentful Paint -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #FDFBF7;
+        color: #4A2B18;
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .initial-skeleton {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 6rem 1.5rem 2rem;
+      }
+      .initial-skeleton h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #4A2B18;
+        margin-bottom: 1rem;
+        line-height: 1.15;
+      }
+      .initial-skeleton p {
+        font-size: 1.125rem;
+        color: rgba(74, 43, 24, 0.9);
+        max-width: 32rem;
+      }
+    </style>
   </head>
 
-  <body class="bg-chakki-bg text-chakki-text antialiased selection:bg-chakki-primary selection:text-white font-sans min-h-screen">
-    <div id="root"></div>
+  <body class="bg-[#FDFBF7] text-[#4A2B18] antialiased selection:bg-[#9A6B29] selection:text-white font-sans min-h-screen">
+    <!-- Initial Pre-rendered Semantic DOM Shell for Instant FCP & LCP Observer Validation -->
+    <div id="root">
+      <header style="height: 80px; width: 100%; background: #FAF6EE; border-bottom: 1px solid #E8DCCB;"></header>
+      <main className="initial-skeleton">
+        <div style="max-width: 600px;">
+          <span style="font-size: 12px; font-weight: 700; color: #9A6B29; text-transform: uppercase; letter-spacing: 0.2em;">TRADITIONAL STONE MILLING</span>
+          <h1 style="font-family: serif; font-size: 2.75rem; color: #4A2B18; margin-top: 0.5rem;">Pure. Natural. Stone-Ground Fresh.</h1>
+          <p style="color: #7C5C43; font-size: 1rem; line-height: 1.6;">100% natural stone-ground Sharbati wheat flour, cold-pressed Kachi Ghani oils, and traditional sun-cured pickles delivered fresh from farm to home.</p>
+        </div>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
