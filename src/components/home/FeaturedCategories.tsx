@@ -39,24 +39,10 @@ const DEFAULT_CATEGORIES: DefaultCategory[] = [
   },
 ];
 
-const getCategoryImage = (category: { slug?: string; name?: string; image?: string }): string => {
-  const slug = category.slug?.toLowerCase() || '';
-  const name = category.name?.toLowerCase() || '';
-
-  if (slug.includes('pickle') || name.includes('pickle')) {
-    return '/images/authenticpickles.PNG';
-  }
-  if (slug.includes('atta') || name.includes('atta') || slug.includes('flour') || name.includes('flour')) {
-    return '/images/groundatta.PNG';
-  }
-  if (slug.includes('oil') || name.includes('oil')) {
-    return '/images/woodpressedoil.PNG';
-  }
-  if (category.image && category.image !== '/images/hero-bg.jpg') {
-    return category.image;
-  }
-  return '/img/groundatta.PNG';
-};
+const getCategoryImage = (category: { image?: string }): string =>
+  category.image && category.image.trim() !== '' && category.image !== '/images/hero-bg.jpg'
+    ? category.image
+    : '/images/hero-bg.jpg';
 
 export const FeaturedCategories: React.FC = () => {
   const navigateTo = useUIStore((state) => state.navigateTo);

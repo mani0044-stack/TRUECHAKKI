@@ -41,11 +41,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     >
       {/* Top Image Container - Edge-to-Edge Photo, Zero Side Bezel */}
       <div className="relative aspect-square overflow-hidden bg-[#FAF6EE] p-0 flex items-center justify-center">
-        <img
+<img
           src={activePhoto}
           alt={`${product.name} - 100% Organic & Stone Ground by True Chakki`}
           loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+          className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-500"
         />
 
         {/* Badges */}

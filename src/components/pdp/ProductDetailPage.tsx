@@ -93,7 +93,7 @@ export const ProductDetailPage: React.FC = () => {
               <img
                 src={galleryImages[activeImageIndex] || product.image}
                 alt={product.name}
-                className="w-full h-full object-cover transition-all duration-300 cursor-zoom-in group-hover:scale-105"
+                className="w-full h-full object-contain transition-all duration-300 cursor-zoom-in group-hover:scale-105"
                 onClick={() => setIsLightboxOpen(true)}
               />
               <span className="absolute top-4 left-4 px-3 py-1 bg-[#9A6B29] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md z-10">
