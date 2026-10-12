@@ -5,9 +5,6 @@ export interface ReelItem {
   videoUrl: string;
   posterImage: string;
   instagramUrl: string;
-  category?: string;
-  duration?: string;
-  highlight?: string;
 }
 
 // Config: paste your reel MP4 URLs (or hosted video links) and the Instagram
@@ -19,10 +16,7 @@ export const REELS: ReelItem[] = [
     caption: '100% natural stone chakki atta, milled fresh for you.',
     videoUrl: '',
     posterImage: '/images/IMG_7401.PNG',
-    instagramUrl: 'https://www.instagram.com/_truechakki_/',
-    category: 'Stone Chakki',
-    duration: '0:34',
-    highlight: 'Cold Milled',
+    instagramUrl: 'https://www.instagram.com/reel/REEL_CODE_1/',
   },
   {
     id: 'reel-2',
@@ -30,10 +24,7 @@ export const REELS: ReelItem[] = [
     caption: 'Traditional kachi ghani oils made the pure, slow way.',
     videoUrl: '',
     posterImage: '/images/IMG_7637new.PNG',
-    instagramUrl: 'https://www.instagram.com/_truechakki_/',
-    category: 'Wood Kolhu',
-    duration: '0:45',
-    highlight: 'Pure Kachi Ghani',
+    instagramUrl: 'https://www.instagram.com/reel/REEL_CODE_2/',
   },
   {
     id: 'reel-3',
@@ -41,9 +32,6 @@ export const REELS: ReelItem[] = [
     caption: 'Straight from the farm to your home — pure & natural.',
     videoUrl: '',
     posterImage: '/images/groundatta.PNG',
-    instagramUrl: 'https://www.instagram.com/_truechakki_/',
-    category: 'Farm Direct',
-    duration: '0:28',
-    highlight: '100% Non-GMO',
+    instagramUrl: 'https://www.instagram.com/reel/REEL_CODE_3/',
   },
 ];
