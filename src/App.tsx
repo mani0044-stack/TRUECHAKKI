@@ -22,7 +22,6 @@ import { FeaturedCategories } from './components/home/FeaturedCategories';
 import { BestSellers } from './components/home/BestSellers';
 import { ProcessSection } from './components/home/ProcessSection';
 import { Testimonials } from './components/home/Testimonials';
-import { InstagramReels } from './components/home/InstagramReels';
 
 // Pages
 import { ShopPage } from './components/shop/ShopPage';
@@ -81,7 +80,6 @@ export const App: React.FC = () => {
             <BestSellers />
             <ProcessSection />
             <Testimonials />
-            <InstagramReels />
           </>
         );
       case 'shop':
@@ -112,7 +110,6 @@ export const App: React.FC = () => {
             <BestSellers />
             <ProcessSection />
             <Testimonials />
-            <InstagramReels />
           </>
         );
     }
