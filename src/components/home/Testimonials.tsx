@@ -142,7 +142,7 @@ export const Testimonials: React.FC = () => {
                       </div>
 
                       {/* Review Quote Text */}
-                      <p className="text-xs sm:text-sm text-[#4A2B18] leading-relaxed italic font-sans">
+                      <p className="text-xs sm:text-sm text-[#4A2B18] leading-relaxed italic font-sans text-center sm:text-left">
                         "{review.comment}"
                       </p>
 

@@ -76,7 +76,7 @@ export const ProcessSection: React.FC = () => {
 
                  
                   {/* Title */}
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <div className="absolute bottom-0 left-0 right-0 p-5 text-center sm:text-left">
                     <h3 className="font-serif text-lg sm:text-xl font-bold text-white leading-snug">
                       {title}
                     </h3>

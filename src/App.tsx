@@ -20,6 +20,7 @@ import { AuthModal } from './components/ui/AuthModal';
 import { HeroSection } from './components/home/HeroSection';
 import { FeaturedCategories } from './components/home/FeaturedCategories';
 import { BestSellers } from './components/home/BestSellers';
+import { VideoReelsSection } from './components/home/VideoReelsSection';
 import { ProcessSection } from './components/home/ProcessSection';
 import { Testimonials } from './components/home/Testimonials';
 
@@ -78,6 +79,7 @@ export const App: React.FC = () => {
             <HeroSection />
             <FeaturedCategories />
             <BestSellers />
+            <VideoReelsSection />
             <ProcessSection />
             <Testimonials />
           </>
@@ -108,6 +110,7 @@ export const App: React.FC = () => {
             <HeroSection />
             <FeaturedCategories />
             <BestSellers />
+            <VideoReelsSection />
             <ProcessSection />
             <Testimonials />
           </>

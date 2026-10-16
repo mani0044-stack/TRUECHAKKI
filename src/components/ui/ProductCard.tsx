@@ -90,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       {/* Content Container */}
-      <div className="p-3.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2.5 sm:space-y-4">
+      <div className="p-3.5 sm:p-5 flex-1 flex flex-col justify-between space-y-2.5 sm:space-y-4 text-center sm:text-left">
         <div>
           {/* Category & Rating */}
           <div className="flex items-center justify-between text-[10px] sm:text-xs text-[#7C5C43] mb-1">
@@ -105,18 +105,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
 
           {/* Product Title */}
-          <h3 className="font-serif text-sm sm:text-lg font-bold text-[#4A2B18] group-hover:text-[#9A6B29] transition-colors line-clamp-1">
+          <h3 className="font-serif text-sm sm:text-lg font-bold text-[#4A2B18] group-hover:text-[#9A6B29] transition-colors line-clamp-1 text-center sm:text-left">
             {product.name}
           </h3>
 
-          <p className="text-[11px] sm:text-xs text-[#7C5C43] line-clamp-1 sm:line-clamp-2 mt-0.5 sm:mt-1 leading-relaxed">
+          <p className="text-[11px] sm:text-xs text-[#7C5C43] line-clamp-1 sm:line-clamp-2 mt-0.5 sm:mt-1 leading-relaxed text-center sm:text-left">
             {product.shortDescription}
           </p>
         </div>
 
         {/* Variant Selector Pills */}
         <div className="space-y-2 sm:space-y-3 pt-1 sm:pt-2">
-          <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
+          <div className="flex items-center justify-center sm:justify-start gap-1 sm:gap-1.5 flex-wrap">
             {product.variants.map((variant) => (
               <button
                 key={variant.id}

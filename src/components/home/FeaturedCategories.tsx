@@ -105,8 +105,8 @@ export const FeaturedCategories: React.FC = () => {
               </div>
 
               {/* Card Details */}
-              <div className="p-6 sm:p-7 space-y-3.5 flex-1 flex flex-col justify-between">
-                <div className="space-y-2">
+              <div className="p-6 sm:p-7 space-y-3.5 flex-1 flex flex-col justify-between text-center sm:text-left">
+                <div className="space-y-2 flex flex-col items-center sm:items-start text-center sm:text-left">
                   <span className="text-xs font-semibold text-[#9A6B29] tracking-wide uppercase">
                     {category.product_count !== undefined ? `${category.product_count} Products Available` : 'Fresh Farm Range'}
                   </span>
@@ -118,7 +118,7 @@ export const FeaturedCategories: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-[#E8DCCB]/60 flex items-center justify-between text-sm font-semibold text-[#4A2B18] group-hover:text-[#9A6B29] transition-colors">
+                <div className="pt-4 border-t border-[#E8DCCB]/60 flex items-center justify-center sm:justify-between gap-2 text-sm font-semibold text-[#4A2B18] group-hover:text-[#9A6B29] transition-colors">
                   <span>Discover Range</span>
                   <div className="w-8 h-8 rounded-full bg-[#FAF4E8] group-hover:bg-[#9A6B29] text-[#9A6B29] group-hover:text-white flex items-center justify-center transition-all shadow-xs">
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

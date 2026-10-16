@@ -89,7 +89,7 @@ export const HeroSection: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-[#E8DCCB]/60">
 
             {/* Feature 1: 100% Natural */}
-            <div className="flex items-start gap-3 sm:gap-4 pt-3 sm:pt-0 sm:px-3">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 sm:gap-4 pt-3 sm:pt-0 sm:px-3">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#FAF4E8] border border-[#9A6B29]/30 flex items-center justify-center text-[#9A6B29] shrink-0 shadow-inner">
                 <Leaf className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" />
               </div>
@@ -104,7 +104,7 @@ export const HeroSection: React.FC = () => {
             </div>
 
             {/* Feature 2: Farm Fresh */}
-            <div className="flex items-start gap-3 sm:gap-4 pt-3 sm:pt-0 sm:px-3">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 sm:gap-4 pt-3 sm:pt-0 sm:px-3">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#FAF4E8] border border-[#9A6B29]/30 flex items-center justify-center text-[#9A6B29] shrink-0 shadow-inner">
                 <Wheat className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" />
               </div>
@@ -119,7 +119,7 @@ export const HeroSection: React.FC = () => {
             </div>
 
             {/* Feature 3: Traditional Process */}
-            <div className="flex items-start gap-3 sm:gap-4 pt-3 sm:pt-0 sm:px-3">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 sm:gap-4 pt-3 sm:pt-0 sm:px-3">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#FAF4E8] border border-[#9A6B29]/30 flex items-center justify-center text-[#9A6B29] shrink-0 shadow-inner">
                 <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" />
               </div>
@@ -134,7 +134,7 @@ export const HeroSection: React.FC = () => {
             </div>
 
             {/* Feature 4: Healthy & Pure */}
-            <div className="flex items-start gap-3 sm:gap-4 pt-3 sm:pt-0 sm:px-3">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 sm:gap-4 pt-3 sm:pt-0 sm:px-3">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#FAF4E8] border border-[#9A6B29]/30 flex items-center justify-center text-[#9A6B29] shrink-0 shadow-inner">
                 <HeartHandshake className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" />
               </div>
